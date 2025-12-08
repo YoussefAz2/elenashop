@@ -9,7 +9,7 @@ import { FloatingWhatsApp, PromoPopup } from "../common";
 import { Testimonials } from "../common/Testimonials";
 import { getDiscountedPrice, getPopupPromo } from "@/lib/promo";
 import { ShoppingBag, Store, Menu, X } from "lucide-react";
-import { SelectableElement } from "@/components/dashboard/editor/SelectableElement";
+import { SelectableElement } from "../common/SelectableElement";
 
 interface TemplateLuxeProps {
     config: ThemeConfig;

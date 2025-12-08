@@ -25,7 +25,7 @@ import type { Profile, Product, Page, ThemeConfig } from "@/types";
 import { DesignPanel } from "./DesignPanel";
 import { ContentPanel } from "./ContentPanel";
 import { UpgradeModal } from "./UpgradeModal";
-import { ElementSelectionProvider } from "./ElementSelectionContext";
+import { ElementSelectionProvider } from "@/components/store/common/SelectableElement";
 import { TemplateMinimal, TemplateLuxe, TemplateStreet } from "@/components/store/templates";
 import { isTemplatePremium, getTemplateConfig } from "@/lib/templates";
 
