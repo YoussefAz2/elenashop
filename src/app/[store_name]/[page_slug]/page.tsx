@@ -1,0 +1,189 @@
+import { notFound } from "next/navigation";
+import { createClient } from "@/utils/supabase/server";
+import type { Profile, Page, ThemeConfig } from "@/types";
+import { DEFAULT_THEME_CONFIG } from "@/types";
+import { AboutPage, ContactPage, FAQPage } from "@/components/store/pages";
+import { ArrowLeft } from "lucide-react";
+
+interface PageProps {
+    params: Promise<{ store_name: string; page_slug: string }>;
+}
+
+// Pre-configured page slugs
+const PRECONFIGURED_PAGES = ["a-propos", "contact", "faq"];
+
+export default async function StorePage({ params }: PageProps) {
+    const { store_name, page_slug } = await params;
+    const supabase = await createClient();
+
+    // Fetch seller profile
+    const { data: profile } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("store_name", store_name)
+        .single();
+
+    if (!profile) {
+        notFound();
+    }
+
+    const seller = profile as Profile;
+
+    // Deep merge theme_config with defaults
+    const rawConfig: Partial<ThemeConfig> = seller.theme_config || {};
+    const config: ThemeConfig = {
+        ...DEFAULT_THEME_CONFIG,
+        ...rawConfig,
+        global: {
+            ...DEFAULT_THEME_CONFIG.global,
+            ...rawConfig.global,
+            colors: { ...DEFAULT_THEME_CONFIG.global.colors, ...rawConfig.global?.colors },
+            hero: { ...DEFAULT_THEME_CONFIG.global.hero, ...rawConfig.global?.hero },
+            cards: { ...DEFAULT_THEME_CONFIG.global.cards, ...rawConfig.global?.cards },
+            buttons: { ...DEFAULT_THEME_CONFIG.global.buttons, ...rawConfig.global?.buttons },
+            footer: { ...DEFAULT_THEME_CONFIG.global.footer, ...rawConfig.global?.footer },
+            typography: { ...DEFAULT_THEME_CONFIG.global.typography, ...rawConfig.global?.typography },
+            spacing: { ...DEFAULT_THEME_CONFIG.global.spacing, ...rawConfig.global?.spacing },
+            animations: { ...DEFAULT_THEME_CONFIG.global.animations, ...rawConfig.global?.animations },
+        },
+        homeContent: {
+            ...DEFAULT_THEME_CONFIG.homeContent,
+            ...rawConfig.homeContent,
+            header: { ...DEFAULT_THEME_CONFIG.homeContent.header, ...rawConfig.homeContent?.header },
+            announcement: { ...DEFAULT_THEME_CONFIG.homeContent.announcement, ...rawConfig.homeContent?.announcement },
+            hero: { ...DEFAULT_THEME_CONFIG.homeContent.hero, ...rawConfig.homeContent?.hero },
+            productGrid: { ...DEFAULT_THEME_CONFIG.homeContent.productGrid, ...rawConfig.homeContent?.productGrid },
+            about: { ...DEFAULT_THEME_CONFIG.homeContent.about, ...rawConfig.homeContent?.about },
+            footer: { ...DEFAULT_THEME_CONFIG.homeContent.footer, ...rawConfig.homeContent?.footer },
+        },
+        aboutPageContent: {
+            ...DEFAULT_THEME_CONFIG.aboutPageContent,
+            ...rawConfig.aboutPageContent,
+            story: { ...DEFAULT_THEME_CONFIG.aboutPageContent.story, ...rawConfig.aboutPageContent?.story },
+            values: { ...DEFAULT_THEME_CONFIG.aboutPageContent.values, ...rawConfig.aboutPageContent?.values },
+            team: { ...DEFAULT_THEME_CONFIG.aboutPageContent.team, ...rawConfig.aboutPageContent?.team },
+        },
+        contactPageContent: {
+            ...DEFAULT_THEME_CONFIG.contactPageContent,
+            ...rawConfig.contactPageContent,
+        },
+        faqPageContent: {
+            ...DEFAULT_THEME_CONFIG.faqPageContent,
+            ...rawConfig.faqPageContent,
+        },
+    };
+
+    // Fetch published pages for navigation
+    const { data: pages } = await supabase
+        .from("pages")
+        .select("*")
+        .eq("user_id", seller.id)
+        .eq("is_published", true)
+        .order("created_at", { ascending: true });
+
+    const publishedPages = (pages as Page[]) || [];
+
+    // Build navigation (preconfigured + custom pages)
+    const navPages: Page[] = [
+        ...(config.aboutPageContent.visible ? [{ id: "about", user_id: seller.id, slug: "a-propos", title: "À propos", content: null, is_published: true, created_at: "" }] : []),
+        ...(config.contactPageContent.visible ? [{ id: "contact", user_id: seller.id, slug: "contact", title: "Contact", content: null, is_published: true, created_at: "" }] : []),
+        ...(config.faqPageContent.visible ? [{ id: "faq", user_id: seller.id, slug: "faq", title: "FAQ", content: null, is_published: true, created_at: "" }] : []),
+        ...publishedPages,
+    ];
+
+    // Google Font
+    const fontFamily = config.global.font || "Inter";
+    const googleFontUrl = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/ /g, "+")}:wght@300;400;500;600;700;900&display=swap`;
+
+    // Check if this is a preconfigured page
+    if (PRECONFIGURED_PAGES.includes(page_slug)) {
+        return (
+            <>
+                <link rel="preconnect" href="https://fonts.googleapis.com" />
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+                <link href={googleFontUrl} rel="stylesheet" />
+
+                {page_slug === "a-propos" && config.aboutPageContent.visible && (
+                    <AboutPage config={config} storeName={store_name} pages={navPages} />
+                )}
+                {page_slug === "contact" && config.contactPageContent.visible && (
+                    <ContactPage config={config} storeName={store_name} sellerId={seller.id} pages={navPages} />
+                )}
+                {page_slug === "faq" && config.faqPageContent.visible && (
+                    <FAQPage config={config} storeName={store_name} pages={navPages} />
+                )}
+            </>
+        );
+    }
+
+    // Otherwise, look for a custom page in the database
+    const { data: page } = await supabase
+        .from("pages")
+        .select("*")
+        .eq("user_id", seller.id)
+        .eq("slug", page_slug)
+        .eq("is_published", true)
+        .single();
+
+    if (!page) {
+        notFound();
+    }
+
+    const pageData = page as Page;
+
+    // Render custom page with theme styling
+    return (
+        <>
+            <link rel="preconnect" href="https://fonts.googleapis.com" />
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+            <link href={googleFontUrl} rel="stylesheet" />
+
+            <div
+                className="min-h-screen"
+                style={{
+                    backgroundColor: config.global.colors.background,
+                    color: config.global.colors.text,
+                    fontFamily: `"${config.global.font}", system-ui, sans-serif`,
+                }}
+            >
+                {/* Header */}
+                <header
+                    className="sticky top-0 z-50 py-4 px-6 border-b backdrop-blur-md"
+                    style={{
+                        backgroundColor: `${config.global.colors.background}ee`,
+                        borderColor: `${config.global.colors.text}15`,
+                    }}
+                >
+                    <div className="mx-auto max-w-4xl flex items-center gap-4">
+                        <a
+                            href={`/${store_name}`}
+                            className="flex items-center gap-2 text-sm opacity-70 hover:opacity-100 transition-opacity"
+                        >
+                            <ArrowLeft className="h-4 w-4" />
+                            Retour
+                        </a>
+                        <h1 className="text-lg font-bold">{pageData.title}</h1>
+                    </div>
+                </header>
+
+                {/* Content */}
+                <main className="mx-auto max-w-4xl px-4 py-12">
+                    <article className="prose prose-slate max-w-none">
+                        <div className="whitespace-pre-line leading-relaxed">
+                            {pageData.content}
+                        </div>
+                    </article>
+                </main>
+
+                {/* Footer */}
+                <footer className="py-8 px-6 border-t" style={{ borderColor: `${config.global.colors.text}10` }}>
+                    <div className="max-w-4xl mx-auto text-center">
+                        <a href={`/${store_name}`} className="text-sm opacity-60 hover:opacity-100 transition-opacity">
+                            ← Retour à la boutique
+                        </a>
+                    </div>
+                </footer>
+            </div>
+        </>
+    );
+}

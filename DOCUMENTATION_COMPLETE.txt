@@ -1,0 +1,653 @@
+================================================================================
+                       DOCUMENTATION COMPLÈTE DU PROJET
+                              ELENASHOP - Version 1.0
+================================================================================
+
+                        Plateforme SaaS E-commerce Tunisienne
+                     Pour Vendeurs Instagram/TikTok - Mobile First
+
+================================================================================
+                              TABLE DES MATIÈRES
+================================================================================
+
+1. VISION & OBJECTIFS DU PROJET
+2. STACK TECHNIQUE
+3. ARCHITECTURE DES FICHIERS
+4. BASE DE DONNÉES (SCHÉMA COMPLET)
+5. SYSTÈME DE TEMPLATES "SMART TEMPLATES"
+6. PAGES & ROUTES DE L'APPLICATION
+7. COMPOSANTS DÉTAILLÉS
+8. FONCTIONNALITÉS IMPLÉMENTÉES
+9. TYPES TYPESCRIPT
+10. DÉPENDANCES & CONFIGURATION
+
+================================================================================
+1. VISION & OBJECTIFS DU PROJET
+================================================================================
+
+ElenaShop est une plateforme SaaS B2B2C qui permet aux vendeurs Instagram/TikTok
+en Tunisie de créer une boutique en ligne ultra-simplifiée.
+
+PROBLÈME RÉSOLU :
+- Shopify est trop cher et inadapté au marché tunisien
+- Les vendeurs locaux ont besoin d'une solution optimisée pour :
+  • Le Paiement à la Livraison (COD - Cash On Delivery)
+  • La gestion via WhatsApp
+  • Le marché mobile-first (95% du trafic)
+
+PHILOSOPHIE UX :
+- Mobile First Absolu
+- Zéro Friction (pas de compte client, pas de panier complexe)
+- Vitesse (interface instantanée)
+
+TARGET : Marché Tunisien (Cash-Economy)
+
+================================================================================
+2. STACK TECHNIQUE
+================================================================================
+
+FRONTEND :
+- Framework : Next.js 16+ (App Router)
+- Langage : TypeScript (Strict Mode)
+- Styling : Tailwind CSS
+- Composants UI : Shadcn UI + Radix UI
+- Icônes : Lucide React
+
+BACKEND / DATABASE / AUTH :
+- Supabase (PostgreSQL + Auth + Storage + Real-time)
+
+DÉPLOIEMENT :
+- Cible : Vercel
+
+DÉPENDANCES PRINCIPALES :
+- @radix-ui/react-* (composants accessibles)
+- @supabase/supabase-js (client DB)
+- class-variance-authority (variants de composants)
+- tailwind-merge (fusion de classes)
+
+================================================================================
+3. ARCHITECTURE DES FICHIERS
+================================================================================
+
+ElenaShop/
+├── src/
+│   ├── app/                          # Routes Next.js (App Router)
+│   │   ├── [store_name]/             # Boutique publique dynamique
+│   │   │   ├── page.tsx              # Page principale boutique
+│   │   │   └── [page_slug]/          # Pages personnalisées (à propos, contact, FAQ)
+│   │   ├── dashboard/                # Tableau de bord vendeur
+│   │   │   ├── page.tsx              # Dashboard principal
+│   │   │   ├── products/             # Gestion produits
+│   │   │   ├── categories/           # Gestion catégories
+│   │   │   ├── promos/               # Gestion promotions
+│   │   │   ├── leads/                # Paniers abandonnés
+│   │   │   ├── stats/                # Statistiques & Analytics
+│   │   │   └── editor/               # Éditeur visuel boutique
+│   │   ├── login/                    # Page de connexion
+│   │   ├── layout.tsx                # Layout racine
+│   │   ├── page.tsx                  # Landing page
+│   │   └── globals.css               # Styles globaux
+│   │
+│   ├── components/
+│   │   ├── ui/                       # Composants atomiques réutilisables
+│   │   │   ├── button.tsx
+│   │   │   ├── card.tsx
+│   │   │   ├── dialog.tsx
+│   │   │   ├── dropdown-menu.tsx
+│   │   │   ├── input.tsx
+│   │   │   ├── label.tsx
+│   │   │   ├── select.tsx
+│   │   │   ├── sheet.tsx
+│   │   │   ├── slider.tsx
+│   │   │   ├── switch.tsx
+│   │   │   ├── textarea.tsx
+│   │   │   ├── accordion.tsx
+│   │   │   └── image-upload.tsx
+│   │   │
+│   │   ├── store/                    # Composants boutique publique
+│   │   │   ├── CartDrawer.tsx        # Tiroir de commande
+│   │   │   ├── ProductCard.tsx       # Carte produit
+│   │   │   ├── checkout/             # Tunnel de commande
+│   │   │   │   ├── StepContact.tsx   # Étape 1 : Nom + Téléphone
+│   │   │   │   ├── StepDelivery.tsx  # Étape 2 : Adresse livraison
+│   │   │   │   └── SuccessView.tsx   # Confirmation commande
+│   │   │   ├── common/               # Composants communs
+│   │   │   │   ├── FloatingWhatsApp.tsx
+│   │   │   │   ├── PromoPopup.tsx
+│   │   │   │   └── Testimonials.tsx
+│   │   │   ├── pages/                # Pages additionnelles
+│   │   │   └── templates/            # Templates de boutique
+│   │   │       ├── TemplateMinimal.tsx   # Style épuré
+│   │   │       ├── TemplateLuxe.tsx      # Style premium
+│   │   │       └── TemplateStreet.tsx    # Style urbain
+│   │   │
+│   │   ├── dashboard/                # Composants dashboard vendeur
+│   │   │   ├── dashboard-client.tsx  # Client principal dashboard
+│   │   │   ├── products-client.tsx   # Gestion des produits
+│   │   │   ├── categories-client.tsx # Gestion des catégories
+│   │   │   ├── promos-client.tsx     # Gestion des promotions
+│   │   │   ├── leads-client.tsx      # Gestion des leads
+│   │   │   ├── stats-client.tsx      # Analytics & Statistiques
+│   │   │   ├── orders/               # Gestion des commandes
+│   │   │   │   ├── OrderCard.tsx     # Carte de commande
+│   │   │   │   ├── OrderList.tsx     # Liste avec filtres
+│   │   │   │   └── ShippingLabel.tsx # Étiquette PDF
+│   │   │   └── editor/               # Éditeur visuel
+│   │   │       ├── EditorClient.tsx  # Client éditeur
+│   │   │       ├── ContentPanel.tsx  # Panneau contenu
+│   │   │       ├── DesignPanel.tsx   # Panneau design
+│   │   │       └── PagesPanel.tsx    # Gestion pages
+│   │   │
+│   │   └── auth/                     # Composants authentification
+│   │
+│   ├── lib/                          # Utilitaires
+│   │   ├── utils.ts                  # Fonctions helper (cn)
+│   │   └── promo.ts                  # Logique promotions
+│   │
+│   ├── types/
+│   │   └── index.ts                  # Tous les types TypeScript
+│   │
+│   ├── utils/
+│   │   └── supabase/                 # Configuration Supabase
+│   │       ├── client.ts             # Client navigateur
+│   │       └── server.ts             # Client serveur
+│   │
+│   └── middleware.ts                 # Middleware auth/routing
+│
+├── public/                           # Assets statiques
+├── package.json                      # Dépendances
+├── tailwind.config.ts                # Config Tailwind
+├── tsconfig.json                     # Config TypeScript
+├── next.config.ts                    # Config Next.js
+├── Context.md                        # Documentation projet
+└── supabase_migration_product_images.sql  # Migration SQL
+
+================================================================================
+4. BASE DE DONNÉES (SCHÉMA COMPLET)
+================================================================================
+
+TABLE: profiles (Vendeurs)
+--------------------------
+- id: UUID (clé primaire, référence auth.users)
+- store_name: TEXT UNIQUE NOT NULL (slug boutique, ex: "mamari")
+- phone_number: TEXT
+- avatar_url: TEXT
+- subscription_status: TEXT ('free' | 'pro')
+- theme_config: JSONB (configuration du thème Smart Templates)
+- created_at: TIMESTAMP WITH TIME ZONE
+
+TABLE: products (Produits)
+--------------------------
+- id: UUID (clé primaire, auto-généré)
+- user_id: UUID (référence profiles.id)
+- title: TEXT NOT NULL
+- price: NUMERIC NOT NULL (en TND)
+- image_url: TEXT (image principale)
+- images: JSONB DEFAULT '[]' (images additionnelles)
+- image_position: TEXT DEFAULT 'center' ('center' | 'top' | 'bottom')
+- description: TEXT
+- stock: INTEGER DEFAULT 0
+- is_active: BOOLEAN DEFAULT true
+- category_id: UUID (référence categories.id, nullable)
+- created_at: TIMESTAMP WITH TIME ZONE
+
+TABLE: categories (Catégories)
+------------------------------
+- id: UUID (clé primaire)
+- user_id: UUID (référence profiles.id)
+- name: TEXT NOT NULL
+- slug: TEXT NOT NULL
+- position: INTEGER (ordre d'affichage)
+- created_at: TIMESTAMP WITH TIME ZONE
+
+TABLE: orders (Commandes)
+-------------------------
+- id: UUID (clé primaire)
+- user_id: UUID (référence profiles.id - le vendeur)
+- customer_name: TEXT NOT NULL
+- customer_phone: TEXT NOT NULL
+- customer_governorate: TEXT NOT NULL (un des 24 gouvernorats)
+- customer_city: TEXT
+- customer_address: TEXT
+- product_details: JSONB (snapshot du produit: titre, prix, quantité)
+- total_price: NUMERIC NOT NULL
+- status: TEXT DEFAULT 'new' ('new' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled')
+- created_at: TIMESTAMP WITH TIME ZONE
+
+TABLE: leads (Paniers Abandonnés)
+---------------------------------
+- id: UUID (clé primaire)
+- user_id: UUID (référence profiles.id)
+- customer_phone: TEXT NOT NULL
+- customer_name: TEXT
+- created_at: TIMESTAMP WITH TIME ZONE
+
+TABLE: pages (Pages Personnalisées)
+-----------------------------------
+- id: UUID (clé primaire)
+- user_id: UUID (référence profiles.id)
+- slug: TEXT NOT NULL
+- title: TEXT NOT NULL
+- content: TEXT
+- is_published: BOOLEAN DEFAULT true
+- created_at: TIMESTAMP WITH TIME ZONE
+
+TABLE: promos (Promotions)
+--------------------------
+- id: UUID (clé primaire)
+- user_id: UUID (référence profiles.id)
+- name: TEXT NOT NULL
+- discount_type: TEXT ('percentage' | 'fixed')
+- discount_value: NUMERIC NOT NULL
+- scope: TEXT ('global' | 'category' | 'product')
+- category_id: UUID (si scope='category')
+- product_ids: UUID[] (si scope='product')
+- is_active: BOOLEAN DEFAULT true
+- show_popup: BOOLEAN DEFAULT false
+- popup_title: TEXT
+- popup_message: TEXT
+- starts_at: TIMESTAMP
+- ends_at: TIMESTAMP
+- created_at: TIMESTAMP WITH TIME ZONE
+
+================================================================================
+5. SYSTÈME DE TEMPLATES "SMART TEMPLATES"
+================================================================================
+
+Le système Smart Templates permet aux vendeurs de personnaliser entièrement
+leur boutique sans coder.
+
+3 TEMPLATES DISPONIBLES :
+-------------------------
+
+1. MINIMAL (Épuré et professionnel)
+   - Couleurs : Noir/Blanc, gris
+   - Police : Inter
+   - Style : Clean, bordures subtiles
+   - Animations : Fade
+
+2. LUXE (Élégant et premium)
+   - Couleurs : Noir + Or (#D4AF37)
+   - Polices : Playfair Display (titres) + Lato (corps)
+   - Style : Sombre, raffiné
+   - Animations : Lentes, fluides
+
+3. STREET (Urbain et audacieux)
+   - Couleurs : Noir + Violet/Rose
+   - Police : Oswald
+   - Style : Bordures marquées, uppercase
+   - Animations : Rapides, scale
+
+CONFIGURATION GLOBALE (GlobalStyles) :
+--------------------------------------
+- Colors : primary, secondary, background, text
+- Font : Police du corps de texte
+- HeadingFont : Police des titres
+- BorderRadius : Arrondi des coins
+- Hero styles : backgroundColor, textColor, buttonBg, buttonText, height, 
+                contentAlign, imageFilter
+- Card styles : backgroundColor, textColor, priceColor, borderColor, hoverEffect
+- Button styles : backgroundColor, textColor, hoverBg, style, size
+- Footer styles : backgroundColor, textColor, accentColor
+- Typography : headingSize, bodySize, headingTransform
+- Spacing : sectionPadding, showSectionDividers
+- Animations : enableAnimations, animationSpeed, hoverTransition
+
+SECTIONS DE CONTENU (HomeContent) :
+-----------------------------------
+- Header : visible, sticky, showStoreName, showProductCount, logoUrl, logoSize
+- Announcement : enabled, sticky, text, backgroundColor, textColor, link
+- Hero : visible, title, subtitle, buttonText, buttonUrl, imageUrl, 
+         overlayOpacity, gradientEnabled, gradientDirection
+- ProductGrid : title, showDescription, showPrice, columns, aspectRatio, 
+                gap, cardShadow
+- Testimonials : visible, title, subtitle, items[], layout, showRating, showAvatar
+- About : visible, title, text, imageUrl, imagePosition
+- Footer : text, showSocials, instagram, facebook, tiktok, whatsapp
+
+PAGES ADDITIONNELLES :
+----------------------
+- AboutPage : story, values, team
+- ContactPage : email, phone, whatsapp, address, map, form
+- FAQPage : questions/réponses
+
+WIDGETS :
+---------
+- FloatingWhatsApp : bouton WhatsApp flottant
+- PromoPopup : popup promotionnel
+- SEO : title, description, keywords, ogImage
+
+================================================================================
+6. PAGES & ROUTES DE L'APPLICATION
+================================================================================
+
+ROUTES PUBLIQUES :
+------------------
+/                           → Landing page (page d'accueil du SaaS)
+/login                      → Page de connexion vendeur
+/[store_name]               → Boutique publique d'un vendeur
+/[store_name]/[page_slug]   → Pages personnalisées (à propos, contact, FAQ)
+
+ROUTES PROTÉGÉES (Dashboard) :
+------------------------------
+/dashboard                  → Tableau de bord principal (liste commandes)
+/dashboard/products         → Gestion des produits (CRUD)
+/dashboard/categories       → Gestion des catégories
+/dashboard/promos           → Gestion des promotions
+/dashboard/leads            → Paniers abandonnés
+/dashboard/stats            → Statistiques & Analytics
+/dashboard/editor           → Éditeur visuel de boutique
+
+================================================================================
+7. COMPOSANTS DÉTAILLÉS
+================================================================================
+
+COMPOSANTS UI (src/components/ui/) :
+------------------------------------
+• button.tsx : Bouton avec variants (default, outline, ghost, link)
+• card.tsx : Conteneur carte avec header, content, footer
+• dialog.tsx : Modal/dialogue
+• dropdown-menu.tsx : Menu déroulant (Radix UI)
+• input.tsx : Champ de saisie
+• label.tsx : Label de formulaire
+• select.tsx : Liste déroulante (Radix UI)
+• sheet.tsx : Tiroir latéral/bas (Radix UI)
+• slider.tsx : Curseur de valeur
+• switch.tsx : Toggle on/off
+• textarea.tsx : Zone de texte multiligne
+• accordion.tsx : Accordéon FAQ
+• image-upload.tsx : Upload d'image avec preview
+
+COMPOSANTS STORE (src/components/store/) :
+------------------------------------------
+• CartDrawer.tsx (~350 lignes)
+  - Tiroir de commande glissant du bas
+  - Affiche le produit sélectionné
+  - Intègre le tunnel de checkout en 2 étapes
+  - Gère le calcul du prix avec promotions
+
+• ProductCard.tsx (~300 lignes)
+  - Affiche une carte produit
+  - Image avec position configurable (top/center/bottom)
+  - Prix avec promotion barrée si applicable
+  - Bouton "Acheter" qui ouvre CartDrawer
+  - Badge "Promo" si remise active
+
+• checkout/StepContact.tsx
+  - Étape 1 du tunnel : Nom + Téléphone
+  - Validation du numéro tunisien (+216)
+  - Sauvegarde automatique dans table "leads"
+
+• checkout/StepDelivery.tsx
+  - Étape 2 : Gouvernorat, Ville, Adresse
+  - Liste des 24 gouvernorats tunisiens
+  - Création de la commande dans table "orders"
+
+• checkout/SuccessView.tsx
+  - Confirmation de commande réussie
+  - Message de remerciement
+
+• common/FloatingWhatsApp.tsx
+  - Bouton WhatsApp flottant (position configurable)
+  - Message pré-rempli
+
+• common/PromoPopup.tsx
+  - Popup promotionnel (affichage une seule fois)
+  - Titre, message, bouton d'action
+
+• common/Testimonials.tsx (~200 lignes)
+  - Affichage des témoignages clients
+  - Layout : grille responsive OU carrousel horizontal
+  - Étoiles de notation (1-5)
+  - Photos/avatars optionnels
+
+• templates/TemplateMinimal.tsx (~650 lignes)
+• templates/TemplateLuxe.tsx (~600 lignes)
+• templates/TemplateStreet.tsx (~600 lignes)
+  - Templates complets de boutique
+  - Appliquent les styles du thème
+  - Intègrent toutes les sections (header, hero, products, testimonials, 
+    about, footer)
+  - Gèrent le responsive mobile-first
+
+COMPOSANTS DASHBOARD (src/components/dashboard/) :
+--------------------------------------------------
+• dashboard-client.tsx (~280 lignes)
+  - Client principal du dashboard
+  - Navigation par onglets (tabs)
+  - Affichage des stats du jour
+  - Cartes : commandes aujourd'hui, chiffre total
+
+• products-client.tsx (~900 lignes)
+  - CRUD complet des produits
+  - Upload multi-images avec prévisualisation
+  - Réorganisation des images (drag & drop)
+  - Sélection de l'image principale
+  - Contrôle du recadrage (top/center/bottom)
+  - Assignation aux catégories
+  - Activation/désactivation
+
+• categories-client.tsx (~350 lignes)
+  - CRUD des catégories
+  - Réorganisation par position
+  - Assignation des produits
+
+• promos-client.tsx (~600 lignes)
+  - Création de promotions
+  - Types : pourcentage ou montant fixe
+  - Portée : globale, par catégorie, ou produits spécifiques
+  - Dates de validité
+  - Option popup promotionnel
+
+• leads-client.tsx (~250 lignes)
+  - Liste des paniers abandonnés
+  - Contact WhatsApp rapide
+  - Suppression
+
+• stats-client.tsx (~360 lignes)
+  - Dashboard analytique complet
+  - Cartes métriques : CA, commandes, clients, panier moyen
+  - Graphique barres 7 jours
+  - Répartition par statut de commande
+  - Top 5 régions
+  - Top 5 produits
+  - Filtre par période (7j, 30j, 3m, tout)
+
+• orders/OrderCard.tsx (~300 lignes)
+  - Carte de commande interactive
+  - Badge statut coloré
+  - Progression en un clic : Confirmer → Expédier → Livrée
+  - Détails extensibles (téléphone, adresse complète)
+  - Menu actions : copier tél, appeler, imprimer étiquette, 
+    annuler, supprimer
+  - Message WhatsApp contextuel selon le statut
+
+• orders/OrderList.tsx (~150 lignes)
+  - Liste des commandes avec filtres
+  - Barre de recherche (nom, tél, produit, ville)
+  - Onglets par statut avec compteurs
+  - Mise à jour optimiste de l'UI
+
+• orders/ShippingLabel.tsx (~250 lignes)
+  - Génération d'étiquette PDF format A6
+  - Prévisualisation dans un modal
+  - Impression via navigateur → PDF
+  - Contenu : boutique, destinataire, téléphone, adresse, 
+    produit, montant à encaisser, référence
+
+• editor/EditorClient.tsx (~500 lignes)
+  - Client de l'éditeur visuel
+  - Gestion de la configuration du thème
+  - Sauvegarde dans le profil Supabase
+  - Prévisualisation en temps réel
+
+• editor/ContentPanel.tsx (~1500 lignes)
+  - Panneau de modification du contenu
+  - Sections : Header, Annonce, Hero, Produits, Témoignages, 
+    À propos, Footer, WhatsApp flottant, SEO
+
+• editor/DesignPanel.tsx (~700 lignes)
+  - Panneau de personnalisation visuelle
+  - Couleurs, polices, typographie
+  - Styles des sections (hero, cartes, boutons, footer)
+  - Espacement, animations
+
+• editor/PagesPanel.tsx (~300 lignes)
+  - Gestion des pages additionnelles
+  - Configuration des pages About, Contact, FAQ
+
+================================================================================
+8. FONCTIONNALITÉS IMPLÉMENTÉES
+================================================================================
+
+A. BOUTIQUE PUBLIQUE :
+----------------------
+✅ URLs dynamiques : elenashop.tn/[nom-boutique]
+✅ 3 templates de design personnalisables
+✅ Grille de produits responsive
+✅ Cartes produit avec image, titre, prix
+✅ Affichage des promotions (prix barré + remise)
+✅ Drawer de commande mobile-first
+✅ Tunnel de checkout 2 étapes :
+   - Étape 1 : Nom + Téléphone (capture lead)
+   - Étape 2 : Adresse de livraison
+✅ Sauvegarde des paniers abandonnés
+✅ Témoignages clients (grille ou carrousel)
+✅ Section "À propos" configurable
+✅ Réseaux sociaux (Instagram, Facebook, TikTok, WhatsApp)
+✅ Bouton WhatsApp flottant
+✅ Popup promotionnel
+✅ Pages additionnelles (À propos, Contact, FAQ)
+✅ SEO meta tags configurables
+
+B. DASHBOARD VENDEUR :
+----------------------
+✅ Authentification Supabase
+✅ Liste des commandes avec statuts
+✅ Recherche et filtres par statut
+✅ Changement de statut en un clic
+✅ Bouton WhatsApp avec message pré-rempli
+✅ Génération d'étiquettes PDF (format A6)
+✅ Gestion des produits (CRUD complet)
+✅ Multi-images par produit
+✅ Contrôle du recadrage d'image
+✅ Gestion des catégories
+✅ Gestion des promotions avancées
+✅ Vue des paniers abandonnés
+✅ Statistiques et analytics
+✅ Éditeur visuel de boutique
+
+C. ANALYTICS :
+--------------
+✅ Chiffre d'affaires total
+✅ Nombre de commandes
+✅ Clients uniques
+✅ Panier moyen
+✅ Graphique revenus 7 jours
+✅ Répartition par statut
+✅ Top 5 régions
+✅ Top 5 produits
+✅ Filtres temporels
+
+D. PROMOTIONS :
+---------------
+✅ Remise en pourcentage
+✅ Remise en montant fixe
+✅ Portée globale, par catégorie, ou produits spécifiques
+✅ Dates de début et fin
+✅ Popup promotionnel optionnel
+
+E. PERSONNALISATION :
+---------------------
+✅ Choix du template (Minimal, Luxe, Street)
+✅ Couleurs personnalisables
+✅ Polices personnalisables (6 options)
+✅ Logo et favicon
+✅ Styles des sections configurables
+✅ Animations et transitions
+✅ Contenu de toutes les sections
+✅ Pages additionnelles
+
+================================================================================
+9. TYPES TYPESCRIPT PRINCIPAUX
+================================================================================
+
+// Templates
+type TemplateId = "minimal" | "luxe" | "street"
+
+// Entités DB
+interface Profile { id, store_name, phone_number, avatar_url, 
+                    subscription_status, theme_config, created_at }
+
+interface Product { id, user_id, title, price, image_url, images[], 
+                    image_position, description, stock, is_active, 
+                    category_id, created_at }
+
+interface Order { id, user_id, customer_name, customer_phone, 
+                  customer_governorate, customer_city, customer_address,
+                  product_details, total_price, status, created_at }
+
+interface Lead { id, user_id, customer_phone, customer_name, created_at }
+
+interface Category { id, user_id, name, slug, position, created_at }
+
+interface Promo { id, user_id, name, discount_type, discount_value, scope,
+                  category_id, product_ids, is_active, show_popup,
+                  popup_title, popup_message, starts_at, ends_at, created_at }
+
+interface Page { id, user_id, slug, title, content, is_published, created_at }
+
+// Configuration thème
+interface ThemeConfig { templateId, global, homeContent, aboutPageContent,
+                        contactPageContent, faqPageContent, floatingWhatsApp,
+                        promoPopup, seo }
+
+// Les 24 gouvernorats tunisiens
+const GOUVERNORATS = ["Tunis", "Ariana", "Ben Arous", "Manouba", "Nabeul", 
+  "Zaghouan", "Bizerte", "Beja", "Jendouba", "Kef", "Siliana", "Kairouan",
+  "Kasserine", "Sidi Bouzid", "Sousse", "Monastir", "Mahdia", "Sfax",
+  "Gafsa", "Tozeur", "Kebili", "Gabes", "Medenine", "Tataouine"]
+
+================================================================================
+10. DÉPENDANCES & CONFIGURATION
+================================================================================
+
+DÉPENDANCES PRINCIPALES (package.json) :
+----------------------------------------
+- next: ^16.0.0
+- react: ^19.0.0
+- typescript: ^5.0.0
+- tailwindcss: ^4.0.0
+- @supabase/supabase-js: ^2.x
+- @supabase/ssr: ^0.x
+- @radix-ui/react-* (dialog, dropdown-menu, select, sheet, slider, switch, accordion)
+- lucide-react (icônes)
+- class-variance-authority
+- clsx
+- tailwind-merge
+
+VARIABLES D'ENVIRONNEMENT (.env.local) :
+----------------------------------------
+NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJxxx...
+
+MIGRATIONS SQL À EXÉCUTER :
+---------------------------
+-- Multi-images produit
+ALTER TABLE products 
+ADD COLUMN IF NOT EXISTS images JSONB DEFAULT '[]'::jsonb;
+
+ALTER TABLE products 
+ADD COLUMN IF NOT EXISTS image_position TEXT DEFAULT 'center';
+
+CREATE INDEX IF NOT EXISTS idx_products_images ON products USING GIN (images);
+
+================================================================================
+                            FIN DE LA DOCUMENTATION
+================================================================================
+
+Document généré le : 07/12/2024
+Version : 1.0 (MVP Complet)
+Statut : ✅ Build réussi, toutes les fonctionnalités opérationnelles
+
+================================================================================
