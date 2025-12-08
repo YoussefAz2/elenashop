@@ -163,7 +163,7 @@ export function DesignPanel({ config, onUpdateConfig }: DesignPanelProps) {
                     <AccordionTrigger className="hover:no-underline py-3">
                         <div className="flex items-center gap-2">
                             <Palette className="h-4 w-4 text-slate-500" />
-                            <span className="font-medium text-sm">Couleurs</span>
+                            <span className="font-medium text-sm">🎨 Couleurs</span>
                         </div>
                     </AccordionTrigger>
                     <AccordionContent className="pb-4 space-y-4">
@@ -214,23 +214,23 @@ export function DesignPanel({ config, onUpdateConfig }: DesignPanelProps) {
                         {/* Advanced Color Pickers - Only shown in advanced mode */}
                         {advancedMode && (
                             <div className="space-y-4 pt-3 border-t border-slate-100">
-                                <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">Base</p>
+                                <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">🏠 Page d&apos;accueil</p>
                                 <div className="grid grid-cols-2 gap-3">
                                     <ColorPicker label="Fond" value={config.global.colors.background} onChange={(v) => updateGlobalColor("background", v)} />
                                     <ColorPicker label="Texte" value={config.global.colors.text} onChange={(v) => updateGlobalColor("text", v)} />
-                                    <ColorPicker label="Principal" value={config.global.colors.primary} onChange={(v) => updateGlobalColor("primary", v)} />
+                                    <ColorPicker label="Accent" value={config.global.colors.primary} onChange={(v) => updateGlobalColor("primary", v)} />
                                     <ColorPicker label="Secondaire" value={config.global.colors.secondary} onChange={(v) => updateGlobalColor("secondary", v)} />
                                 </div>
 
-                                <p className="text-xs font-medium text-slate-500 uppercase tracking-wide pt-2">Hero</p>
+                                <p className="text-xs font-medium text-slate-500 uppercase tracking-wide pt-2">🖼️ Bannière Hero</p>
                                 <div className="grid grid-cols-2 gap-3">
                                     <ColorPicker label="Fond" value={config.global.hero.backgroundColor} onChange={(v) => updateHeroStyle({ backgroundColor: v })} />
                                     <ColorPicker label="Texte" value={config.global.hero.textColor} onChange={(v) => updateHeroStyle({ textColor: v })} />
-                                    <ColorPicker label="Bouton" value={config.global.hero.buttonBg} onChange={(v) => updateHeroStyle({ buttonBg: v })} />
-                                    <ColorPicker label="Texte btn" value={config.global.hero.buttonText} onChange={(v) => updateHeroStyle({ buttonText: v })} />
+                                    <ColorPicker label="Bouton fond" value={config.global.hero.buttonBg} onChange={(v) => updateHeroStyle({ buttonBg: v })} />
+                                    <ColorPicker label="Bouton texte" value={config.global.hero.buttonText} onChange={(v) => updateHeroStyle({ buttonText: v })} />
                                 </div>
 
-                                <p className="text-xs font-medium text-slate-500 uppercase tracking-wide pt-2">Cartes</p>
+                                <p className="text-xs font-medium text-slate-500 uppercase tracking-wide pt-2">🛍️ Cartes produits</p>
                                 <div className="grid grid-cols-2 gap-3">
                                     <ColorPicker label="Fond" value={config.global.cards.backgroundColor} onChange={(v) => updateCardStyle({ backgroundColor: v })} />
                                     <ColorPicker label="Texte" value={config.global.cards.textColor} onChange={(v) => updateCardStyle({ textColor: v })} />
@@ -238,14 +238,14 @@ export function DesignPanel({ config, onUpdateConfig }: DesignPanelProps) {
                                     <ColorPicker label="Bordure" value={config.global.cards.borderColor} onChange={(v) => updateCardStyle({ borderColor: v })} />
                                 </div>
 
-                                <p className="text-xs font-medium text-slate-500 uppercase tracking-wide pt-2">Boutons</p>
+                                <p className="text-xs font-medium text-slate-500 uppercase tracking-wide pt-2">🖱️ Boutons achat</p>
                                 <div className="grid grid-cols-2 gap-3">
                                     <ColorPicker label="Fond" value={config.global.buttons.backgroundColor} onChange={(v) => updateButtonStyle({ backgroundColor: v })} />
                                     <ColorPicker label="Texte" value={config.global.buttons.textColor} onChange={(v) => updateButtonStyle({ textColor: v })} />
                                     <ColorPicker label="Hover" value={config.global.buttons.hoverBg} onChange={(v) => updateButtonStyle({ hoverBg: v })} />
                                 </div>
 
-                                <p className="text-xs font-medium text-slate-500 uppercase tracking-wide pt-2">Footer</p>
+                                <p className="text-xs font-medium text-slate-500 uppercase tracking-wide pt-2">🦶 Pied de page</p>
                                 <div className="grid grid-cols-2 gap-3">
                                     <ColorPicker label="Fond" value={config.global.footer.backgroundColor} onChange={(v) => updateFooterStyle({ backgroundColor: v })} />
                                     <ColorPicker label="Texte" value={config.global.footer.textColor} onChange={(v) => updateFooterStyle({ textColor: v })} />
@@ -261,11 +261,11 @@ export function DesignPanel({ config, onUpdateConfig }: DesignPanelProps) {
                     <AccordionTrigger className="hover:no-underline py-3">
                         <div className="flex items-center gap-2">
                             <Type className="h-4 w-4 text-slate-500" />
-                            <span className="font-medium text-sm">Typographie</span>
+                            <span className="font-medium text-sm">🔤 Typographie</span>
                         </div>
                     </AccordionTrigger>
                     <AccordionContent className="pb-4 space-y-4">
-                        {/* Main Font - Visual Selector */}
+                        {/* Main Font - Visual Selector with Preview */}
                         <div className="space-y-2">
                             <Label className="text-sm font-medium">Police principale</Label>
                             <div className="max-h-48 overflow-y-auto pr-1 space-y-3">
@@ -284,7 +284,12 @@ export function DesignPanel({ config, onUpdateConfig }: DesignPanelProps) {
                                                         : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"
                                                         }`}
                                                 >
-                                                    <span className="font-medium block truncate text-sm">{font.name}</span>
+                                                    <span
+                                                        className="font-medium block truncate text-sm"
+                                                        style={{ fontFamily: `'${font.name}', sans-serif` }}
+                                                    >
+                                                        {font.name}
+                                                    </span>
                                                     <span className="text-[10px] text-slate-400">{font.style}</span>
                                                 </button>
                                             ))}
@@ -294,14 +299,17 @@ export function DesignPanel({ config, onUpdateConfig }: DesignPanelProps) {
                             </div>
                         </div>
 
-                        {/* Heading Font */}
+                        {/* Heading Font with Preview */}
                         <div className="space-y-2">
                             <Label className="text-sm font-medium">Police titres</Label>
                             <Select value={config.global.headingFont} onValueChange={(v) => onUpdateConfig({ ...config, global: { ...config.global, headingFont: v as GlobalStyles["headingFont"] } })}>
                                 <SelectTrigger><SelectValue placeholder="Même" /></SelectTrigger>
                                 <SelectContent className="max-h-60">
                                     {AVAILABLE_FONTS.map((f) => (
-                                        <SelectItem key={f.id} value={f.id}>{f.name} • {f.style}</SelectItem>
+                                        <SelectItem key={f.id} value={f.id}>
+                                            <span style={{ fontFamily: `'${f.name}', sans-serif` }}>{f.name}</span>
+                                            <span className="text-slate-400"> • {f.style}</span>
+                                        </SelectItem>
                                     ))}
                                 </SelectContent>
                             </Select>
@@ -333,6 +341,83 @@ export function DesignPanel({ config, onUpdateConfig }: DesignPanelProps) {
                                 </Select>
                             </div>
                         </div>
+
+                        {/* Advanced Typography Options */}
+                        {advancedMode && (
+                            <div className="space-y-4 pt-3 border-t border-slate-100">
+                                <p className="text-xs font-medium text-slate-400 uppercase tracking-wide">🔤 Options avancées</p>
+
+                                {/* Heading Weight */}
+                                <div className="space-y-2">
+                                    <Label className="text-xs text-slate-500">Épaisseur titres</Label>
+                                    <div className="grid grid-cols-4 gap-1.5">
+                                        {[
+                                            { value: "normal", label: "Fin" },
+                                            { value: "medium", label: "Normal" },
+                                            { value: "bold", label: "Gras" },
+                                            { value: "extrabold", label: "Très gras" },
+                                        ].map((opt) => (
+                                            <button
+                                                key={opt.value}
+                                                onClick={() => updateTypography({ headingWeight: opt.value as TypographySettings["headingWeight"] })}
+                                                className={`p-2 rounded-lg border text-center transition-all ${(config.global.typography.headingWeight || "bold") === opt.value
+                                                    ? "border-blue-500 bg-blue-50"
+                                                    : "border-slate-200 hover:border-slate-300"
+                                                    }`}
+                                            >
+                                                <div className="text-[10px]">{opt.label}</div>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Letter Spacing */}
+                                <div className="space-y-2">
+                                    <Label className="text-xs text-slate-500">Espacement lettres</Label>
+                                    <div className="grid grid-cols-3 gap-1.5">
+                                        {[
+                                            { value: "tight", label: "Serré", preview: "-0.5px" },
+                                            { value: "normal", label: "Normal", preview: "0" },
+                                            { value: "wide", label: "Large", preview: "+1px" },
+                                        ].map((opt) => (
+                                            <button
+                                                key={opt.value}
+                                                onClick={() => updateTypography({ letterSpacing: opt.value as TypographySettings["letterSpacing"] })}
+                                                className={`p-2 rounded-lg border text-center transition-all ${(config.global.typography.letterSpacing || "normal") === opt.value
+                                                    ? "border-blue-500 bg-blue-50"
+                                                    : "border-slate-200 hover:border-slate-300"
+                                                    }`}
+                                            >
+                                                <div className="text-[10px] font-medium">{opt.label}</div>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Heading Transform */}
+                                <div className="space-y-2">
+                                    <Label className="text-xs text-slate-500">Casse des titres</Label>
+                                    <div className="grid grid-cols-3 gap-1.5">
+                                        {[
+                                            { value: "none", label: "Normal" },
+                                            { value: "uppercase", label: "MAJUSCULES" },
+                                            { value: "capitalize", label: "Capitale" },
+                                        ].map((opt) => (
+                                            <button
+                                                key={opt.value}
+                                                onClick={() => updateTypography({ headingTransform: opt.value as TypographySettings["headingTransform"] })}
+                                                className={`p-2 rounded-lg border text-center transition-all ${config.global.typography.headingTransform === opt.value
+                                                    ? "border-blue-500 bg-blue-50"
+                                                    : "border-slate-200 hover:border-slate-300"
+                                                    }`}
+                                            >
+                                                <div className="text-[10px]">{opt.label}</div>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </AccordionContent>
                 </AccordionItem>
 
@@ -341,7 +426,7 @@ export function DesignPanel({ config, onUpdateConfig }: DesignPanelProps) {
                     <AccordionTrigger className="hover:no-underline py-3">
                         <div className="flex items-center gap-2">
                             <Layers className="h-4 w-4 text-slate-500" />
-                            <span className="font-medium text-sm">Style</span>
+                            <span className="font-medium text-sm">📐 Style</span>
                         </div>
                     </AccordionTrigger>
                     <AccordionContent className="pb-4 space-y-4">
@@ -439,6 +524,66 @@ export function DesignPanel({ config, onUpdateConfig }: DesignPanelProps) {
                                 ))}
                             </div>
                         </div>
+
+                        {/* Advanced Hero Options */}
+                        {advancedMode && (
+                            <div className="space-y-4 pt-3 border-t border-slate-100">
+                                <p className="text-xs font-medium text-slate-400 uppercase tracking-wide">🖼️ Options bannière Hero</p>
+
+                                {/* Image Filter */}
+                                <div className="space-y-2">
+                                    <Label className="text-xs text-slate-500">Filtre image</Label>
+                                    <div className="grid grid-cols-4 gap-1.5">
+                                        {[
+                                            { value: "none", label: "Aucun", icon: "○" },
+                                            { value: "blur", label: "Flou", icon: "◎" },
+                                            { value: "grayscale", label: "N&B", icon: "◐" },
+                                            { value: "sepia", label: "Sépia", icon: "◑" },
+                                        ].map((opt) => (
+                                            <button
+                                                key={opt.value}
+                                                onClick={() => updateHeroStyle({ imageFilter: opt.value as HeroStyles["imageFilter"] })}
+                                                className={`p-2 rounded-lg border text-center transition-all ${config.global.hero.imageFilter === opt.value
+                                                    ? "border-blue-500 bg-blue-50"
+                                                    : "border-slate-200 hover:border-slate-300"
+                                                    }`}
+                                            >
+                                                <div className="text-lg">{opt.icon}</div>
+                                                <div className="text-[10px]">{opt.label}</div>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Overlay Opacity */}
+                                <div className="space-y-2">
+                                    <div className="flex items-center justify-between">
+                                        <Label className="text-xs text-slate-500">Assombrissement</Label>
+                                        <span className="text-xs text-slate-400">{Math.round((config.global.hero.overlayOpacity || 0.4) * 100)}%</span>
+                                    </div>
+                                    <Slider
+                                        value={[(config.global.hero.overlayOpacity || 0.4) * 100]}
+                                        onValueChange={([v]) => updateHeroStyle({ overlayOpacity: v / 100 })}
+                                        min={0}
+                                        max={80}
+                                        step={5}
+                                        className="w-full"
+                                    />
+                                </div>
+
+                                {/* Section Dividers */}
+                                <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50">
+                                    <div>
+                                        <Label className="text-xs font-medium">Séparateurs de sections</Label>
+                                        <p className="text-[10px] text-slate-500">Lignes entre les sections</p>
+                                    </div>
+                                    <Switch
+                                        checked={config.global.spacing.showSectionDividers}
+                                        onCheckedChange={(v) => updateSpacing({ showSectionDividers: v })}
+                                    />
+                                </div>
+                            </div>
+                        )}
                     </AccordionContent>
                 </AccordionItem>
 
@@ -447,7 +592,7 @@ export function DesignPanel({ config, onUpdateConfig }: DesignPanelProps) {
                     <AccordionTrigger className="hover:no-underline py-3">
                         <div className="flex items-center gap-2">
                             <MousePointer className="h-4 w-4 text-slate-500" />
-                            <span className="font-medium text-sm">Boutons</span>
+                            <span className="font-medium text-sm">🖱️ Boutons</span>
                         </div>
                     </AccordionTrigger>
                     <AccordionContent className="pb-4 space-y-4">
@@ -499,6 +644,18 @@ export function DesignPanel({ config, onUpdateConfig }: DesignPanelProps) {
                                 ))}
                             </div>
                         </div>
+
+                        {/* Button Colors - Mode avancé */}
+                        {advancedMode && (
+                            <div className="space-y-3 pt-2 border-t border-slate-100">
+                                <p className="text-xs font-medium text-slate-400 uppercase tracking-wide">🎨 Couleurs boutons</p>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <ColorPicker label="Fond" value={config.global.buttons.backgroundColor} onChange={(v) => updateButtonStyle({ backgroundColor: v })} />
+                                    <ColorPicker label="Texte" value={config.global.buttons.textColor} onChange={(v) => updateButtonStyle({ textColor: v })} />
+                                    <ColorPicker label="Hover" value={config.global.buttons.hoverBg} onChange={(v) => updateButtonStyle({ hoverBg: v })} />
+                                </div>
+                            </div>
+                        )}
                     </AccordionContent>
                 </AccordionItem>
 
@@ -507,22 +664,24 @@ export function DesignPanel({ config, onUpdateConfig }: DesignPanelProps) {
                     <AccordionTrigger className="hover:no-underline py-3">
                         <div className="flex items-center gap-2">
                             <Move className="h-4 w-4 text-slate-500" />
-                            <span className="font-medium text-sm">Produits</span>
+                            <span className="font-medium text-sm">🛍️ Produits</span>
                         </div>
                     </AccordionTrigger>
                     <AccordionContent className="pb-4 space-y-4">
+                        {/* Hover Effect */}
                         <div className="space-y-2">
                             <Label className="text-xs text-slate-500">Effet au survol</Label>
-                            <div className="grid grid-cols-3 gap-1.5">
+                            <div className="grid grid-cols-4 gap-1.5">
                                 {[
                                     { value: "none", label: "Aucun", icon: "—" },
                                     { value: "lift", label: "Élever", icon: "↑" },
                                     { value: "zoom", label: "Zoom", icon: "⊕" },
+                                    { value: "glow", label: "Lueur", icon: "✨" },
                                 ].map((opt) => (
                                     <button
                                         key={opt.value}
                                         onClick={() => updateCardStyle({ hoverEffect: opt.value as CardStyles["hoverEffect"] })}
-                                        className={`p-2.5 rounded-lg border text-center transition-all ${config.global.cards.hoverEffect === opt.value
+                                        className={`p-2 rounded-lg border text-center transition-all ${config.global.cards.hoverEffect === opt.value
                                             ? "border-blue-500 bg-blue-50 text-blue-700"
                                             : "border-slate-200 hover:border-slate-300"
                                             }`}
@@ -533,6 +692,51 @@ export function DesignPanel({ config, onUpdateConfig }: DesignPanelProps) {
                                 ))}
                             </div>
                         </div>
+
+                        {/* Card Shadow - Mode avancé */}
+                        {advancedMode && (
+                            <>
+                                <div className="space-y-2">
+                                    <Label className="text-xs text-slate-500">Ombre des cartes</Label>
+                                    <div className="grid grid-cols-3 gap-1.5">
+                                        {[
+                                            { value: "none", label: "Aucune", preview: "shadow-none" },
+                                            { value: "sm", label: "Légère", preview: "shadow-sm" },
+                                            { value: "md", label: "Moyenne", preview: "shadow-md" },
+                                        ].map((opt) => (
+                                            <button
+                                                key={opt.value}
+                                                onClick={() => onUpdateConfig({
+                                                    ...config,
+                                                    homeContent: {
+                                                        ...config.homeContent,
+                                                        productGrid: { ...config.homeContent.productGrid, cardShadow: opt.value !== "none" }
+                                                    }
+                                                })}
+                                                className={`p-3 rounded-lg border text-center transition-all ${(config.homeContent.productGrid.cardShadow ? "md" : "none") === opt.value
+                                                    ? "border-blue-500 bg-blue-50"
+                                                    : "border-slate-200 hover:border-slate-300"
+                                                    }`}
+                                            >
+                                                <div className={`w-8 h-6 mx-auto rounded bg-white ${opt.preview} mb-1`} />
+                                                <div className="text-[10px]">{opt.label}</div>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Card Colors - Mode avancé */}
+                                <div className="space-y-3 pt-2 border-t border-slate-100">
+                                    <p className="text-xs font-medium text-slate-400 uppercase tracking-wide">🎨 Couleurs cartes</p>
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <ColorPicker label="Fond" value={config.global.cards.backgroundColor} onChange={(v) => updateCardStyle({ backgroundColor: v })} />
+                                        <ColorPicker label="Texte" value={config.global.cards.textColor} onChange={(v) => updateCardStyle({ textColor: v })} />
+                                        <ColorPicker label="Prix" value={config.global.cards.priceColor} onChange={(v) => updateCardStyle({ priceColor: v })} />
+                                        <ColorPicker label="Bordure" value={config.global.cards.borderColor} onChange={(v) => updateCardStyle({ borderColor: v })} />
+                                    </div>
+                                </div>
+                            </>
+                        )}
                     </AccordionContent>
                 </AccordionItem>
 
@@ -541,7 +745,7 @@ export function DesignPanel({ config, onUpdateConfig }: DesignPanelProps) {
                     <AccordionTrigger className="hover:no-underline py-3">
                         <div className="flex items-center gap-2">
                             <Sparkles className="h-4 w-4 text-slate-500" />
-                            <span className="font-medium text-sm">Animations</span>
+                            <span className="font-medium text-sm">✨ Animations</span>
                         </div>
                     </AccordionTrigger>
                     <AccordionContent className="pb-4 space-y-4">
@@ -558,27 +762,99 @@ export function DesignPanel({ config, onUpdateConfig }: DesignPanelProps) {
                         </div>
 
                         {config.global.animations.enableAnimations && (
-                            <div className="space-y-2">
-                                <Label className="text-xs text-slate-500">Vitesse</Label>
-                                <div className="grid grid-cols-3 gap-1.5">
-                                    {[
-                                        { value: "slow", label: "Lente", icon: "🐢" },
-                                        { value: "normal", label: "Normal", icon: "🚶" },
-                                        { value: "fast", label: "Rapide", icon: "⚡" },
-                                    ].map((opt) => (
-                                        <button
-                                            key={opt.value}
-                                            onClick={() => updateAnimations({ animationSpeed: opt.value as AnimationSettings["animationSpeed"] })}
-                                            className={`p-2 rounded-lg border text-center transition-all ${config.global.animations.animationSpeed === opt.value
-                                                ? "border-blue-500 bg-blue-50"
-                                                : "border-slate-200 hover:border-slate-300"
-                                                }`}
-                                        >
-                                            <div className="text-sm">{opt.icon}</div>
-                                            <div className="text-[10px]">{opt.label}</div>
-                                        </button>
-                                    ))}
+                            <div className="space-y-4">
+                                {/* Speed */}
+                                <div className="space-y-2">
+                                    <Label className="text-xs text-slate-500">Vitesse</Label>
+                                    <div className="grid grid-cols-3 gap-1.5">
+                                        {[
+                                            { value: "slow", label: "Lente", icon: "🐢" },
+                                            { value: "normal", label: "Normal", icon: "🚶" },
+                                            { value: "fast", label: "Rapide", icon: "⚡" },
+                                        ].map((opt) => (
+                                            <button
+                                                key={opt.value}
+                                                onClick={() => updateAnimations({ animationSpeed: opt.value as AnimationSettings["animationSpeed"] })}
+                                                className={`p-2 rounded-lg border text-center transition-all ${config.global.animations.animationSpeed === opt.value
+                                                    ? "border-blue-500 bg-blue-50"
+                                                    : "border-slate-200 hover:border-slate-300"
+                                                    }`}
+                                            >
+                                                <div className="text-sm">{opt.icon}</div>
+                                                <div className="text-[10px]">{opt.label}</div>
+                                            </button>
+                                        ))}
+                                    </div>
                                 </div>
+
+                                {/* Advanced Animation Options */}
+                                {advancedMode && (
+                                    <div className="space-y-4 pt-3 border-t border-slate-100">
+                                        <p className="text-xs font-medium text-slate-400 uppercase tracking-wide">✨ Options avancées</p>
+
+                                        {/* Entrance Effect */}
+                                        <div className="space-y-2">
+                                            <Label className="text-xs text-slate-500">Effet d&apos;apparition</Label>
+                                            <div className="grid grid-cols-4 gap-1.5">
+                                                {[
+                                                    { value: "none", label: "Aucun", icon: "—" },
+                                                    { value: "fadeIn", label: "Fondu", icon: "◌" },
+                                                    { value: "slideUp", label: "Glisser", icon: "↑" },
+                                                    { value: "zoomIn", label: "Zoom", icon: "⊕" },
+                                                ].map((opt) => (
+                                                    <button
+                                                        key={opt.value}
+                                                        onClick={() => updateAnimations({ entranceEffect: opt.value as AnimationSettings["entranceEffect"] })}
+                                                        className={`p-2 rounded-lg border text-center transition-all ${(config.global.animations.entranceEffect || "none") === opt.value
+                                                            ? "border-blue-500 bg-blue-50"
+                                                            : "border-slate-200 hover:border-slate-300"
+                                                            }`}
+                                                    >
+                                                        <div className="text-lg">{opt.icon}</div>
+                                                        <div className="text-[10px]">{opt.label}</div>
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {/* Scroll Animations Toggle */}
+                                        <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50">
+                                            <div>
+                                                <Label className="text-xs font-medium">Animations au scroll</Label>
+                                                <p className="text-[10px] text-slate-500">Anime les éléments au défilement</p>
+                                            </div>
+                                            <Switch
+                                                checked={config.global.animations.scrollAnimations ?? true}
+                                                onCheckedChange={(v) => updateAnimations({ scrollAnimations: v })}
+                                            />
+                                        </div>
+
+                                        {/* Hover Transition */}
+                                        <div className="space-y-2">
+                                            <Label className="text-xs text-slate-500">Transition au survol</Label>
+                                            <div className="grid grid-cols-4 gap-1.5">
+                                                {[
+                                                    { value: "none", label: "Aucun", icon: "—" },
+                                                    { value: "fade", label: "Fondu", icon: "◌" },
+                                                    { value: "scale", label: "Échelle", icon: "↗" },
+                                                    { value: "slide", label: "Glisser", icon: "→" },
+                                                ].map((opt) => (
+                                                    <button
+                                                        key={opt.value}
+                                                        onClick={() => updateAnimations({ hoverTransition: opt.value as AnimationSettings["hoverTransition"] })}
+                                                        className={`p-2 rounded-lg border text-center transition-all ${config.global.animations.hoverTransition === opt.value
+                                                            ? "border-blue-500 bg-blue-50"
+                                                            : "border-slate-200 hover:border-slate-300"
+                                                            }`}
+                                                    >
+                                                        <div className="text-lg">{opt.icon}</div>
+                                                        <div className="text-[10px]">{opt.label}</div>
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         )}
                     </AccordionContent>

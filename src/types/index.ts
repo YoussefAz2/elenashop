@@ -18,6 +18,7 @@ export interface HeroStyles {
     height: "compact" | "normal" | "large" | "fullscreen";
     contentAlign: "left" | "center" | "right";
     imageFilter: "none" | "grayscale" | "sepia" | "blur";
+    overlayOpacity?: number;
 }
 
 export interface CardStyles {
@@ -50,6 +51,8 @@ export interface TypographySettings {
     headingSize: "small" | "medium" | "large" | "xlarge";
     bodySize: "small" | "medium" | "large";
     headingTransform: "none" | "uppercase" | "capitalize";
+    headingWeight?: "normal" | "medium" | "bold" | "extrabold";
+    letterSpacing?: "tight" | "normal" | "wide";
 }
 
 export interface SpacingSettings {
@@ -61,6 +64,8 @@ export interface AnimationSettings {
     enableAnimations: boolean;
     animationSpeed: "slow" | "normal" | "fast";
     hoverTransition: "none" | "fade" | "scale" | "slide";
+    entranceEffect?: "none" | "fadeIn" | "slideUp" | "zoomIn";
+    scrollAnimations?: boolean;
 }
 
 // ---------- GLOBAL STYLES ----------
