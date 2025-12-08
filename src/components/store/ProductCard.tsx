@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { ShoppingBag, ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import type { Product, GlobalStyles } from "@/types";
@@ -17,7 +17,6 @@ interface ProductCardProps {
     textAlign?: "left" | "center";
     variant?: "minimal" | "luxe" | "street";
     showShadow?: boolean;
-    // Promo display
     discountedPrice?: number;
     hasDiscount?: boolean;
 }
@@ -39,6 +38,10 @@ export function ProductCard({
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const { cards, buttons } = styles;
 
+    // Touch swipe handling
+    const touchStartX = useRef<number>(0);
+    const touchEndX = useRef<number>(0);
+
     // Combine main image and additional images
     const allImages: string[] = [];
     if (product.image_url) allImages.push(product.image_url);
@@ -48,16 +51,44 @@ export function ProductCard({
 
     const hasMultipleImages = allImages.length > 1;
 
-    const nextImage = (e: React.MouseEvent) => {
-        e.stopPropagation();
-        e.preventDefault();
+    const nextImage = (e?: React.MouseEvent | React.TouchEvent) => {
+        e?.stopPropagation();
+        e?.preventDefault();
         setCurrentImageIndex((prev) => (prev + 1) % allImages.length);
     };
 
-    const prevImage = (e: React.MouseEvent) => {
-        e.stopPropagation();
-        e.preventDefault();
+    const prevImage = (e?: React.MouseEvent | React.TouchEvent) => {
+        e?.stopPropagation();
+        e?.preventDefault();
         setCurrentImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length);
+    };
+
+    // Touch handlers for swipe
+    const handleTouchStart = (e: React.TouchEvent) => {
+        touchStartX.current = e.touches[0].clientX;
+    };
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+        touchEndX.current = e.touches[0].clientX;
+    };
+
+    const handleTouchEnd = () => {
+        if (!hasMultipleImages) return;
+
+        const swipeThreshold = 50;
+        const diff = touchStartX.current - touchEndX.current;
+
+        if (Math.abs(diff) > swipeThreshold) {
+            if (diff > 0) {
+                nextImage();
+            } else {
+                prevImage();
+            }
+        }
+    };
+
+    const goToImage = (index: number) => {
+        setCurrentImageIndex(index);
     };
 
     const aspectClass =
@@ -69,7 +100,6 @@ export function ProductCard({
 
     const isCenter = textAlign === "center";
 
-    // Variant-specific shadow/border styling
     const getCardStyle = () => {
         const base: React.CSSProperties = {
             backgroundColor: cards.backgroundColor,
@@ -92,7 +122,6 @@ export function ProductCard({
             };
         }
 
-        // minimal
         return {
             ...base,
             border: cards.borderColor !== "transparent" ? `1px solid ${cards.borderColor}` : "none",
@@ -107,8 +136,11 @@ export function ProductCard({
         >
             {/* Product Image with Carousel */}
             <div
-                className={`relative ${aspectClass} overflow-hidden`}
+                className={`relative ${aspectClass} overflow-hidden touch-pan-y`}
                 style={{ backgroundColor: `${cards.textColor}08` }}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
             >
                 {allImages.length > 0 ? (
                     <>
@@ -119,32 +151,41 @@ export function ProductCard({
                             className="object-cover transition-transform duration-500 group-hover:scale-110"
                             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                             style={{ objectPosition: product.image_position || "center" }}
+                            draggable={false}
                         />
                         {hasMultipleImages && (
                             <>
-                                {/* Navigation arrows */}
+                                {/* Navigation arrows - visible on mobile, hover on desktop */}
                                 <button
                                     onClick={prevImage}
-                                    className="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
+                                    className="absolute left-1 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center opacity-70 md:opacity-0 md:group-hover:opacity-100 transition-opacity shadow-lg active:scale-95"
                                     style={{ color: cards.textColor }}
+                                    aria-label="Image précédente"
                                 >
-                                    <ChevronLeft className="h-4 w-4" />
+                                    <ChevronLeft className="h-5 w-5" />
                                 </button>
                                 <button
                                     onClick={nextImage}
-                                    className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
+                                    className="absolute right-1 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center opacity-70 md:opacity-0 md:group-hover:opacity-100 transition-opacity shadow-lg active:scale-95"
                                     style={{ color: cards.textColor }}
+                                    aria-label="Image suivante"
                                 >
-                                    <ChevronRight className="h-4 w-4" />
+                                    <ChevronRight className="h-5 w-5" />
                                 </button>
-                                {/* Dots indicator */}
-                                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5">
+                                {/* Dots indicator - clickable */}
+                                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2 bg-black/20 backdrop-blur-sm rounded-full px-2 py-1">
                                     {allImages.map((_, idx) => (
-                                        <div
+                                        <button
                                             key={idx}
-                                            className={`w-1.5 h-1.5 rounded-full transition-all ${idx === currentImageIndex ? "bg-white w-3" : "bg-white/60"}`}
+                                            onClick={(e) => { e.stopPropagation(); goToImage(idx); }}
+                                            className={`rounded-full transition-all ${idx === currentImageIndex ? "bg-white w-4 h-2" : "bg-white/60 w-2 h-2"}`}
+                                            aria-label={`Image ${idx + 1}`}
                                         />
                                     ))}
+                                </div>
+                                {/* Image counter badge */}
+                                <div className="absolute top-2 right-2 bg-black/50 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full">
+                                    {currentImageIndex + 1}/{allImages.length}
                                 </div>
                             </>
                         )}
