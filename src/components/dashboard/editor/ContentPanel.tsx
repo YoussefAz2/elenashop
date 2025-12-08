@@ -412,12 +412,14 @@ export function ContentPanel({ config, onUpdateConfig }: ContentPanelProps) {
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label className="text-sm">Image de fond (URL)</Label>
-                            <Input
+                            <Label className="text-sm">Image de fond</Label>
+                            <ImageUpload
                                 value={config.homeContent.hero.imageUrl}
-                                onChange={(e) => updateHero({ imageUrl: e.target.value })}
-                                placeholder="https://..."
-                                className="h-10"
+                                onChange={(url) => updateHero({ imageUrl: url })}
+                                folder="hero"
+                                label="Télécharger"
+                                shape="wide"
+                                size="md"
                             />
                         </div>
 
@@ -678,19 +680,21 @@ export function ContentPanel({ config, onUpdateConfig }: ContentPanelProps) {
                                                                 >
                                                                     <Star
                                                                         className={`h-4 w-4 ${star <= item.rating
-                                                                                ? "fill-amber-400 text-amber-400"
-                                                                                : "text-slate-300"
+                                                                            ? "fill-amber-400 text-amber-400"
+                                                                            : "text-slate-300"
                                                                             }`}
                                                                     />
                                                                 </button>
                                                             ))}
                                                         </div>
                                                     </div>
-                                                    <Input
+                                                    <ImageUpload
                                                         value={item.imageUrl || ""}
-                                                        onChange={(e) => updateTestimonialItem(item.id, { imageUrl: e.target.value })}
-                                                        placeholder="URL photo (optionnel)"
-                                                        className="h-9 text-sm"
+                                                        onChange={(url) => updateTestimonialItem(item.id, { imageUrl: url })}
+                                                        folder="testimonials"
+                                                        label="Photo"
+                                                        shape="circle"
+                                                        size="sm"
                                                     />
                                                 </div>
                                                 <Button
@@ -753,12 +757,14 @@ export function ContentPanel({ config, onUpdateConfig }: ContentPanelProps) {
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-sm">Image (URL)</Label>
-                                    <Input
+                                    <Label className="text-sm">Image</Label>
+                                    <ImageUpload
                                         value={config.homeContent.about.imageUrl}
-                                        onChange={(e) => updateAbout({ imageUrl: e.target.value })}
-                                        placeholder="https://..."
-                                        className="h-10"
+                                        onChange={(url) => updateAbout({ imageUrl: url })}
+                                        folder="about"
+                                        label="Télécharger"
+                                        shape="wide"
+                                        size="md"
                                     />
                                 </div>
                                 <div className="space-y-2">

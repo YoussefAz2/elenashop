@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { Upload, X, Loader2 } from "lucide-react";
+import { Upload, X, Loader2, ImagePlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface ImageUploadProps {
@@ -10,13 +10,38 @@ interface ImageUploadProps {
     onChange: (url: string) => void;
     folder?: string;
     className?: string;
+    label?: string;
+    shape?: "square" | "circle" | "wide";
+    size?: "sm" | "md" | "lg";
+    maxSizeMB?: number;
 }
 
-export function ImageUpload({ value, onChange, folder = "logos", className = "" }: ImageUploadProps) {
+export function ImageUpload({
+    value,
+    onChange,
+    folder = "assets",
+    className = "",
+    label = "Télécharger image",
+    shape = "square",
+    size = "md",
+    maxSizeMB = 2,
+}: ImageUploadProps) {
     const [isUploading, setIsUploading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const supabase = createClient();
+
+    const sizeClasses = {
+        sm: shape === "wide" ? "h-12 w-full" : "w-12 h-12",
+        md: shape === "wide" ? "h-20 w-full" : "w-20 h-20",
+        lg: shape === "wide" ? "h-32 w-full" : "w-32 h-32",
+    };
+
+    const shapeClasses = {
+        square: "rounded-lg",
+        circle: "rounded-full",
+        wide: "rounded-lg",
+    };
 
     const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -28,9 +53,9 @@ export function ImageUpload({ value, onChange, folder = "logos", className = "" 
             return;
         }
 
-        // Validate file size (max 2MB)
-        if (file.size > 2 * 1024 * 1024) {
-            setError("Image trop lourde (max 2MB)");
+        // Validate file size
+        if (file.size > maxSizeMB * 1024 * 1024) {
+            setError(`Image trop lourde (max ${maxSizeMB}MB)`);
             return;
         }
 
@@ -79,13 +104,13 @@ export function ImageUpload({ value, onChange, folder = "logos", className = "" 
                 <div className="relative inline-block">
                     <img
                         src={value}
-                        alt="Logo"
-                        className="w-20 h-20 object-contain rounded-lg border bg-slate-50"
+                        alt="Preview"
+                        className={`object-cover border bg-slate-50 ${sizeClasses[size]} ${shapeClasses[shape]}`}
                     />
                     <button
                         type="button"
                         onClick={handleRemove}
-                        className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
+                        className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors shadow-sm"
                     >
                         <X className="w-4 h-4" />
                     </button>
@@ -96,14 +121,14 @@ export function ImageUpload({ value, onChange, folder = "logos", className = "" 
                     variant="outline"
                     onClick={() => fileInputRef.current?.click()}
                     disabled={isUploading}
-                    className="h-20 w-full border-dashed"
+                    className={`border-dashed ${sizeClasses[size]} ${shapeClasses[shape]}`}
                 >
                     {isUploading ? (
                         <Loader2 className="w-5 h-5 animate-spin" />
                     ) : (
                         <div className="flex flex-col items-center gap-1">
-                            <Upload className="w-5 h-5" />
-                            <span className="text-xs">Télécharger logo</span>
+                            <ImagePlus className="w-5 h-5 text-slate-400" />
+                            <span className="text-xs text-slate-500">{label}</span>
                         </div>
                     )}
                 </Button>
