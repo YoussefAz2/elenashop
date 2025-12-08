@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, Star, Quote, User } from "lucide-react";
 import type { TestimonialsContent, GlobalStyles, TypographySettings, SpacingSettings } from "@/types";
@@ -13,6 +13,10 @@ interface TestimonialsProps {
 export function Testimonials({ content, styles }: TestimonialsProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const { colors, typography, spacing } = styles;
+
+    // Touch swipe handling
+    const touchStartX = useRef<number>(0);
+    const touchEndX = useRef<number>(0);
 
     if (!content.visible || content.items.length === 0) {
         return null;
@@ -44,6 +48,28 @@ export function Testimonials({ content, styles }: TestimonialsProps) {
 
     const prevSlide = () => {
         setCurrentIndex((prev) => (prev - 1 + content.items.length) % content.items.length);
+    };
+
+    // Touch swipe handlers
+    const handleTouchStart = (e: React.TouchEvent) => {
+        touchStartX.current = e.touches[0].clientX;
+    };
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+        touchEndX.current = e.touches[0].clientX;
+    };
+
+    const handleTouchEnd = () => {
+        const diff = touchStartX.current - touchEndX.current;
+        const minSwipeDistance = 50;
+
+        if (Math.abs(diff) > minSwipeDistance) {
+            if (diff > 0) {
+                nextSlide(); // Swipe left -> next
+            } else {
+                prevSlide(); // Swipe right -> previous
+            }
+        }
     };
 
     const renderStars = (rating: number) => {
@@ -134,8 +160,13 @@ export function Testimonials({ content, styles }: TestimonialsProps) {
                 {/* Content */}
                 {content.layout === "carousel" ? (
                     <div className="relative">
-                        {/* Carousel */}
-                        <div className="overflow-hidden">
+                        {/* Carousel - with touch swipe support */}
+                        <div
+                            className="overflow-hidden touch-pan-y"
+                            onTouchStart={handleTouchStart}
+                            onTouchMove={handleTouchMove}
+                            onTouchEnd={handleTouchEnd}
+                        >
                             <div
                                 className="transition-transform duration-500 ease-out"
                                 style={{ transform: `translateX(-${currentIndex * 100}%)` }}

@@ -720,12 +720,12 @@ export function ContentPanel({ config, onUpdateConfig }: ContentPanelProps) {
                     </AccordionContent>
                 </AccordionItem>
 
-                {/* About Section */}
+                {/* About Section - Homepage */}
                 <AccordionItem value="about" className="border rounded-lg px-3">
                     <AccordionTrigger className="hover:no-underline py-3">
                         <div className="flex items-center gap-2">
                             <User className="h-4 w-4 text-slate-500" />
-                            <span className="font-medium text-sm">À propos</span>
+                            <span className="font-medium text-sm">À propos (section accueil)</span>
                         </div>
                     </AccordionTrigger>
                     <AccordionContent className="pb-4 space-y-4">

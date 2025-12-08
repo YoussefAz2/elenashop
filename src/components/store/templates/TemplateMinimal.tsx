@@ -198,19 +198,25 @@ export function TemplateMinimal({
 
             {/* Hero */}
             {hero.visible && (
-                <section
-                    className="relative overflow-hidden"
-                    style={{
-                        backgroundImage: hero.imageUrl ? `url(${hero.imageUrl})` : undefined,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                        filter: hero.imageUrl ? imageFilterStyle : undefined,
-                    }}
-                >
+                <section className="relative overflow-hidden">
+                    {/* Background image with filter - separate from content */}
+                    {hero.imageUrl && (
+                        <div
+                            className="absolute inset-0"
+                            style={{
+                                backgroundImage: `url(${hero.imageUrl})`,
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                                filter: imageFilterStyle || undefined,
+                            }}
+                        />
+                    )}
+                    {/* Overlay */}
                     {hero.imageUrl && <div className="absolute inset-0" style={getOverlayStyle()} />}
+                    {/* Content - no filter */}
                     <div
                         className={`relative px-6 ${heroHeightClass}`}
-                        style={{ backgroundColor: hero.imageUrl ? "transparent" : global.hero.backgroundColor, filter: hero.imageUrl ? "none" : undefined }}
+                        style={{ backgroundColor: hero.imageUrl ? "transparent" : global.hero.backgroundColor }}
                     >
                         <div className={`mx-auto max-w-2xl flex flex-col ${heroAlignClass}`}>
                             <div className="w-12 h-px mb-8" style={{ backgroundColor: hero.imageUrl ? "#fff" : global.hero.buttonBg }} />

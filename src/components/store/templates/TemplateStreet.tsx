@@ -107,9 +107,21 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
             {spacing.showSectionDividers && <div className="h-1" style={{ backgroundColor: global.colors.primary }} />}
 
             {hero.visible && (
-                <section className="relative overflow-hidden" style={{ backgroundImage: hero.imageUrl ? `url(${hero.imageUrl})` : undefined, backgroundSize: "cover", backgroundPosition: "center", filter: hero.imageUrl ? imageFilterStyle : undefined }}>
+                <section className="relative overflow-hidden">
+                    {/* Background image with filter - separate from content */}
+                    {hero.imageUrl && (
+                        <div
+                            className="absolute inset-0"
+                            style={{
+                                backgroundImage: `url(${hero.imageUrl})`,
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                                filter: imageFilterStyle || undefined
+                            }}
+                        />
+                    )}
                     {hero.imageUrl && <div className="absolute inset-0" style={getOverlayStyle()} />}
-                    <div className={`relative px-4 ${heroHeightClass}`} style={{ backgroundColor: hero.imageUrl ? "transparent" : global.hero.backgroundColor, filter: hero.imageUrl ? "none" : undefined }}>
+                    <div className={`relative px-4 ${heroHeightClass}`} style={{ backgroundColor: hero.imageUrl ? "transparent" : global.hero.backgroundColor }}>
                         <div className={`mx-auto max-w-5xl ${heroAlignClass}`}>
                             <div className="mb-4 flex items-center gap-2">
                                 <Zap className="h-6 w-6" style={{ color: global.colors.primary }} />

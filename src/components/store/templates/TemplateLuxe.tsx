@@ -105,10 +105,19 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
             {spacing.showSectionDividers && <div className="h-px" style={{ backgroundColor: `${global.colors.primary}30` }} />}
 
             {hero.visible && (
-                <section
-                    className={`relative ${heroHeightClass} flex items-center justify-center overflow-hidden`}
-                    style={{ backgroundImage: hero.imageUrl ? `url(${hero.imageUrl})` : undefined, backgroundSize: "cover", backgroundPosition: "center", filter: hero.imageUrl ? imageFilterStyle : undefined }}
-                >
+                <section className={`relative ${heroHeightClass} flex items-center justify-center overflow-hidden`}>
+                    {/* Background image with filter - separate from content */}
+                    {hero.imageUrl && (
+                        <div
+                            className="absolute inset-0"
+                            style={{
+                                backgroundImage: `url(${hero.imageUrl})`,
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                                filter: imageFilterStyle || undefined
+                            }}
+                        />
+                    )}
                     <div className="absolute inset-0" style={getOverlayStyle()} />
                     <div className="absolute top-8 left-8 right-8 bottom-8 pointer-events-none" style={{ border: `1px solid ${global.colors.primary}40` }} />
                     <div className={`relative z-10 mx-auto max-w-4xl px-8 flex flex-col ${heroAlignClass}`}>
