@@ -1,6 +1,6 @@
 "use client";
 
-import { Card } from "@/components/ui/card";
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -18,7 +18,7 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Palette, Type, Layers, MousePointer, Sparkles, Move, Crown } from "lucide-react";
+import { Palette, Type, Layers, MousePointer, Sparkles, Move, Crown, Settings2, Check } from "lucide-react";
 import type {
     ThemeConfig,
     TemplateId,
@@ -31,8 +31,9 @@ import type {
     SpacingSettings,
     AnimationSettings,
 } from "@/types";
-import { TEMPLATE_PRESETS, DEFAULT_THEME_CONFIGS, AVAILABLE_FONTS } from "@/types";
+import { DEFAULT_THEME_CONFIGS, AVAILABLE_FONTS } from "@/types";
 import { TEMPLATES } from "@/lib/templates";
+import { COLOR_PALETTES, applyPalette, type ColorPalette } from "@/lib/palettes";
 
 interface DesignPanelProps {
     config: ThemeConfig;
@@ -40,12 +41,22 @@ interface DesignPanelProps {
 }
 
 export function DesignPanel({ config, onUpdateConfig }: DesignPanelProps) {
+    const [advancedMode, setAdvancedMode] = useState(false);
+
     const selectTemplate = (templateId: TemplateId) => {
         const preset = DEFAULT_THEME_CONFIGS[templateId];
         onUpdateConfig({
             ...config,
             templateId,
             global: preset.global,
+        });
+    };
+
+    const applyColorPalette = (palette: ColorPalette) => {
+        const updated = applyPalette(palette, config);
+        onUpdateConfig({
+            ...config,
+            global: updated.global,
         });
     };
 
@@ -147,7 +158,7 @@ export function DesignPanel({ config, onUpdateConfig }: DesignPanelProps) {
             </div>
 
             <Accordion type="single" collapsible defaultValue="colors" className="space-y-2">
-                {/* Base Colors */}
+                {/* Colors Section - Simplified with Palettes */}
                 <AccordionItem value="colors" className="border rounded-lg px-3">
                     <AccordionTrigger className="hover:no-underline py-3">
                         <div className="flex items-center gap-2">
@@ -156,43 +167,92 @@ export function DesignPanel({ config, onUpdateConfig }: DesignPanelProps) {
                         </div>
                     </AccordionTrigger>
                     <AccordionContent className="pb-4 space-y-4">
-                        <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">Base</p>
-                        <div className="grid grid-cols-2 gap-3">
-                            <ColorPicker label="Fond" value={config.global.colors.background} onChange={(v) => updateGlobalColor("background", v)} />
-                            <ColorPicker label="Texte" value={config.global.colors.text} onChange={(v) => updateGlobalColor("text", v)} />
-                            <ColorPicker label="Principal" value={config.global.colors.primary} onChange={(v) => updateGlobalColor("primary", v)} />
-                            <ColorPicker label="Secondaire" value={config.global.colors.secondary} onChange={(v) => updateGlobalColor("secondary", v)} />
+                        {/* Palette Selector - Always Visible */}
+                        <div className="space-y-2">
+                            <Label className="text-xs text-slate-500">Palette de couleurs</Label>
+                            <div className="grid grid-cols-3 gap-2">
+                                {COLOR_PALETTES.map((palette) => (
+                                    <button
+                                        key={palette.id}
+                                        onClick={() => applyColorPalette(palette)}
+                                        className="relative p-2 rounded-lg border-2 transition-all hover:scale-105 active:scale-95"
+                                        style={{
+                                            borderColor: config.global.colors.primary === palette.colors.primary ? palette.preview.primary : "#e2e8f0",
+                                            backgroundColor: config.global.colors.primary === palette.colors.primary ? `${palette.preview.primary}10` : "white",
+                                        }}
+                                    >
+                                        {/* Check mark if selected */}
+                                        {config.global.colors.primary === palette.colors.primary && (
+                                            <div className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center" style={{ backgroundColor: palette.preview.primary }}>
+                                                <Check className="h-3 w-3 text-white" />
+                                            </div>
+                                        )}
+                                        {/* Color preview */}
+                                        <div className="flex gap-1 mb-1.5">
+                                            <div className="w-4 h-4 rounded-full" style={{ backgroundColor: palette.preview.primary }} />
+                                            <div className="w-4 h-4 rounded-full" style={{ backgroundColor: palette.preview.secondary }} />
+                                            <div className="w-4 h-4 rounded-full" style={{ backgroundColor: palette.preview.accent }} />
+                                        </div>
+                                        <p className="text-[10px] font-medium text-center">{palette.emoji} {palette.name}</p>
+                                    </button>
+                                ))}
+                            </div>
                         </div>
 
-                        <p className="text-xs font-medium text-slate-500 uppercase tracking-wide pt-2">Hero</p>
-                        <div className="grid grid-cols-2 gap-3">
-                            <ColorPicker label="Fond" value={config.global.hero.backgroundColor} onChange={(v) => updateHeroStyle({ backgroundColor: v })} />
-                            <ColorPicker label="Texte" value={config.global.hero.textColor} onChange={(v) => updateHeroStyle({ textColor: v })} />
-                            <ColorPicker label="Bouton" value={config.global.hero.buttonBg} onChange={(v) => updateHeroStyle({ buttonBg: v })} />
-                            <ColorPicker label="Texte btn" value={config.global.hero.buttonText} onChange={(v) => updateHeroStyle({ buttonText: v })} />
+                        {/* Advanced Mode Toggle */}
+                        <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+                            <div className="flex items-center gap-2">
+                                <Settings2 className="h-4 w-4 text-slate-400" />
+                                <Label className="text-xs text-slate-500">Mode avancé</Label>
+                            </div>
+                            <Switch
+                                checked={advancedMode}
+                                onCheckedChange={setAdvancedMode}
+                            />
                         </div>
 
-                        <p className="text-xs font-medium text-slate-500 uppercase tracking-wide pt-2">Cartes</p>
-                        <div className="grid grid-cols-2 gap-3">
-                            <ColorPicker label="Fond" value={config.global.cards.backgroundColor} onChange={(v) => updateCardStyle({ backgroundColor: v })} />
-                            <ColorPicker label="Texte" value={config.global.cards.textColor} onChange={(v) => updateCardStyle({ textColor: v })} />
-                            <ColorPicker label="Prix" value={config.global.cards.priceColor} onChange={(v) => updateCardStyle({ priceColor: v })} />
-                            <ColorPicker label="Bordure" value={config.global.cards.borderColor} onChange={(v) => updateCardStyle({ borderColor: v })} />
-                        </div>
+                        {/* Advanced Color Pickers - Only shown in advanced mode */}
+                        {advancedMode && (
+                            <div className="space-y-4 pt-3 border-t border-slate-100">
+                                <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">Base</p>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <ColorPicker label="Fond" value={config.global.colors.background} onChange={(v) => updateGlobalColor("background", v)} />
+                                    <ColorPicker label="Texte" value={config.global.colors.text} onChange={(v) => updateGlobalColor("text", v)} />
+                                    <ColorPicker label="Principal" value={config.global.colors.primary} onChange={(v) => updateGlobalColor("primary", v)} />
+                                    <ColorPicker label="Secondaire" value={config.global.colors.secondary} onChange={(v) => updateGlobalColor("secondary", v)} />
+                                </div>
 
-                        <p className="text-xs font-medium text-slate-500 uppercase tracking-wide pt-2">Boutons</p>
-                        <div className="grid grid-cols-2 gap-3">
-                            <ColorPicker label="Fond" value={config.global.buttons.backgroundColor} onChange={(v) => updateButtonStyle({ backgroundColor: v })} />
-                            <ColorPicker label="Texte" value={config.global.buttons.textColor} onChange={(v) => updateButtonStyle({ textColor: v })} />
-                            <ColorPicker label="Hover" value={config.global.buttons.hoverBg} onChange={(v) => updateButtonStyle({ hoverBg: v })} />
-                        </div>
+                                <p className="text-xs font-medium text-slate-500 uppercase tracking-wide pt-2">Hero</p>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <ColorPicker label="Fond" value={config.global.hero.backgroundColor} onChange={(v) => updateHeroStyle({ backgroundColor: v })} />
+                                    <ColorPicker label="Texte" value={config.global.hero.textColor} onChange={(v) => updateHeroStyle({ textColor: v })} />
+                                    <ColorPicker label="Bouton" value={config.global.hero.buttonBg} onChange={(v) => updateHeroStyle({ buttonBg: v })} />
+                                    <ColorPicker label="Texte btn" value={config.global.hero.buttonText} onChange={(v) => updateHeroStyle({ buttonText: v })} />
+                                </div>
 
-                        <p className="text-xs font-medium text-slate-500 uppercase tracking-wide pt-2">Footer</p>
-                        <div className="grid grid-cols-2 gap-3">
-                            <ColorPicker label="Fond" value={config.global.footer.backgroundColor} onChange={(v) => updateFooterStyle({ backgroundColor: v })} />
-                            <ColorPicker label="Texte" value={config.global.footer.textColor} onChange={(v) => updateFooterStyle({ textColor: v })} />
-                            <ColorPicker label="Accent" value={config.global.footer.accentColor} onChange={(v) => updateFooterStyle({ accentColor: v })} />
-                        </div>
+                                <p className="text-xs font-medium text-slate-500 uppercase tracking-wide pt-2">Cartes</p>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <ColorPicker label="Fond" value={config.global.cards.backgroundColor} onChange={(v) => updateCardStyle({ backgroundColor: v })} />
+                                    <ColorPicker label="Texte" value={config.global.cards.textColor} onChange={(v) => updateCardStyle({ textColor: v })} />
+                                    <ColorPicker label="Prix" value={config.global.cards.priceColor} onChange={(v) => updateCardStyle({ priceColor: v })} />
+                                    <ColorPicker label="Bordure" value={config.global.cards.borderColor} onChange={(v) => updateCardStyle({ borderColor: v })} />
+                                </div>
+
+                                <p className="text-xs font-medium text-slate-500 uppercase tracking-wide pt-2">Boutons</p>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <ColorPicker label="Fond" value={config.global.buttons.backgroundColor} onChange={(v) => updateButtonStyle({ backgroundColor: v })} />
+                                    <ColorPicker label="Texte" value={config.global.buttons.textColor} onChange={(v) => updateButtonStyle({ textColor: v })} />
+                                    <ColorPicker label="Hover" value={config.global.buttons.hoverBg} onChange={(v) => updateButtonStyle({ hoverBg: v })} />
+                                </div>
+
+                                <p className="text-xs font-medium text-slate-500 uppercase tracking-wide pt-2">Footer</p>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <ColorPicker label="Fond" value={config.global.footer.backgroundColor} onChange={(v) => updateFooterStyle({ backgroundColor: v })} />
+                                    <ColorPicker label="Texte" value={config.global.footer.textColor} onChange={(v) => updateFooterStyle({ textColor: v })} />
+                                    <ColorPicker label="Accent" value={config.global.footer.accentColor} onChange={(v) => updateFooterStyle({ accentColor: v })} />
+                                </div>
+                            </div>
+                        )}
                     </AccordionContent>
                 </AccordionItem>
 
