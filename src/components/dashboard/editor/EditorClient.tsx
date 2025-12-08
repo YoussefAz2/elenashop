@@ -25,6 +25,7 @@ import type { Profile, Product, Page, ThemeConfig } from "@/types";
 import { DesignPanel } from "./DesignPanel";
 import { ContentPanel } from "./ContentPanel";
 import { UpgradeModal } from "./UpgradeModal";
+import { ElementSelectionProvider } from "./ElementSelectionContext";
 import { TemplateMinimal, TemplateLuxe, TemplateStreet } from "@/components/store/templates";
 import { isTemplatePremium, getTemplateConfig } from "@/lib/templates";
 
@@ -232,6 +233,7 @@ export function EditorClient({
     const [previewMode, setPreviewMode] = useState<"mobile" | "desktop">("mobile");
     const [showUpgradeModal, setShowUpgradeModal] = useState(false);
     const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
+    const [advancedMode, setAdvancedMode] = useState(false);
 
     const router = useRouter();
     const supabase = createClient();
@@ -270,14 +272,26 @@ export function EditorClient({
     // Render the correct template based on templateId
     const renderPreview = () => {
         const props = { config, products, sellerId: seller.id, storeName: seller.store_name, pages };
-        switch (config.templateId) {
-            case "luxe":
-                return <TemplateLuxe {...props} />;
-            case "street":
-                return <TemplateStreet {...props} />;
-            default:
-                return <TemplateMinimal {...props} />;
-        }
+
+        const template = (() => {
+            switch (config.templateId) {
+                case "luxe":
+                    return <TemplateLuxe {...props} />;
+                case "street":
+                    return <TemplateStreet {...props} />;
+                default:
+                    return <TemplateMinimal {...props} />;
+            }
+        })();
+
+        return (
+            <ElementSelectionProvider
+                isEditorMode={true}
+                isAdvancedMode={advancedMode}
+            >
+                {template}
+            </ElementSelectionProvider>
+        );
     };
 
     return (
@@ -366,7 +380,7 @@ export function EditorClient({
                     {/* Panel Content */}
                     <div className="flex-1 overflow-y-auto">
                         {activeTab === "design" && (
-                            <DesignPanel config={config} onUpdateConfig={setConfig} />
+                            <DesignPanel config={config} onUpdateConfig={setConfig} advancedMode={advancedMode} onAdvancedModeChange={setAdvancedMode} />
                         )}
                         {activeTab === "content" && (
                             <ContentPanel config={config} onUpdateConfig={setConfig} />

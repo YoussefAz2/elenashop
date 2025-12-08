@@ -9,6 +9,7 @@ import { FloatingWhatsApp, PromoPopup } from "../common";
 import { Testimonials } from "../common/Testimonials";
 import { getDiscountedPrice, getPopupPromo } from "@/lib/promo";
 import { ShoppingBag, Instagram, Facebook, Phone, Store, Menu, X } from "lucide-react";
+import { SelectableElement } from "@/components/dashboard/editor/SelectableElement";
 
 interface TemplateMinimalProps {
     config: ThemeConfig;
@@ -220,16 +221,17 @@ export function TemplateMinimal({
                     >
                         <div className={`mx-auto max-w-2xl flex flex-col ${heroAlignClass}`}>
                             <div className="w-12 h-px mb-8" style={{ backgroundColor: hero.imageUrl ? "#fff" : global.hero.buttonBg }} />
-                            <h1
-                                className={`${headingSizeClass} font-light tracking-tight mb-4`}
-                                style={{ color: hero.imageUrl ? "#fff" : global.hero.textColor, fontFamily: `"${global.headingFont}", system-ui, sans-serif`, textTransform }}
-                            >
-                                {hero.title || storeName}
-                            </h1>
+                            <SelectableElement elementId="hero-title" as="h1" className={`${headingSizeClass} font-light tracking-tight mb-4`}>
+                                <span style={{ color: hero.imageUrl ? "#fff" : global.hero.textColor, fontFamily: `"${global.headingFont}", system-ui, sans-serif`, textTransform }}>
+                                    {hero.title || storeName}
+                                </span>
+                            </SelectableElement>
                             {hero.subtitle && (
-                                <p className="text-lg md:text-xl font-light mb-10 max-w-lg" style={{ color: hero.imageUrl ? "rgba(255,255,255,0.85)" : global.hero.textColor, opacity: hero.imageUrl ? 1 : 0.7 }}>
-                                    {hero.subtitle}
-                                </p>
+                                <SelectableElement elementId="hero-subtitle" as="p" className="text-lg md:text-xl font-light mb-10 max-w-lg">
+                                    <span style={{ color: hero.imageUrl ? "rgba(255,255,255,0.85)" : global.hero.textColor, opacity: hero.imageUrl ? 1 : 0.7 }}>
+                                        {hero.subtitle}
+                                    </span>
+                                </SelectableElement>
                             )}
                             {hero.buttonText && (
                                 <HoverButton
@@ -258,9 +260,11 @@ export function TemplateMinimal({
                 <div className="mx-auto max-w-6xl">
                     {productGrid.title && (
                         <div className={`mb-12 ${global.hero.contentAlign === "center" ? "text-center" : ""}`}>
-                            <h2 className={`${headingSizeClass} font-light tracking-tight`} style={{ color: global.colors.text, fontFamily: `"${global.headingFont}", system-ui, sans-serif`, textTransform }}>
-                                {productGrid.title}
-                            </h2>
+                            <SelectableElement elementId="section-products-title" as="h2" className={`${headingSizeClass} font-light tracking-tight`}>
+                                <span style={{ color: global.colors.text, fontFamily: `"${global.headingFont}", system-ui, sans-serif`, textTransform }}>
+                                    {productGrid.title}
+                                </span>
+                            </SelectableElement>
                             <div className="w-8 h-px mt-4 mx-auto" style={{ backgroundColor: global.colors.primary }} />
                         </div>
                     )}
@@ -396,9 +400,11 @@ export function TemplateMinimal({
                                 </div>
                             )}
                             <div className={about.imagePosition === "left" ? "" : "order-first md:order-none"}>
-                                <h2 className={`${headingSizeClass} font-light tracking-tight mb-6`} style={{ color: global.colors.text, fontFamily: `"${global.headingFont}", system-ui, sans-serif`, textTransform }}>
-                                    {about.title}
-                                </h2>
+                                <SelectableElement elementId="section-about-title" as="h2" className={`${headingSizeClass} font-light tracking-tight mb-6`}>
+                                    <span style={{ color: global.colors.text, fontFamily: `"${global.headingFont}", system-ui, sans-serif`, textTransform }}>
+                                        {about.title}
+                                    </span>
+                                </SelectableElement>
                                 <p className={`${bodySizeClass} leading-relaxed`} style={{ color: global.colors.text, opacity: 0.7 }}>{about.text}</p>
                             </div>
                             {about.imageUrl && about.imagePosition === "right" && (
@@ -425,7 +431,9 @@ export function TemplateMinimal({
                             {footer.whatsapp && <a href={`https://wa.me/${footer.whatsapp.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer" className="transition-opacity hover:opacity-60" style={{ color: global.footer.accentColor }}><Phone className="h-5 w-5" /></a>}
                         </div>
                     )}
-                    <p className="text-sm" style={{ color: global.footer.textColor }}>{footer.text || `© ${new Date().getFullYear()} ${storeName}`}</p>
+                    <SelectableElement elementId="footer-text" as="p" className="text-sm">
+                        <span style={{ color: global.footer.textColor }}>{footer.text || `© ${new Date().getFullYear()} ${storeName}`}</span>
+                    </SelectableElement>
                 </div>
             </footer>
 

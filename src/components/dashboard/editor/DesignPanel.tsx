@@ -38,10 +38,22 @@ import { COLOR_PALETTES, applyPalette, type ColorPalette } from "@/lib/palettes"
 interface DesignPanelProps {
     config: ThemeConfig;
     onUpdateConfig: (config: ThemeConfig) => void;
+    advancedMode?: boolean;
+    onAdvancedModeChange?: (mode: boolean) => void;
 }
 
-export function DesignPanel({ config, onUpdateConfig }: DesignPanelProps) {
-    const [advancedMode, setAdvancedMode] = useState(false);
+export function DesignPanel({ config, onUpdateConfig, advancedMode: externalAdvancedMode, onAdvancedModeChange }: DesignPanelProps) {
+    const [internalAdvancedMode, setInternalAdvancedMode] = useState(false);
+
+    // Use external state if provided, otherwise internal
+    const advancedMode = externalAdvancedMode !== undefined ? externalAdvancedMode : internalAdvancedMode;
+    const setAdvancedMode = (mode: boolean) => {
+        if (onAdvancedModeChange) {
+            onAdvancedModeChange(mode);
+        } else {
+            setInternalAdvancedMode(mode);
+        }
+    };
 
     const selectTemplate = (templateId: TemplateId) => {
         const preset = DEFAULT_THEME_CONFIGS[templateId];

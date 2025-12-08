@@ -91,6 +91,21 @@ export interface GlobalStyles {
     animations: AnimationSettings;
 }
 
+// ---------- ELEMENT OVERRIDES (Advanced Mode) ----------
+
+export interface ElementStyleOverride {
+    color?: string;
+    fontSize?: string;
+    fontWeight?: string;
+    fontFamily?: string;
+    backgroundColor?: string;
+}
+
+export interface ElementOverride {
+    elementId: string; // e.g., "hero-title", "section-products-title"
+    styles: ElementStyleOverride;
+}
+
 // ---------- CONTENT TYPES ----------
 
 // Header section

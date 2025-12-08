@@ -9,6 +9,7 @@ import { FloatingWhatsApp, PromoPopup } from "../common";
 import { Testimonials } from "../common/Testimonials";
 import { getDiscountedPrice, getPopupPromo } from "@/lib/promo";
 import { ShoppingBag, Zap, Store, Menu, X } from "lucide-react";
+import { SelectableElement } from "@/components/dashboard/editor/SelectableElement";
 
 interface TemplateStreetProps {
     config: ThemeConfig;
@@ -127,8 +128,14 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
                                 <Zap className="h-6 w-6" style={{ color: global.colors.primary }} />
                                 <span className="text-sm font-black uppercase tracking-wider" style={{ color: global.colors.primary }}>New Drop</span>
                             </div>
-                            <h1 className={`${headingSizeClass} font-black uppercase leading-[0.85] tracking-tighter mb-4`} style={{ color: hero.imageUrl ? "#fff" : global.hero.textColor, textShadow: `4px 4px 0 ${global.colors.primary}`, fontFamily: `"${global.headingFont}", Impact, sans-serif`, textTransform: textTransform || "uppercase" }}>{hero.title || storeName}</h1>
-                            {hero.subtitle && <p className="text-xl md:text-2xl font-bold uppercase mb-8 max-w-xl" style={{ color: hero.imageUrl ? "#fff" : global.hero.textColor, opacity: 0.8 }}>{hero.subtitle}</p>}
+                            <SelectableElement elementId="hero-title" as="h1" className={`${headingSizeClass} font-black uppercase leading-[0.85] tracking-tighter mb-4`}>
+                                <span style={{ color: hero.imageUrl ? "#fff" : global.hero.textColor, textShadow: `4px 4px 0 ${global.colors.primary}`, fontFamily: `"${global.headingFont}", Impact, sans-serif`, textTransform: textTransform || "uppercase" }}>{hero.title || storeName}</span>
+                            </SelectableElement>
+                            {hero.subtitle && (
+                                <SelectableElement elementId="hero-subtitle" as="p" className="text-xl md:text-2xl font-bold uppercase mb-8 max-w-xl">
+                                    <span style={{ color: hero.imageUrl ? "#fff" : global.hero.textColor, opacity: 0.8 }}>{hero.subtitle}</span>
+                                </SelectableElement>
+                            )}
                             {hero.buttonText && (
                                 <HoverButton href={hero.buttonUrl || "#products"} text={hero.buttonText} bgColor={global.hero.buttonBg} textColor={global.hero.buttonText} hoverBg={global.buttons.hoverBg} borderColor={global.colors.text} borderRadius={global.borderRadius} buttonStyle={global.buttons.style} buttonSize={global.buttons.size} duration={animationDuration} />
                             )}
@@ -145,7 +152,9 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
                     {productGrid.title && (
                         <div className="mb-8">
                             <div className="inline-block">
-                                <h2 className={`${headingSizeClass} font-black uppercase tracking-tight`} style={{ color: global.colors.text, fontFamily: `"${global.headingFont}", Impact, sans-serif`, textTransform: textTransform || "uppercase" }}>{productGrid.title}</h2>
+                                <SelectableElement elementId="section-products-title" as="h2" className={`${headingSizeClass} font-black uppercase tracking-tight`}>
+                                    <span style={{ color: global.colors.text, fontFamily: `"${global.headingFont}", Impact, sans-serif`, textTransform: textTransform || "uppercase" }}>{productGrid.title}</span>
+                                </SelectableElement>
                                 <div className="h-1 mt-2" style={{ backgroundColor: global.colors.primary }} />
                             </div>
                         </div>
@@ -179,7 +188,9 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
                         <div className="grid md:grid-cols-2 gap-8 items-center">
                             {about.imageUrl && about.imagePosition === "left" && <div className="relative aspect-square overflow-hidden" style={{ border: `4px solid ${global.colors.text}`, boxShadow: `8px 8px 0 ${global.colors.text}` }}><Image src={about.imageUrl} alt={about.title} fill className="object-cover" /></div>}
                             <div className={about.imagePosition === "left" ? "" : "order-first md:order-none"}>
-                                <h2 className={`${headingSizeClass} font-black uppercase tracking-tight mb-6`} style={{ color: global.colors.background, fontFamily: `"${global.headingFont}", Impact, sans-serif`, textTransform: textTransform || "uppercase" }}>{about.title}</h2>
+                                <SelectableElement elementId="section-about-title" as="h2" className={`${headingSizeClass} font-black uppercase tracking-tight mb-6`}>
+                                    <span style={{ color: global.colors.background, fontFamily: `"${global.headingFont}", Impact, sans-serif`, textTransform: textTransform || "uppercase" }}>{about.title}</span>
+                                </SelectableElement>
                                 <p className={`${bodySizeClass} font-medium leading-relaxed`} style={{ color: global.colors.background, opacity: 0.9 }}>{about.text}</p>
                             </div>
                             {about.imageUrl && about.imagePosition === "right" && <div className="relative aspect-square overflow-hidden" style={{ border: `4px solid ${global.colors.text}`, boxShadow: `8px 8px 0 ${global.colors.text}` }}><Image src={about.imageUrl} alt={about.title} fill className="object-cover" /></div>}
@@ -203,7 +214,9 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
                             </div>
                         )}
                     </div>
-                    <p className="text-xs uppercase tracking-wider mt-6" style={{ color: global.footer.textColor, opacity: 0.7 }}>{footer.text || `© ${new Date().getFullYear()} ${storeName} — All Rights Reserved`}</p>
+                    <SelectableElement elementId="footer-text" as="p" className="text-xs uppercase tracking-wider mt-6">
+                        <span style={{ color: global.footer.textColor, opacity: 0.7 }}>{footer.text || `© ${new Date().getFullYear()} ${storeName} — All Rights Reserved`}</span>
+                    </SelectableElement>
                 </div>
             </footer>
 
