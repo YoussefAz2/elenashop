@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import type { ThemeConfig, Product, Page, Promo } from "@/types";
+import type { ThemeConfig, Product, Page, Promo, Category } from "@/types";
 import { ProductCard } from "../ProductCard";
 import { FloatingWhatsApp, PromoPopup } from "../common";
 import { Testimonials } from "../common/Testimonials";
@@ -13,6 +13,7 @@ import { ShoppingBag, Instagram, Facebook, Phone, Store, Menu, X } from "lucide-
 interface TemplateMinimalProps {
     config: ThemeConfig;
     products: Product[];
+    categories?: Category[];
     sellerId: string;
     storeName: string;
     pages?: Page[];
@@ -22,6 +23,7 @@ interface TemplateMinimalProps {
 export function TemplateMinimal({
     config,
     products,
+    categories = [],
     sellerId,
     storeName,
     pages = [],
@@ -245,7 +247,7 @@ export function TemplateMinimal({
             {/* Section Divider */}
             {spacing.showSectionDividers && <div className="h-px" style={{ backgroundColor: `${global.colors.text}15` }} />}
 
-            {/* Products */}
+            {/* Products - Grouped by Category */}
             <section id="products" className={`${sectionPaddingClass} px-4`}>
                 <div className="mx-auto max-w-6xl">
                     {productGrid.title && (
@@ -261,7 +263,87 @@ export function TemplateMinimal({
                             <ShoppingBag className="h-12 w-12 mx-auto mb-4" style={{ color: global.colors.text, opacity: 0.2 }} />
                             <p style={{ color: global.colors.text, opacity: 0.5 }}>Aucun produit disponible</p>
                         </div>
+                    ) : categories.length > 0 ? (
+                        // Group products by category
+                        <div className="space-y-16">
+                            {categories.map((category) => {
+                                const categoryProducts = products.filter(p => p.category_id === category.id);
+                                if (categoryProducts.length === 0) return null;
+                                return (
+                                    <div key={category.id} id={`category-${category.slug}`}>
+                                        <h3
+                                            className="text-xl md:text-2xl font-medium mb-6"
+                                            style={{ color: global.colors.text, fontFamily: `"${global.headingFont}", system-ui, sans-serif` }}
+                                        >
+                                            {category.name}
+                                        </h3>
+                                        <div className={`grid ${gapClass} ${productGrid.columns === 4 ? "grid-cols-2 lg:grid-cols-4" : productGrid.columns === 3 ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" : "grid-cols-1 sm:grid-cols-2"}`}>
+                                            {categoryProducts.map((product) => {
+                                                const priceInfo = getDiscountedPrice(product, promos);
+                                                return (
+                                                    <ProductCard
+                                                        key={product.id}
+                                                        product={product}
+                                                        sellerId={sellerId}
+                                                        storeName={storeName}
+                                                        styles={global}
+                                                        showDescription={productGrid.showDescription}
+                                                        showPrice={productGrid.showPrice}
+                                                        aspectRatio={productGrid.aspectRatio}
+                                                        textAlign="left"
+                                                        variant="minimal"
+                                                        showShadow={productGrid.cardShadow}
+                                                        discountedPrice={priceInfo.discountedPrice}
+                                                        hasDiscount={priceInfo.hasDiscount}
+                                                    />
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                            {/* Uncategorized products */}
+                            {(() => {
+                                const uncategorized = products.filter(p => !p.category_id);
+                                if (uncategorized.length === 0) return null;
+                                return (
+                                    <div>
+                                        {categories.length > 0 && (
+                                            <h3
+                                                className="text-xl md:text-2xl font-medium mb-6"
+                                                style={{ color: global.colors.text, fontFamily: `"${global.headingFont}", system-ui, sans-serif` }}
+                                            >
+                                                Autres produits
+                                            </h3>
+                                        )}
+                                        <div className={`grid ${gapClass} ${productGrid.columns === 4 ? "grid-cols-2 lg:grid-cols-4" : productGrid.columns === 3 ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" : "grid-cols-1 sm:grid-cols-2"}`}>
+                                            {uncategorized.map((product) => {
+                                                const priceInfo = getDiscountedPrice(product, promos);
+                                                return (
+                                                    <ProductCard
+                                                        key={product.id}
+                                                        product={product}
+                                                        sellerId={sellerId}
+                                                        storeName={storeName}
+                                                        styles={global}
+                                                        showDescription={productGrid.showDescription}
+                                                        showPrice={productGrid.showPrice}
+                                                        aspectRatio={productGrid.aspectRatio}
+                                                        textAlign="left"
+                                                        variant="minimal"
+                                                        showShadow={productGrid.cardShadow}
+                                                        discountedPrice={priceInfo.discountedPrice}
+                                                        hasDiscount={priceInfo.hasDiscount}
+                                                    />
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                );
+                            })()}
+                        </div>
                     ) : (
+                        // No categories - show all products in single grid
                         <div className={`grid ${gapClass} ${productGrid.columns === 4 ? "grid-cols-2 lg:grid-cols-4" : productGrid.columns === 3 ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" : "grid-cols-1 sm:grid-cols-2"}`}>
                             {products.map((product) => {
                                 const priceInfo = getDiscountedPrice(product, promos);

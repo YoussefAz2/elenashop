@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { createClient } from "@/utils/supabase/server";
-import type { Profile, Product, Page, ThemeConfig, Promo } from "@/types";
+import type { Profile, Product, Page, ThemeConfig, Promo, Category } from "@/types";
 import { DEFAULT_THEME_CONFIG } from "@/types";
 import { TemplateMinimal, TemplateLuxe, TemplateStreet } from "@/components/store/templates";
 import { ElenaShopWatermark } from "@/components/store/common/ElenaShopWatermark";
@@ -107,16 +107,18 @@ export default async function StorePage({ params }: StorePageProps) {
         },
     };
 
-    // Fetch active products, pages, and promos in parallel
-    const [productsRes, pagesRes, promosRes] = await Promise.all([
+    // Fetch active products, pages, promos, and categories in parallel
+    const [productsRes, pagesRes, promosRes, categoriesRes] = await Promise.all([
         supabase.from("products").select("*").eq("user_id", seller.id).eq("is_active", true).order("created_at", { ascending: false }),
         supabase.from("pages").select("*").eq("user_id", seller.id).eq("is_published", true).order("created_at", { ascending: true }),
         supabase.from("promos").select("*").eq("user_id", seller.id).eq("is_active", true),
+        supabase.from("categories").select("*").eq("user_id", seller.id).order("position", { ascending: true }),
     ]);
 
     const activeProducts = (productsRes.data as Product[]) || [];
     const customPages = (pagesRes.data as Page[]) || [];
     const activePromos = (promosRes.data as Promo[]) || [];
+    const categories = (categoriesRes.data as Category[]) || [];
 
     // Build navigation: preconfigured pages + custom pages
     const navPages: Page[] = [
@@ -130,6 +132,7 @@ export default async function StorePage({ params }: StorePageProps) {
     const templateProps = {
         config,
         products: activeProducts,
+        categories,
         sellerId: seller.id,
         storeName: seller.store_name,
         pages: navPages,

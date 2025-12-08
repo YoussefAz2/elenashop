@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import type { ThemeConfig, Product, Page, Promo } from "@/types";
+import type { ThemeConfig, Product, Page, Promo, Category } from "@/types";
 import { ProductCard } from "../ProductCard";
 import { FloatingWhatsApp, PromoPopup } from "../common";
 import { Testimonials } from "../common/Testimonials";
@@ -13,13 +13,14 @@ import { ShoppingBag, Store, Menu, X } from "lucide-react";
 interface TemplateLuxeProps {
     config: ThemeConfig;
     products: Product[];
+    categories?: Category[];
     sellerId: string;
     storeName: string;
     pages?: Page[];
     promos?: Promo[];
 }
 
-export function TemplateLuxe({ config, products, sellerId, storeName, pages = [], promos = [] }: TemplateLuxeProps) {
+export function TemplateLuxe({ config, products, categories = [], sellerId, storeName, pages = [], promos = [] }: TemplateLuxeProps) {
     const { global, homeContent } = config;
     const { header, announcement, hero, productGrid, testimonials, about, footer } = homeContent;
     const { typography, spacing, animations } = global;
