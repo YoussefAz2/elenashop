@@ -280,8 +280,8 @@ export function DesignPanel({ config, onUpdateConfig }: DesignPanelProps) {
                                                     key={font.id}
                                                     onClick={() => onUpdateConfig({ ...config, global: { ...config.global, font: font.id } })}
                                                     className={`p-2 text-left rounded-lg border transition-all ${config.global.font === font.id
-                                                            ? "border-blue-500 bg-blue-50 ring-1 ring-blue-500/20"
-                                                            : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"
+                                                        ? "border-blue-500 bg-blue-50 ring-1 ring-blue-500/20"
+                                                        : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"
                                                         }`}
                                                 >
                                                     <span className="font-medium block truncate text-sm">{font.name}</span>
@@ -333,102 +333,111 @@ export function DesignPanel({ config, onUpdateConfig }: DesignPanelProps) {
                                 </Select>
                             </div>
                         </div>
-
-                        {/* Text Transform - Button Group */}
-                        <div className="space-y-1">
-                            <Label className="text-xs text-slate-500">Style des titres</Label>
-                            <div className="grid grid-cols-3 gap-1.5">
-                                {[
-                                    { value: "none", label: "Normal" },
-                                    { value: "uppercase", label: "MAJUSCULE" },
-                                    { value: "capitalize", label: "Capitale" },
-                                ].map((opt) => (
-                                    <button
-                                        key={opt.value}
-                                        onClick={() => updateTypography({ headingTransform: opt.value as TypographySettings["headingTransform"] })}
-                                        className={`p-2 rounded-lg border text-xs font-medium transition-all ${config.global.typography.headingTransform === opt.value
-                                                ? "border-blue-500 bg-blue-50 text-blue-700"
-                                                : "border-slate-200 hover:border-slate-300"
-                                            }`}
-                                    >
-                                        {opt.label}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
                     </AccordionContent>
                 </AccordionItem>
 
-                {/* Layout & Spacing */}
+                {/* Layout & Style */}
                 <AccordionItem value="layout" className="border rounded-lg px-3">
                     <AccordionTrigger className="hover:no-underline py-3">
                         <div className="flex items-center gap-2">
                             <Layers className="h-4 w-4 text-slate-500" />
-                            <span className="font-medium text-sm">Mise en page</span>
+                            <span className="font-medium text-sm">Style</span>
                         </div>
                     </AccordionTrigger>
                     <AccordionContent className="pb-4 space-y-4">
+                        {/* Hero Height - Visual Buttons */}
                         <div className="space-y-2">
-                            <Label className="text-sm">Hauteur Hero</Label>
-                            <Select value={config.global.hero.height} onValueChange={(v) => updateHeroStyle({ height: v as HeroStyles["height"] })}>
-                                <SelectTrigger><SelectValue /></SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="compact">Compact</SelectItem>
-                                    <SelectItem value="normal">Normal</SelectItem>
-                                    <SelectItem value="large">Grand</SelectItem>
-                                    <SelectItem value="fullscreen">Plein écran</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="space-y-2">
-                            <Label className="text-sm">Alignement Hero</Label>
-                            <Select value={config.global.hero.contentAlign} onValueChange={(v) => updateHeroStyle({ contentAlign: v as HeroStyles["contentAlign"] })}>
-                                <SelectTrigger><SelectValue /></SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="left">← Gauche</SelectItem>
-                                    <SelectItem value="center">Centre</SelectItem>
-                                    <SelectItem value="right">Droite →</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="space-y-2">
-                            <Label className="text-sm">Filtre image Hero</Label>
-                            <Select value={config.global.hero.imageFilter} onValueChange={(v) => updateHeroStyle({ imageFilter: v as HeroStyles["imageFilter"] })}>
-                                <SelectTrigger><SelectValue /></SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="none">Aucun</SelectItem>
-                                    <SelectItem value="grayscale">Noir & blanc</SelectItem>
-                                    <SelectItem value="sepia">Sépia</SelectItem>
-                                    <SelectItem value="blur">Flou</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="space-y-2">
-                            <Label className="text-sm">Espacement sections</Label>
-                            <Select value={config.global.spacing.sectionPadding} onValueChange={(v) => updateSpacing({ sectionPadding: v as SpacingSettings["sectionPadding"] })}>
-                                <SelectTrigger><SelectValue /></SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="compact">Compact</SelectItem>
-                                    <SelectItem value="normal">Normal</SelectItem>
-                                    <SelectItem value="spacious">Aéré</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="flex items-center justify-between">
-                            <Label className="text-sm">Séparateurs entre sections</Label>
-                            <Switch checked={config.global.spacing.showSectionDividers} onCheckedChange={(v) => updateSpacing({ showSectionDividers: v })} />
-                        </div>
-                        <div>
-                            <div className="flex items-center justify-between mb-2">
-                                <Label className="text-sm">Arrondis</Label>
-                                <span className="text-xs text-slate-500">{config.global.borderRadius}</span>
+                            <Label className="text-xs text-slate-500">Taille du Hero</Label>
+                            <div className="grid grid-cols-4 gap-1.5">
+                                {[
+                                    { value: "compact", label: "S", icon: "▬" },
+                                    { value: "normal", label: "M", icon: "▬▬" },
+                                    { value: "large", label: "L", icon: "▬▬▬" },
+                                    { value: "fullscreen", label: "XL", icon: "█" },
+                                ].map((opt) => (
+                                    <button
+                                        key={opt.value}
+                                        onClick={() => updateHeroStyle({ height: opt.value as HeroStyles["height"] })}
+                                        className={`p-2 rounded-lg border text-center transition-all ${config.global.hero.height === opt.value
+                                            ? "border-blue-500 bg-blue-50 text-blue-700"
+                                            : "border-slate-200 hover:border-slate-300"
+                                            }`}
+                                    >
+                                        <div className="text-lg">{opt.icon}</div>
+                                        <div className="text-[10px] font-medium">{opt.label}</div>
+                                    </button>
+                                ))}
                             </div>
-                            <Slider
-                                value={[getRadiusIndex()]}
-                                onValueChange={([v]) => onUpdateConfig({ ...config, global: { ...config.global, borderRadius: radiusValues[v] } })}
-                                max={radiusValues.length - 1}
-                                step={1}
-                            />
+                        </div>
+
+                        {/* Hero Alignment - Visual Buttons */}
+                        <div className="space-y-2">
+                            <Label className="text-xs text-slate-500">Position du texte</Label>
+                            <div className="grid grid-cols-3 gap-1.5">
+                                {[
+                                    { value: "left", icon: "◀" },
+                                    { value: "center", icon: "◆" },
+                                    { value: "right", icon: "▶" },
+                                ].map((opt) => (
+                                    <button
+                                        key={opt.value}
+                                        onClick={() => updateHeroStyle({ contentAlign: opt.value as HeroStyles["contentAlign"] })}
+                                        className={`p-2.5 rounded-lg border text-lg transition-all ${config.global.hero.contentAlign === opt.value
+                                            ? "border-blue-500 bg-blue-50"
+                                            : "border-slate-200 hover:border-slate-300"
+                                            }`}
+                                    >
+                                        {opt.icon}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Corners - Visual Slider */}
+                        <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                                <Label className="text-xs text-slate-500">Arrondis</Label>
+                                <div className="flex gap-1">
+                                    {["0", "0.5rem", "1rem", "9999px"].map((val, i) => (
+                                        <button
+                                            key={val}
+                                            onClick={() => onUpdateConfig({ ...config, global: { ...config.global, borderRadius: val } })}
+                                            className={`w-6 h-6 rounded-sm border transition-all ${config.global.borderRadius === val
+                                                ? "border-blue-500 bg-blue-50"
+                                                : "border-slate-200 hover:border-slate-300"
+                                                }`}
+                                        >
+                                            <div
+                                                className="w-4 h-4 m-auto bg-slate-400"
+                                                style={{ borderRadius: val }}
+                                            />
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Spacing - Visual Buttons */}
+                        <div className="space-y-2">
+                            <Label className="text-xs text-slate-500">Espacement</Label>
+                            <div className="grid grid-cols-3 gap-1.5">
+                                {[
+                                    { value: "compact", label: "Compact", icon: "│││" },
+                                    { value: "normal", label: "Normal", icon: "│ │ │" },
+                                    { value: "spacious", label: "Aéré", icon: "│  │  │" },
+                                ].map((opt) => (
+                                    <button
+                                        key={opt.value}
+                                        onClick={() => updateSpacing({ sectionPadding: opt.value as SpacingSettings["sectionPadding"] })}
+                                        className={`p-2 rounded-lg border text-center transition-all ${config.global.spacing.sectionPadding === opt.value
+                                            ? "border-blue-500 bg-blue-50 text-blue-700"
+                                            : "border-slate-200 hover:border-slate-300"
+                                            }`}
+                                    >
+                                        <div className="text-xs font-medium">{opt.label}</div>
+                                    </button>
+                                ))}
+                            </div>
                         </div>
                     </AccordionContent>
                 </AccordionItem>
@@ -442,57 +451,92 @@ export function DesignPanel({ config, onUpdateConfig }: DesignPanelProps) {
                         </div>
                     </AccordionTrigger>
                     <AccordionContent className="pb-4 space-y-4">
+                        {/* Button Style - Visual */}
                         <div className="space-y-2">
-                            <Label className="text-sm">Style</Label>
-                            <Select value={config.global.buttons.style} onValueChange={(v) => updateButtonStyle({ style: v as ButtonStyles["style"] })}>
-                                <SelectTrigger><SelectValue /></SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="solid">Plein</SelectItem>
-                                    <SelectItem value="outline">Contour</SelectItem>
-                                    <SelectItem value="ghost">Fantôme</SelectItem>
-                                </SelectContent>
-                            </Select>
+                            <Label className="text-xs text-slate-500">Style</Label>
+                            <div className="grid grid-cols-3 gap-1.5">
+                                {[
+                                    { value: "solid", label: "Plein", preview: "bg-slate-800 text-white" },
+                                    { value: "outline", label: "Contour", preview: "border-2 border-slate-800" },
+                                    { value: "ghost", label: "Minimal", preview: "text-slate-800 underline" },
+                                ].map((opt) => (
+                                    <button
+                                        key={opt.value}
+                                        onClick={() => updateButtonStyle({ style: opt.value as ButtonStyles["style"] })}
+                                        className={`p-2 rounded-lg border transition-all ${config.global.buttons.style === opt.value
+                                            ? "border-blue-500 bg-blue-50"
+                                            : "border-slate-200 hover:border-slate-300"
+                                            }`}
+                                    >
+                                        <div className={`text-[10px] px-2 py-1 rounded mx-auto w-fit ${opt.preview}`}>
+                                            Acheter
+                                        </div>
+                                        <div className="text-[10px] text-slate-500 mt-1">{opt.label}</div>
+                                    </button>
+                                ))}
+                            </div>
                         </div>
+
+                        {/* Button Size */}
                         <div className="space-y-2">
-                            <Label className="text-sm">Taille</Label>
-                            <Select value={config.global.buttons.size} onValueChange={(v) => updateButtonStyle({ size: v as ButtonStyles["size"] })}>
-                                <SelectTrigger><SelectValue /></SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="small">Petit</SelectItem>
-                                    <SelectItem value="medium">Moyen</SelectItem>
-                                    <SelectItem value="large">Grand</SelectItem>
-                                </SelectContent>
-                            </Select>
+                            <Label className="text-xs text-slate-500">Taille</Label>
+                            <div className="grid grid-cols-3 gap-1.5">
+                                {[
+                                    { value: "small", label: "S" },
+                                    { value: "medium", label: "M" },
+                                    { value: "large", label: "L" },
+                                ].map((opt) => (
+                                    <button
+                                        key={opt.value}
+                                        onClick={() => updateButtonStyle({ size: opt.value as ButtonStyles["size"] })}
+                                        className={`p-2 rounded-lg border text-sm font-medium transition-all ${config.global.buttons.size === opt.value
+                                            ? "border-blue-500 bg-blue-50 text-blue-700"
+                                            : "border-slate-200 hover:border-slate-300"
+                                            }`}
+                                    >
+                                        {opt.label}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
                     </AccordionContent>
                 </AccordionItem>
 
-                {/* Cards & Effects */}
+                {/* Cards Effects */}
                 <AccordionItem value="cards" className="border rounded-lg px-3">
                     <AccordionTrigger className="hover:no-underline py-3">
                         <div className="flex items-center gap-2">
                             <Move className="h-4 w-4 text-slate-500" />
-                            <span className="font-medium text-sm">Cartes produits</span>
+                            <span className="font-medium text-sm">Produits</span>
                         </div>
                     </AccordionTrigger>
                     <AccordionContent className="pb-4 space-y-4">
                         <div className="space-y-2">
-                            <Label className="text-sm">Effet au survol</Label>
-                            <Select value={config.global.cards.hoverEffect} onValueChange={(v) => updateCardStyle({ hoverEffect: v as CardStyles["hoverEffect"] })}>
-                                <SelectTrigger><SelectValue /></SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="none">Aucun</SelectItem>
-                                    <SelectItem value="lift">Élévation</SelectItem>
-                                    <SelectItem value="zoom">Zoom</SelectItem>
-                                    <SelectItem value="glow">Lueur</SelectItem>
-                                    <SelectItem value="border">Bordure</SelectItem>
-                                </SelectContent>
-                            </Select>
+                            <Label className="text-xs text-slate-500">Effet au survol</Label>
+                            <div className="grid grid-cols-3 gap-1.5">
+                                {[
+                                    { value: "none", label: "Aucun", icon: "—" },
+                                    { value: "lift", label: "Élever", icon: "↑" },
+                                    { value: "zoom", label: "Zoom", icon: "⊕" },
+                                ].map((opt) => (
+                                    <button
+                                        key={opt.value}
+                                        onClick={() => updateCardStyle({ hoverEffect: opt.value as CardStyles["hoverEffect"] })}
+                                        className={`p-2.5 rounded-lg border text-center transition-all ${config.global.cards.hoverEffect === opt.value
+                                            ? "border-blue-500 bg-blue-50 text-blue-700"
+                                            : "border-slate-200 hover:border-slate-300"
+                                            }`}
+                                    >
+                                        <div className="text-lg">{opt.icon}</div>
+                                        <div className="text-[10px]">{opt.label}</div>
+                                    </button>
+                                ))}
+                            </div>
                         </div>
                     </AccordionContent>
                 </AccordionItem>
 
-                {/* Animations */}
+                {/* Animations - Simplified */}
                 <AccordionItem value="animations" className="border rounded-lg px-3">
                     <AccordionTrigger className="hover:no-underline py-3">
                         <div className="flex items-center gap-2">
@@ -501,36 +545,41 @@ export function DesignPanel({ config, onUpdateConfig }: DesignPanelProps) {
                         </div>
                     </AccordionTrigger>
                     <AccordionContent className="pb-4 space-y-4">
-                        <div className="flex items-center justify-between">
-                            <Label className="text-sm">Activer les animations</Label>
-                            <Switch checked={config.global.animations.enableAnimations} onCheckedChange={(v) => updateAnimations({ enableAnimations: v })} />
+                        {/* Main Toggle */}
+                        <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50">
+                            <div>
+                                <Label className="text-sm font-medium">Activer</Label>
+                                <p className="text-[10px] text-slate-500">Effets de transition</p>
+                            </div>
+                            <Switch
+                                checked={config.global.animations.enableAnimations}
+                                onCheckedChange={(v) => updateAnimations({ enableAnimations: v })}
+                            />
                         </div>
+
                         {config.global.animations.enableAnimations && (
-                            <>
-                                <div className="space-y-2">
-                                    <Label className="text-sm">Vitesse</Label>
-                                    <Select value={config.global.animations.animationSpeed} onValueChange={(v) => updateAnimations({ animationSpeed: v as AnimationSettings["animationSpeed"] })}>
-                                        <SelectTrigger><SelectValue /></SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="slow">Lente</SelectItem>
-                                            <SelectItem value="normal">Normale</SelectItem>
-                                            <SelectItem value="fast">Rapide</SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                            <div className="space-y-2">
+                                <Label className="text-xs text-slate-500">Vitesse</Label>
+                                <div className="grid grid-cols-3 gap-1.5">
+                                    {[
+                                        { value: "slow", label: "Lente", icon: "🐢" },
+                                        { value: "normal", label: "Normal", icon: "🚶" },
+                                        { value: "fast", label: "Rapide", icon: "⚡" },
+                                    ].map((opt) => (
+                                        <button
+                                            key={opt.value}
+                                            onClick={() => updateAnimations({ animationSpeed: opt.value as AnimationSettings["animationSpeed"] })}
+                                            className={`p-2 rounded-lg border text-center transition-all ${config.global.animations.animationSpeed === opt.value
+                                                ? "border-blue-500 bg-blue-50"
+                                                : "border-slate-200 hover:border-slate-300"
+                                                }`}
+                                        >
+                                            <div className="text-sm">{opt.icon}</div>
+                                            <div className="text-[10px]">{opt.label}</div>
+                                        </button>
+                                    ))}
                                 </div>
-                                <div className="space-y-2">
-                                    <Label className="text-sm">Transition hover</Label>
-                                    <Select value={config.global.animations.hoverTransition} onValueChange={(v) => updateAnimations({ hoverTransition: v as AnimationSettings["hoverTransition"] })}>
-                                        <SelectTrigger><SelectValue /></SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="none">Aucune</SelectItem>
-                                            <SelectItem value="fade">Fondu</SelectItem>
-                                            <SelectItem value="scale">Zoom</SelectItem>
-                                            <SelectItem value="slide">Glissement</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                            </>
+                            </div>
                         )}
                     </AccordionContent>
                 </AccordionItem>
