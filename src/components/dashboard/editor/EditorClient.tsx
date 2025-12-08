@@ -25,7 +25,6 @@ import type { Profile, Product, Page, ThemeConfig } from "@/types";
 import { DesignPanel } from "./DesignPanel";
 import { ContentPanel } from "./ContentPanel";
 import { UpgradeModal } from "./UpgradeModal";
-import { ElementSelectionProvider } from "@/components/store/common/SelectableElement";
 import { TemplateMinimal, TemplateLuxe, TemplateStreet } from "@/components/store/templates";
 import { isTemplatePremium, getTemplateConfig } from "@/lib/templates";
 
@@ -269,29 +268,40 @@ export function EditorClient({
         }
     };
 
+    // Handle element override updates
+    const handleUpdateOverride = (elementId: string, styles: import("@/types").ElementStyleOverride | null) => {
+        setConfig(prev => {
+            const newOverrides = { ...(prev.elementOverrides || {}) };
+            if (styles === null) {
+                delete newOverrides[elementId];
+            } else {
+                newOverrides[elementId] = styles;
+            }
+            return { ...prev, elementOverrides: newOverrides };
+        });
+    };
+
     // Render the correct template based on templateId
     const renderPreview = () => {
-        const props = { config, products, sellerId: seller.id, storeName: seller.store_name, pages };
+        const props = {
+            config,
+            products,
+            sellerId: seller.id,
+            storeName: seller.store_name,
+            pages,
+            // New editing props
+            isEditing: advancedMode,
+            onUpdateOverride: handleUpdateOverride,
+        };
 
-        const template = (() => {
-            switch (config.templateId) {
-                case "luxe":
-                    return <TemplateLuxe {...props} />;
-                case "street":
-                    return <TemplateStreet {...props} />;
-                default:
-                    return <TemplateMinimal {...props} />;
-            }
-        })();
-
-        return (
-            <ElementSelectionProvider
-                isEditorMode={true}
-                isAdvancedMode={advancedMode}
-            >
-                {template}
-            </ElementSelectionProvider>
-        );
+        switch (config.templateId) {
+            case "luxe":
+                return <TemplateLuxe {...props} />;
+            case "street":
+                return <TemplateStreet {...props} />;
+            default:
+                return <TemplateMinimal {...props} />;
+        }
     };
 
     return (

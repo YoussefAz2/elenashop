@@ -292,6 +292,8 @@ export interface ThemeConfig {
     floatingWhatsApp: FloatingWhatsAppConfig;
     promoPopup: PromoPopupConfig;
     seo: SEOConfig;
+    // Element-specific overrides (click-to-edit system)
+    elementOverrides?: Record<string, ElementStyleOverride>;
 }
 
 export interface NavItem {

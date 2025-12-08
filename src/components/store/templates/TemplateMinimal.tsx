@@ -9,7 +9,8 @@ import { FloatingWhatsApp, PromoPopup } from "../common";
 import { Testimonials } from "../common/Testimonials";
 import { getDiscountedPrice, getPopupPromo } from "@/lib/promo";
 import { ShoppingBag, Instagram, Facebook, Phone, Store, Menu, X } from "lucide-react";
-import { SelectableElement } from "../common/SelectableElement";
+import { Editable } from "../common/Editable";
+import type { ElementStyleOverride } from "@/types";
 
 interface TemplateMinimalProps {
     config: ThemeConfig;
@@ -19,6 +20,9 @@ interface TemplateMinimalProps {
     storeName: string;
     pages?: Page[];
     promos?: Promo[];
+    // Editing mode props
+    isEditing?: boolean;
+    onUpdateOverride?: (id: string, styles: ElementStyleOverride | null) => void;
 }
 
 export function TemplateMinimal({
@@ -29,6 +33,8 @@ export function TemplateMinimal({
     storeName,
     pages = [],
     promos = [],
+    isEditing = false,
+    onUpdateOverride,
 }: TemplateMinimalProps) {
     const { global, homeContent } = config;
     const { header, announcement, hero, productGrid, testimonials, about, footer } = homeContent;
@@ -221,17 +227,17 @@ export function TemplateMinimal({
                     >
                         <div className={`mx-auto max-w-2xl flex flex-col ${heroAlignClass}`}>
                             <div className="w-12 h-px mb-8" style={{ backgroundColor: hero.imageUrl ? "#fff" : global.hero.buttonBg }} />
-                            <SelectableElement elementId="hero-title" as="h1" className={`${headingSizeClass} font-light tracking-tight mb-4`}>
+                            <Editable id="hero-title" as="h1" className={`${headingSizeClass} font-light tracking-tight mb-4`} isEditing={isEditing} override={config.elementOverrides?.["hero-title"]} onUpdateOverride={onUpdateOverride}>
                                 <span style={{ color: hero.imageUrl ? "#fff" : global.hero.textColor, fontFamily: `"${global.headingFont}", system-ui, sans-serif`, textTransform }}>
                                     {hero.title || storeName}
                                 </span>
-                            </SelectableElement>
+                            </Editable>
                             {hero.subtitle && (
-                                <SelectableElement elementId="hero-subtitle" as="p" className="text-lg md:text-xl font-light mb-10 max-w-lg">
+                                <Editable id="hero-subtitle" as="p" className="text-lg md:text-xl font-light mb-10 max-w-lg" isEditing={isEditing} override={config.elementOverrides?.["hero-subtitle"]} onUpdateOverride={onUpdateOverride}>
                                     <span style={{ color: hero.imageUrl ? "rgba(255,255,255,0.85)" : global.hero.textColor, opacity: hero.imageUrl ? 1 : 0.7 }}>
                                         {hero.subtitle}
                                     </span>
-                                </SelectableElement>
+                                </Editable>
                             )}
                             {hero.buttonText && (
                                 <HoverButton
@@ -260,11 +266,11 @@ export function TemplateMinimal({
                 <div className="mx-auto max-w-6xl">
                     {productGrid.title && (
                         <div className={`mb-12 ${global.hero.contentAlign === "center" ? "text-center" : ""}`}>
-                            <SelectableElement elementId="section-products-title" as="h2" className={`${headingSizeClass} font-light tracking-tight`}>
+                            <Editable id="products-title" as="h2" className={`${headingSizeClass} font-light tracking-tight`} isEditing={isEditing} override={config.elementOverrides?.["products-title"]} onUpdateOverride={onUpdateOverride}>
                                 <span style={{ color: global.colors.text, fontFamily: `"${global.headingFont}", system-ui, sans-serif`, textTransform }}>
                                     {productGrid.title}
                                 </span>
-                            </SelectableElement>
+                            </Editable>
                             <div className="w-8 h-px mt-4 mx-auto" style={{ backgroundColor: global.colors.primary }} />
                         </div>
                     )}
@@ -400,11 +406,11 @@ export function TemplateMinimal({
                                 </div>
                             )}
                             <div className={about.imagePosition === "left" ? "" : "order-first md:order-none"}>
-                                <SelectableElement elementId="section-about-title" as="h2" className={`${headingSizeClass} font-light tracking-tight mb-6`}>
+                                <Editable id="about-title" as="h2" className={`${headingSizeClass} font-light tracking-tight mb-6`} isEditing={isEditing} override={config.elementOverrides?.["about-title"]} onUpdateOverride={onUpdateOverride}>
                                     <span style={{ color: global.colors.text, fontFamily: `"${global.headingFont}", system-ui, sans-serif`, textTransform }}>
                                         {about.title}
                                     </span>
-                                </SelectableElement>
+                                </Editable>
                                 <p className={`${bodySizeClass} leading-relaxed`} style={{ color: global.colors.text, opacity: 0.7 }}>{about.text}</p>
                             </div>
                             {about.imageUrl && about.imagePosition === "right" && (
@@ -431,9 +437,9 @@ export function TemplateMinimal({
                             {footer.whatsapp && <a href={`https://wa.me/${footer.whatsapp.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer" className="transition-opacity hover:opacity-60" style={{ color: global.footer.accentColor }}><Phone className="h-5 w-5" /></a>}
                         </div>
                     )}
-                    <SelectableElement elementId="footer-text" as="p" className="text-sm">
+                    <Editable id="footer-text" as="p" className="text-sm" isEditing={isEditing} override={config.elementOverrides?.["footer-text"]} onUpdateOverride={onUpdateOverride}>
                         <span style={{ color: global.footer.textColor }}>{footer.text || `© ${new Date().getFullYear()} ${storeName}`}</span>
-                    </SelectableElement>
+                    </Editable>
                 </div>
             </footer>
 
