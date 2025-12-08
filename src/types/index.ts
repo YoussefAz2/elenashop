@@ -72,8 +72,8 @@ export interface GlobalStyles {
         background: string;
         text: string;
     };
-    font: "Inter" | "Playfair Display" | "Oswald" | "Lato" | "Poppins" | "Montserrat";
-    headingFont: "Inter" | "Playfair Display" | "Oswald" | "Lato" | "Poppins" | "Montserrat";
+    font: string; // Any Google Font from AVAILABLE_FONTS
+    headingFont: string; // Any Google Font from AVAILABLE_FONTS
     borderRadius: string;
     // Section styles
     hero: HeroStyles;
@@ -282,13 +282,49 @@ export interface NavItem {
 // ---------- CONSTANTS ----------
 
 export const AVAILABLE_FONTS = [
-    { id: "Inter", name: "Inter", style: "Moderne" },
-    { id: "Playfair Display", name: "Playfair Display", style: "Élégant" },
-    { id: "Oswald", name: "Oswald", style: "Urbain" },
-    { id: "Lato", name: "Lato", style: "Classique" },
-    { id: "Poppins", name: "Poppins", style: "Tendance" },
-    { id: "Montserrat", name: "Montserrat", style: "Géométrique" },
+    // Modern & Clean
+    { id: "Inter", name: "Inter", style: "Moderne", category: "modern" },
+    { id: "Poppins", name: "Poppins", style: "Tendance", category: "modern" },
+    { id: "Outfit", name: "Outfit", style: "Moderne", category: "modern" },
+    { id: "DM Sans", name: "DM Sans", style: "Épuré", category: "modern" },
+    { id: "Space Grotesk", name: "Space Grotesk", style: "Tech", category: "modern" },
+
+    // Elegant & Luxury
+    { id: "Playfair Display", name: "Playfair Display", style: "Élégant", category: "elegant" },
+    { id: "Cormorant Garamond", name: "Cormorant", style: "Luxe", category: "elegant" },
+    { id: "Libre Baskerville", name: "Libre Baskerville", style: "Classique", category: "elegant" },
+    { id: "Crimson Pro", name: "Crimson Pro", style: "Raffiné", category: "elegant" },
+    { id: "EB Garamond", name: "EB Garamond", style: "Sophistiqué", category: "elegant" },
+
+    // Bold & Impactful
+    { id: "Oswald", name: "Oswald", style: "Urbain", category: "bold" },
+    { id: "Montserrat", name: "Montserrat", style: "Géométrique", category: "bold" },
+    { id: "Bebas Neue", name: "Bebas Neue", style: "Impactant", category: "bold" },
+    { id: "Anton", name: "Anton", style: "Fort", category: "bold" },
+    { id: "Archivo Black", name: "Archivo Black", style: "Puissant", category: "bold" },
+
+    // Friendly & Warm
+    { id: "Nunito", name: "Nunito", style: "Doux", category: "friendly" },
+    { id: "Quicksand", name: "Quicksand", style: "Arrondi", category: "friendly" },
+    { id: "Comfortaa", name: "Comfortaa", style: "Amical", category: "friendly" },
+    { id: "Varela Round", name: "Varela Round", style: "Chaleureux", category: "friendly" },
+
+    // Classic & Versatile
+    { id: "Lato", name: "Lato", style: "Classique", category: "classic" },
+    { id: "Roboto", name: "Roboto", style: "Polyvalent", category: "classic" },
+    { id: "Open Sans", name: "Open Sans", style: "Neutre", category: "classic" },
+    { id: "Source Sans 3", name: "Source Sans", style: "Lisible", category: "classic" },
 ] as const;
+
+export type FontCategory = "modern" | "elegant" | "bold" | "friendly" | "classic";
+
+export const FONT_CATEGORIES: Record<FontCategory, { label: string; emoji: string }> = {
+    modern: { label: "Moderne", emoji: "✨" },
+    elegant: { label: "Élégant", emoji: "👑" },
+    bold: { label: "Impact", emoji: "💪" },
+    friendly: { label: "Amical", emoji: "😊" },
+    classic: { label: "Classique", emoji: "📖" },
+};
 
 export const TEMPLATE_PRESETS: Record<TemplateId, { name: string; description: string; preview: string }> = {
     minimal: {

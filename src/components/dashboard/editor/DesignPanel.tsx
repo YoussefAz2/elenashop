@@ -31,7 +31,7 @@ import type {
     SpacingSettings,
     AnimationSettings,
 } from "@/types";
-import { DEFAULT_THEME_CONFIGS, AVAILABLE_FONTS } from "@/types";
+import { DEFAULT_THEME_CONFIGS, AVAILABLE_FONTS, FONT_CATEGORIES } from "@/types";
 import { TEMPLATES } from "@/lib/templates";
 import { COLOR_PALETTES, applyPalette, type ColorPalette } from "@/lib/palettes";
 
@@ -265,61 +265,96 @@ export function DesignPanel({ config, onUpdateConfig }: DesignPanelProps) {
                         </div>
                     </AccordionTrigger>
                     <AccordionContent className="pb-4 space-y-4">
+                        {/* Main Font - Visual Selector */}
                         <div className="space-y-2">
-                            <Label className="text-sm">Police principale</Label>
-                            <Select value={config.global.font} onValueChange={(v) => onUpdateConfig({ ...config, global: { ...config.global, font: v as GlobalStyles["font"] } })}>
-                                <SelectTrigger><SelectValue /></SelectTrigger>
-                                <SelectContent>
-                                    {AVAILABLE_FONTS.map((f) => (
-                                        <SelectItem key={f.id} value={f.id}>{f.name} ({f.style})</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                            <Label className="text-sm font-medium">Police principale</Label>
+                            <div className="max-h-48 overflow-y-auto pr-1 space-y-3">
+                                {(Object.keys(FONT_CATEGORIES) as Array<keyof typeof FONT_CATEGORIES>).map((category) => (
+                                    <div key={category} className="space-y-1.5">
+                                        <p className="text-[10px] text-slate-400 uppercase tracking-wide sticky top-0 bg-white py-0.5">
+                                            {FONT_CATEGORIES[category].emoji} {FONT_CATEGORIES[category].label}
+                                        </p>
+                                        <div className="grid grid-cols-2 gap-1.5">
+                                            {AVAILABLE_FONTS.filter(f => f.category === category).map((font) => (
+                                                <button
+                                                    key={font.id}
+                                                    onClick={() => onUpdateConfig({ ...config, global: { ...config.global, font: font.id } })}
+                                                    className={`p-2 text-left rounded-lg border transition-all ${config.global.font === font.id
+                                                            ? "border-blue-500 bg-blue-50 ring-1 ring-blue-500/20"
+                                                            : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"
+                                                        }`}
+                                                >
+                                                    <span className="font-medium block truncate text-sm">{font.name}</span>
+                                                    <span className="text-[10px] text-slate-400">{font.style}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
+
+                        {/* Heading Font */}
                         <div className="space-y-2">
-                            <Label className="text-sm">Police titres</Label>
+                            <Label className="text-sm font-medium">Police titres</Label>
                             <Select value={config.global.headingFont} onValueChange={(v) => onUpdateConfig({ ...config, global: { ...config.global, headingFont: v as GlobalStyles["headingFont"] } })}>
-                                <SelectTrigger><SelectValue /></SelectTrigger>
-                                <SelectContent>
+                                <SelectTrigger><SelectValue placeholder="Même" /></SelectTrigger>
+                                <SelectContent className="max-h-60">
                                     {AVAILABLE_FONTS.map((f) => (
-                                        <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>
+                                        <SelectItem key={f.id} value={f.id}>{f.name} • {f.style}</SelectItem>
                                     ))}
                                 </SelectContent>
                             </Select>
                         </div>
-                        <div className="space-y-2">
-                            <Label className="text-sm">Taille titres</Label>
-                            <Select value={config.global.typography.headingSize} onValueChange={(v) => updateTypography({ headingSize: v as TypographySettings["headingSize"] })}>
-                                <SelectTrigger><SelectValue /></SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="small">Petit</SelectItem>
-                                    <SelectItem value="medium">Moyen</SelectItem>
-                                    <SelectItem value="large">Grand</SelectItem>
-                                    <SelectItem value="xlarge">Très grand</SelectItem>
-                                </SelectContent>
-                            </Select>
+
+                        {/* Font Sizes - Compact Grid */}
+                        <div className="grid grid-cols-2 gap-3">
+                            <div className="space-y-1">
+                                <Label className="text-xs text-slate-500">Taille titres</Label>
+                                <Select value={config.global.typography.headingSize} onValueChange={(v) => updateTypography({ headingSize: v as TypographySettings["headingSize"] })}>
+                                    <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="small">Petit</SelectItem>
+                                        <SelectItem value="medium">Moyen</SelectItem>
+                                        <SelectItem value="large">Grand</SelectItem>
+                                        <SelectItem value="xlarge">Très grand</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="space-y-1">
+                                <Label className="text-xs text-slate-500">Taille texte</Label>
+                                <Select value={config.global.typography.bodySize} onValueChange={(v) => updateTypography({ bodySize: v as TypographySettings["bodySize"] })}>
+                                    <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="small">Petit</SelectItem>
+                                        <SelectItem value="medium">Moyen</SelectItem>
+                                        <SelectItem value="large">Grand</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
                         </div>
-                        <div className="space-y-2">
-                            <Label className="text-sm">Taille texte</Label>
-                            <Select value={config.global.typography.bodySize} onValueChange={(v) => updateTypography({ bodySize: v as TypographySettings["bodySize"] })}>
-                                <SelectTrigger><SelectValue /></SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="small">Petit</SelectItem>
-                                    <SelectItem value="medium">Moyen</SelectItem>
-                                    <SelectItem value="large">Grand</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="space-y-2">
-                            <Label className="text-sm">Style titres</Label>
-                            <Select value={config.global.typography.headingTransform} onValueChange={(v) => updateTypography({ headingTransform: v as TypographySettings["headingTransform"] })}>
-                                <SelectTrigger><SelectValue /></SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="none">Normal</SelectItem>
-                                    <SelectItem value="uppercase">MAJUSCULES</SelectItem>
-                                    <SelectItem value="capitalize">Première Lettre</SelectItem>
-                                </SelectContent>
-                            </Select>
+
+                        {/* Text Transform - Button Group */}
+                        <div className="space-y-1">
+                            <Label className="text-xs text-slate-500">Style des titres</Label>
+                            <div className="grid grid-cols-3 gap-1.5">
+                                {[
+                                    { value: "none", label: "Normal" },
+                                    { value: "uppercase", label: "MAJUSCULE" },
+                                    { value: "capitalize", label: "Capitale" },
+                                ].map((opt) => (
+                                    <button
+                                        key={opt.value}
+                                        onClick={() => updateTypography({ headingTransform: opt.value as TypographySettings["headingTransform"] })}
+                                        className={`p-2 rounded-lg border text-xs font-medium transition-all ${config.global.typography.headingTransform === opt.value
+                                                ? "border-blue-500 bg-blue-50 text-blue-700"
+                                                : "border-slate-200 hover:border-slate-300"
+                                            }`}
+                                    >
+                                        {opt.label}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
                     </AccordionContent>
                 </AccordionItem>
