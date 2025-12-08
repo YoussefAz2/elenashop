@@ -4,6 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 import type { Profile, Product, Page, ThemeConfig, Promo } from "@/types";
 import { DEFAULT_THEME_CONFIG } from "@/types";
 import { TemplateMinimal, TemplateLuxe, TemplateStreet } from "@/components/store/templates";
+import { ElenaShopWatermark } from "@/components/store/common/ElenaShopWatermark";
 
 interface StorePageProps {
     params: Promise<{ store_name: string }>;
@@ -154,6 +155,9 @@ export default async function StorePage({ params }: StorePageProps) {
             ) : (
                 <TemplateMinimal {...templateProps} />
             )}
+
+            {/* Watermark for free users */}
+            <ElenaShopWatermark isPro={seller.subscription_status === "pro"} />
         </>
     );
 }
