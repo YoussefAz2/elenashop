@@ -36,7 +36,8 @@ export function ProductCard({
     hasDiscount = false,
 }: ProductCardProps) {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    const { cards, buttons } = styles;
+    const [isHovered, setIsHovered] = useState(false);
+    const { cards, buttons, animations } = styles;
 
     // Touch swipe handling
     const touchStartX = useRef<number>(0);
@@ -100,17 +101,41 @@ export function ProductCard({
 
     const isCenter = textAlign === "center";
 
-    const getCardStyle = () => {
+    const getCardStyle = (): React.CSSProperties => {
+        const animDuration = animations?.animationSpeed === "slow" ? "0.5s"
+            : animations?.animationSpeed === "fast" ? "0.15s" : "0.3s";
+
         const base: React.CSSProperties = {
             backgroundColor: cards.backgroundColor,
             borderRadius: variant === "street" ? "0" : styles.borderRadius,
+            transition: animations?.enableAnimations ? `all ${animDuration} ease` : "none",
         };
+
+        // Apply hover effects
+        let hoverStyles: React.CSSProperties = {};
+        if (isHovered && animations?.enableAnimations) {
+            switch (cards.hoverEffect) {
+                case "lift":
+                    hoverStyles = { transform: "translateY(-8px)", boxShadow: "0 12px 24px rgba(0,0,0,0.15)" };
+                    break;
+                case "zoom":
+                    hoverStyles = { transform: "scale(1.03)" };
+                    break;
+                case "glow":
+                    hoverStyles = { boxShadow: `0 0 24px ${styles.colors.primary}40` };
+                    break;
+                case "border":
+                    hoverStyles = { borderColor: styles.colors.primary };
+                    break;
+            }
+        }
 
         if (variant === "street") {
             return {
                 ...base,
                 border: `3px solid ${cards.borderColor}`,
                 boxShadow: showShadow ? `4px 4px 0 ${cards.borderColor}` : "none",
+                ...hoverStyles,
             };
         }
 
@@ -119,6 +144,7 @@ export function ProductCard({
                 ...base,
                 border: `1px solid ${cards.borderColor}`,
                 boxShadow: showShadow ? "0 8px 32px rgba(0,0,0,0.12)" : "none",
+                ...hoverStyles,
             };
         }
 
@@ -126,13 +152,16 @@ export function ProductCard({
             ...base,
             border: cards.borderColor !== "transparent" ? `1px solid ${cards.borderColor}` : "none",
             boxShadow: showShadow ? "0 2px 8px rgba(0,0,0,0.06)" : "none",
+            ...hoverStyles,
         };
     };
 
     return (
         <div
-            className="group overflow-hidden transition-all duration-300 hover:-translate-y-1"
+            className="group overflow-hidden"
             style={getCardStyle()}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
         >
             {/* Product Image with Carousel */}
             <div
@@ -148,7 +177,8 @@ export function ProductCard({
                             src={allImages[currentImageIndex]}
                             alt={product.title}
                             fill
-                            className="object-cover transition-transform duration-500 group-hover:scale-110"
+                            className={`object-cover transition-transform duration-500 ${animations?.enableAnimations && isHovered ? "scale-110" : ""
+                                }`}
                             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                             style={{ objectPosition: product.image_position || "center" }}
                             draggable={false}

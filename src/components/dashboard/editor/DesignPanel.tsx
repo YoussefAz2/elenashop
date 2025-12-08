@@ -398,7 +398,7 @@ export function DesignPanel({ config, onUpdateConfig }: DesignPanelProps) {
                             <div className="flex items-center justify-between">
                                 <Label className="text-xs text-slate-500">Arrondis</Label>
                                 <div className="flex gap-1">
-                                    {["0", "0.5rem", "1rem", "9999px"].map((val, i) => (
+                                    {["0", "0.5rem", "1rem", "1.5rem"].map((val, i) => (
                                         <button
                                             key={val}
                                             onClick={() => onUpdateConfig({ ...config, global: { ...config.global, borderRadius: val } })}
