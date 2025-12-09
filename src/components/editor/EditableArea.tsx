@@ -61,14 +61,24 @@ export function EditableArea({
     const isHovered = editor?.hoveredElement?.id === id;
     const hasOverride = editor?.overrides?.[id] !== undefined;
 
-    // Get override styles
+    // Get override styles and apply them in a way that overrides child styles
     const overrideStyles = editor?.getOverride?.(id);
     const appliedStyles: React.CSSProperties = overrideStyles ? {
+        // Apply override styles directly
         color: overrideStyles.color,
         backgroundColor: overrideStyles.backgroundColor,
         fontSize: overrideStyles.fontSize,
         fontWeight: overrideStyles.fontWeight as React.CSSProperties["fontWeight"],
         fontFamily: overrideStyles.fontFamily,
+        // Force children to inherit all text properties
+        ["--editable-color" as string]: overrideStyles.color || "inherit",
+        ["--editable-font-size" as string]: overrideStyles.fontSize || "inherit",
+        ["--editable-font-weight" as string]: overrideStyles.fontWeight || "inherit",
+    } : {};
+
+    // Apply CSS that forces inheritance to all children when there's an override
+    const inheritanceStyle: React.CSSProperties = overrideStyles ? {
+        ...appliedStyles,
     } : {};
 
     // ---------- HANDLERS ----------
@@ -95,10 +105,32 @@ export function EditableArea({
 
     // ---------- NOT IN EDIT MODE ----------
 
+    // Render children with override styles applied
+    const renderContent = () => {
+        if (!overrideStyles) return children;
+
+        // Clone children to apply override styles
+        return React.Children.map(children, child => {
+            if (!React.isValidElement(child)) return child;
+
+            // Merge override styles with child's existing styles
+            const childStyle = (child.props as { style?: React.CSSProperties }).style || {};
+            return React.cloneElement(child as React.ReactElement<{ style?: React.CSSProperties }>, {
+                style: {
+                    ...childStyle,
+                    ...(overrideStyles.color && { color: overrideStyles.color }),
+                    ...(overrideStyles.fontSize && { fontSize: overrideStyles.fontSize }),
+                    ...(overrideStyles.fontWeight && { fontWeight: overrideStyles.fontWeight }),
+                    ...(overrideStyles.backgroundColor && { backgroundColor: overrideStyles.backgroundColor }),
+                },
+            });
+        });
+    };
+
     if (!isEditing) {
         return (
             <div ref={ref} className={className} style={appliedStyles}>
-                {children}
+                {renderContent()}
             </div>
         );
     }
@@ -119,7 +151,7 @@ export function EditableArea({
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
         >
-            {children}
+            {renderContent()}
 
             {/* Override badge */}
             {hasOverride && !isSelected && (

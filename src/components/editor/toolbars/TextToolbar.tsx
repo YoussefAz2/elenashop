@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Type, Palette, AlignLeft, AlignCenter, AlignRight, RotateCcw } from "lucide-react";
 import type { ElementStyleOverride } from "@/types";
 import { Label } from "@/components/ui/label";
@@ -49,22 +49,17 @@ export function TextToolbar({
     onReset,
     onClose,
 }: TextToolbarProps) {
-    const [styles, setStyles] = useState<ElementStyleOverride>(currentStyles);
-
-    // Sync with external changes
-    useEffect(() => {
-        setStyles(currentStyles);
-    }, [currentStyles]);
-
-    // Auto-save on change
+    // Immediate save on every change - no local state needed
     const updateStyle = <K extends keyof ElementStyleOverride>(
         key: K,
         value: ElementStyleOverride[K]
     ) => {
-        const newStyles = { ...styles, [key]: value };
-        setStyles(newStyles);
+        const newStyles = { ...currentStyles, [key]: value };
         onSave(newStyles);
     };
+
+    // Use currentStyles directly for rendering
+    const styles = currentStyles;
 
     return (
         <div className="space-y-4">
