@@ -156,8 +156,9 @@ export function EditableArea({
             className={`
                 ${className}
                 relative cursor-pointer transition-all duration-150
-                ${isSelected ? "ring-2 ring-blue-500 ring-offset-2" : ""}
-                ${isHovered && !isSelected ? "ring-1 ring-blue-400/50" : ""}
+                outline outline-1 outline-dashed outline-blue-400/40
+                ${isSelected ? "ring-2 ring-blue-500 ring-offset-2 outline-none" : ""}
+                ${isHovered && !isSelected ? "ring-1 ring-blue-400/50 outline-none" : ""}
                 [&_*]:pointer-events-none
             `}
             style={appliedStyles}
