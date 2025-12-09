@@ -9,7 +9,6 @@ import { FloatingWhatsApp, PromoPopup } from "../common";
 import { Testimonials } from "../common/Testimonials";
 import { getDiscountedPrice, getPopupPromo } from "@/lib/promo";
 import { ShoppingBag, Store, Menu, X } from "lucide-react";
-import { EditableArea } from "@/components/editor";
 import type { EditorStateReturn } from "@/hooks/useEditorState";
 
 interface TemplateLuxeProps {
@@ -127,13 +126,13 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
                         <div className="mb-8">
                             <div className="inline-block px-6 py-1 text-xs uppercase tracking-[0.3em] font-medium" style={{ border: `1px solid ${hero.imageUrl ? "rgba(255,255,255,0.3)" : global.colors.primary}`, color: hero.imageUrl ? "#fff" : global.colors.primary }}>Collection</div>
                         </div>
-                        <EditableArea id="hero-title" type="text" editor={editor} className={`${headingSizeClass} font-normal italic mb-6 tracking-tight`}>
-                            <span style={{ color: hero.imageUrl ? "#fff" : global.hero.textColor, fontFamily: `"${global.headingFont}", Georgia, serif`, textTransform }}>{hero.title || storeName}</span>
-                        </EditableArea>
+                        <span data-editable="title" data-editable-id="hero-title" className={`${headingSizeClass} font-normal italic mb-6 tracking-tight`} style={{ color: hero.imageUrl ? "#fff" : global.hero.textColor, fontFamily: `"${global.headingFont}", Georgia, serif`, textTransform }}>
+                            {hero.title || storeName}
+                        </span>
                         {hero.subtitle && (
-                            <EditableArea id="hero-subtitle" type="text" editor={editor} className="text-xl md:text-2xl font-light italic mb-12 max-w-2xl">
-                                <span style={{ color: hero.imageUrl ? "rgba(255,255,255,0.8)" : global.hero.textColor, opacity: hero.imageUrl ? 1 : 0.7 }}>{hero.subtitle}</span>
-                            </EditableArea>
+                            <span data-editable="paragraph" data-editable-id="hero-subtitle" className="text-xl md:text-2xl font-light italic mb-12 max-w-2xl" style={{ color: hero.imageUrl ? "rgba(255,255,255,0.8)" : global.hero.textColor, opacity: hero.imageUrl ? 1 : 0.7 }}>
+                                {hero.subtitle}
+                            </span>
                         )}
                         {hero.buttonText && (
                             <HoverButton href={hero.buttonUrl || "#products"} text={hero.buttonText} bgColor={global.hero.buttonBg} textColor={global.hero.buttonText} hoverBg={global.buttons.hoverBg} accentColor={global.colors.primary} buttonStyle={global.buttons.style} buttonSize={global.buttons.size} duration={animationDuration} />
@@ -150,9 +149,9 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
                     {productGrid.title && (
                         <div className={`mb-16 ${global.hero.contentAlign === "center" ? "text-center" : ""}`}>
                             <p className="text-sm uppercase tracking-[0.3em] mb-4" style={{ color: global.colors.primary }}>Découvrez</p>
-                            <EditableArea id="products-title" type="text" editor={editor} className={`${headingSizeClass} font-normal italic tracking-tight`}>
-                                <span style={{ color: global.colors.text, fontFamily: `"${global.headingFont}", Georgia, serif`, textTransform }}>{productGrid.title}</span>
-                            </EditableArea>
+                            <span data-editable="title" data-editable-id="products-title" className={`${headingSizeClass} font-normal italic tracking-tight`} style={{ color: global.colors.text, fontFamily: `"${global.headingFont}", Georgia, serif`, textTransform }}>
+                                {productGrid.title}
+                            </span>
                         </div>
                     )}
                     {products.length === 0 ? (
@@ -185,9 +184,9 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
                             {about.imageUrl && about.imagePosition === "left" && <div className="relative aspect-[4/5] overflow-hidden" style={{ border: `1px solid ${global.colors.primary}30` }}><Image src={about.imageUrl} alt={about.title} fill className="object-cover" /></div>}
                             <div className={about.imagePosition === "left" ? "" : "order-first md:order-none"}>
                                 <p className="text-sm uppercase tracking-[0.3em] mb-4" style={{ color: global.colors.primary }}>Notre Histoire</p>
-                                <EditableArea id="about-title" type="text" editor={editor} className={`${headingSizeClass} font-normal italic tracking-tight mb-8`}>
-                                    <span style={{ color: global.colors.text, fontFamily: `"${global.headingFont}", Georgia, serif`, textTransform }}>{about.title}</span>
-                                </EditableArea>
+                                <span data-editable="title" data-editable-id="about-title" className={`${headingSizeClass} font-normal italic tracking-tight mb-8 block`} style={{ color: global.colors.text, fontFamily: `"${global.headingFont}", Georgia, serif`, textTransform }}>
+                                    {about.title}
+                                </span>
                                 <p className={`${bodySizeClass} leading-relaxed italic`} style={{ color: global.colors.text, opacity: 0.7 }}>{about.text}</p>
                             </div>
                             {about.imageUrl && about.imagePosition === "right" && <div className="relative aspect-[4/5] overflow-hidden" style={{ border: `1px solid ${global.colors.primary}30` }}><Image src={about.imageUrl} alt={about.title} fill className="object-cover" /></div>}
@@ -209,9 +208,9 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
                             {footer.whatsapp && <a href={`https://wa.me/${footer.whatsapp.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer" className="text-sm uppercase tracking-[0.2em] transition-all hover:opacity-60" style={{ color: global.footer.textColor }}>WhatsApp</a>}
                         </div>
                     )}
-                    <EditableArea id="footer-text" type="text" editor={editor} className="text-xs uppercase tracking-[0.2em]">
-                        <span style={{ color: global.footer.textColor, opacity: 0.6 }}>{footer.text || `© ${new Date().getFullYear()} ${storeName}`}</span>
-                    </EditableArea>
+                    <span data-editable="paragraph" data-editable-id="footer-text" className="text-xs uppercase tracking-[0.2em]" style={{ color: global.footer.textColor, opacity: 0.6 }}>
+                        {footer.text || `© ${new Date().getFullYear()} ${storeName}`}
+                    </span>
                 </div>
             </footer>
 
