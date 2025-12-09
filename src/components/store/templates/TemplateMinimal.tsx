@@ -408,7 +408,7 @@ export function TemplateMinimal({
                     <div className="mx-auto max-w-6xl">
                         <div className={`grid md:grid-cols-2 gap-12 items-center`}>
                             {about.imageUrl && about.imagePosition === "left" && (
-                                <div className="relative aspect-square rounded-lg overflow-hidden" style={{ borderRadius: global.borderRadius }}>
+                                <div data-editable="image" data-editable-id="about-image" data-editable-label="Image À Propos" className="relative aspect-square rounded-lg overflow-hidden" style={{ borderRadius: global.borderRadius }}>
                                     <Image src={about.imageUrl} alt={about.title} fill className="object-cover" />
                                 </div>
                             )}
@@ -421,7 +421,7 @@ export function TemplateMinimal({
                                 </span>
                             </div>
                             {about.imageUrl && about.imagePosition === "right" && (
-                                <div className="relative aspect-square rounded-lg overflow-hidden" style={{ borderRadius: global.borderRadius }}>
+                                <div data-editable="image" data-editable-id="about-image" data-editable-label="Image À Propos" className="relative aspect-square rounded-lg overflow-hidden" style={{ borderRadius: global.borderRadius }}>
                                     <Image src={about.imageUrl} alt={about.title} fill className="object-cover" />
                                 </div>
                             )}

@@ -191,6 +191,20 @@ export function EditorWrapper({ editor, children, className = "" }: EditorWrappe
                         applyStyles(htmlEl, overrides);
                     }
                 }
+                // For images, apply to child img element
+                else if (type === 'image') {
+                    const imgEl = htmlEl.querySelector('img') as HTMLImageElement;
+                    if (imgEl) {
+                        if (overrides.opacity !== undefined) imgEl.style.opacity = String(overrides.opacity);
+                        if (overrides.filter) imgEl.style.filter = overrides.filter;
+                        if (overrides.borderRadius) imgEl.style.borderRadius = overrides.borderRadius;
+                    } else {
+                        // Apply to wrapper if no img found
+                        if (overrides.opacity !== undefined) htmlEl.style.opacity = String(overrides.opacity);
+                        if (overrides.filter) htmlEl.style.filter = overrides.filter;
+                        if (overrides.borderRadius) htmlEl.style.borderRadius = overrides.borderRadius;
+                    }
+                }
                 // For containers/sections, apply background and spacing styles
                 else if (type === 'container' || type === 'section') {
                     if (overrides.backgroundColor) htmlEl.style.backgroundColor = overrides.backgroundColor;

@@ -199,7 +199,7 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
                 <section className={`${sectionPaddingClass} px-4`} style={{ borderTop: `1px solid ${global.colors.primary}20` }}>
                     <div className="mx-auto max-w-6xl">
                         <div className="grid md:grid-cols-2 gap-16 items-center">
-                            {about.imageUrl && about.imagePosition === "left" && <div className="relative aspect-[4/5] overflow-hidden" style={{ border: `1px solid ${global.colors.primary}30` }}><Image src={about.imageUrl} alt={about.title} fill className="object-cover" /></div>}
+                            {about.imageUrl && about.imagePosition === "left" && <div data-editable="image" data-editable-id="about-image" data-editable-label="Image À Propos" className="relative aspect-[4/5] overflow-hidden" style={{ border: `1px solid ${global.colors.primary}30` }}><Image src={about.imageUrl} alt={about.title} fill className="object-cover" /></div>}
                             <div className={about.imagePosition === "left" ? "" : "order-first md:order-none"}>
                                 <p className="text-sm uppercase tracking-[0.3em] mb-4" style={{ color: global.colors.primary }}>Notre Histoire</p>
                                 <span data-editable="title" data-editable-id="about-title" className={`${headingSizeClass} font-normal italic tracking-tight mb-8 block`} style={{ color: global.colors.text, fontFamily: `"${global.headingFont}", Georgia, serif`, textTransform }}>
@@ -207,7 +207,7 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
                                 </span>
                                 <p data-editable="paragraph" data-editable-id="about-text" className={`${bodySizeClass} leading-relaxed italic`} style={{ color: global.colors.text, opacity: 0.7 }}>{about.text}</p>
                             </div>
-                            {about.imageUrl && about.imagePosition === "right" && <div className="relative aspect-[4/5] overflow-hidden" style={{ border: `1px solid ${global.colors.primary}30` }}><Image src={about.imageUrl} alt={about.title} fill className="object-cover" /></div>}
+                            {about.imageUrl && about.imagePosition === "right" && <div data-editable="image" data-editable-id="about-image" data-editable-label="Image À Propos" className="relative aspect-[4/5] overflow-hidden" style={{ border: `1px solid ${global.colors.primary}30` }}><Image src={about.imageUrl} alt={about.title} fill className="object-cover" /></div>}
                         </div>
                     </div>
                 </section>

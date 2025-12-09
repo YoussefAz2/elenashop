@@ -106,14 +106,7 @@ export function FloatingPalette({ editor }: FloatingPaletteProps) {
             case "button":
                 return <ButtonToolbar {...toolbarProps} />;
             case "image":
-                return (
-                    <ImageToolbar
-                        elementId={id}
-                        elementLabel={label}
-                        onReset={handleReset}
-                        onClose={handleClose}
-                    />
-                );
+                return <ImageToolbar {...toolbarProps} />;
             case "productCard":
                 return <ProductCardToolbar {...toolbarProps} />;
             case "container":

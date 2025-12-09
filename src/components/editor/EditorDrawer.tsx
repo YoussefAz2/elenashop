@@ -148,6 +148,8 @@ export function EditorDrawer({ editor }: EditorDrawerProps) {
                     <ImageToolbar
                         elementId={elementId}
                         elementLabel={elementLabel}
+                        currentStyles={currentStyles}
+                        onSave={handleSave}
                         onReset={handleReset}
                         onClose={handleClose}
                     />

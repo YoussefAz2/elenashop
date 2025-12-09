@@ -205,14 +205,14 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
                 <section className={`${sectionPaddingClass} px-4`} style={{ backgroundColor: global.colors.primary }}>
                     <div className="mx-auto max-w-6xl">
                         <div className="grid md:grid-cols-2 gap-8 items-center">
-                            {about.imageUrl && about.imagePosition === "left" && <div className="relative aspect-square overflow-hidden" style={{ border: `4px solid ${global.colors.text}`, boxShadow: `8px 8px 0 ${global.colors.text}` }}><Image src={about.imageUrl} alt={about.title} fill className="object-cover" /></div>}
+                            {about.imageUrl && about.imagePosition === "left" && <div data-editable="image" data-editable-id="about-image" data-editable-label="Image À Propos" className="relative aspect-square overflow-hidden" style={{ border: `4px solid ${global.colors.text}`, boxShadow: `8px 8px 0 ${global.colors.text}` }}><Image src={about.imageUrl} alt={about.title} fill className="object-cover" /></div>}
                             <div className={about.imagePosition === "left" ? "" : "order-first md:order-none"}>
                                 <span data-editable="title" data-editable-id="about-title" className={`${headingSizeClass} font-black uppercase tracking-tight mb-6 block`} style={{ color: global.colors.background, fontFamily: `"${global.headingFont}", Impact, sans-serif`, textTransform: textTransform || "uppercase" }}>
                                     {about.title}
                                 </span>
                                 <p data-editable="paragraph" data-editable-id="about-text" className={`${bodySizeClass} font-medium leading-relaxed`} style={{ color: global.colors.background, opacity: 0.9 }}>{about.text}</p>
                             </div>
-                            {about.imageUrl && about.imagePosition === "right" && <div className="relative aspect-square overflow-hidden" style={{ border: `4px solid ${global.colors.text}`, boxShadow: `8px 8px 0 ${global.colors.text}` }}><Image src={about.imageUrl} alt={about.title} fill className="object-cover" /></div>}
+                            {about.imageUrl && about.imagePosition === "right" && <div data-editable="image" data-editable-id="about-image" data-editable-label="Image À Propos" className="relative aspect-square overflow-hidden" style={{ border: `4px solid ${global.colors.text}`, boxShadow: `8px 8px 0 ${global.colors.text}` }}><Image src={about.imageUrl} alt={about.title} fill className="object-cover" /></div>}
                         </div>
                     </div>
                 </section>
