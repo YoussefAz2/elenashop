@@ -1,0 +1,187 @@
+"use client";
+
+import React from "react";
+import { LayoutGrid, Palette, RotateCcw } from "lucide-react";
+import type { ElementStyleOverride } from "@/types";
+import { Label } from "@/components/ui/label";
+
+// ---------- PROPS ----------
+
+interface ProductCardToolbarProps {
+    elementId: string;
+    elementLabel: string;
+    currentStyles: ElementStyleOverride;
+    onSave: (styles: ElementStyleOverride) => void;
+    onReset: () => void;
+    onClose: () => void;
+}
+
+// ---------- CONSTANTS ----------
+
+const BORDER_RADIUS_OPTIONS = [
+    { value: "0px", label: "Carré" },
+    { value: "8px", label: "Léger" },
+    { value: "12px", label: "Moyen" },
+    { value: "16px", label: "Arrondi" },
+    { value: "24px", label: "Très arrondi" },
+];
+
+const SHADOW_OPTIONS = [
+    { value: "none", label: "Aucune" },
+    { value: "0 2px 8px rgba(0,0,0,0.08)", label: "Subtile" },
+    { value: "0 4px 16px rgba(0,0,0,0.1)", label: "Moyenne" },
+    { value: "0 8px 32px rgba(0,0,0,0.15)", label: "Forte" },
+];
+
+const PADDING_OPTIONS = [
+    { value: "8px", label: "Compact" },
+    { value: "12px", label: "Normal" },
+    { value: "16px", label: "Aéré" },
+    { value: "24px", label: "Spacieux" },
+];
+
+// ---------- COMPONENT ----------
+
+export function ProductCardToolbar({
+    elementId,
+    elementLabel,
+    currentStyles,
+    onSave,
+    onReset,
+    onClose,
+}: ProductCardToolbarProps) {
+    const updateStyle = <K extends keyof ElementStyleOverride>(
+        key: K,
+        value: ElementStyleOverride[K]
+    ) => {
+        onSave({ [key]: value } as ElementStyleOverride);
+    };
+
+    const styles = currentStyles;
+
+    return (
+        <div className="space-y-4">
+            {/* Header */}
+            <div className="flex items-center justify-between pb-2 border-b">
+                <div className="flex items-center gap-2">
+                    <LayoutGrid className="w-4 h-4 text-orange-600" />
+                    <span className="font-medium text-sm">{elementLabel}</span>
+                </div>
+                <button
+                    onClick={onReset}
+                    className="flex items-center gap-1 text-xs text-slate-500 hover:text-red-500 transition-colors"
+                >
+                    <RotateCcw className="w-3 h-3" />
+                    Reset
+                </button>
+            </div>
+
+            {/* Background Color */}
+            <div className="space-y-2">
+                <Label className="flex items-center gap-2 text-xs">
+                    <Palette className="w-3 h-3" />
+                    Fond de carte
+                </Label>
+                <div className="flex gap-2">
+                    <input
+                        type="color"
+                        value={styles.backgroundColor || "#ffffff"}
+                        onChange={(e) => updateStyle("backgroundColor", e.target.value)}
+                        className="w-10 h-10 rounded-lg cursor-pointer border-2 border-slate-200"
+                    />
+                    <input
+                        type="text"
+                        value={styles.backgroundColor || ""}
+                        onChange={(e) => updateStyle("backgroundColor", e.target.value)}
+                        placeholder="#ffffff"
+                        className="flex-1 border rounded-lg px-3 text-sm"
+                    />
+                </div>
+            </div>
+
+            {/* Border Radius */}
+            <div className="space-y-2">
+                <Label className="text-xs">📐 Arrondis</Label>
+                <div className="flex flex-wrap gap-1">
+                    {BORDER_RADIUS_OPTIONS.map(({ value, label }) => (
+                        <button
+                            key={value}
+                            onClick={() => updateStyle("borderRadius", value)}
+                            className={`
+                                px-2 py-1.5 text-xs rounded transition-all
+                                ${styles.borderRadius === value
+                                    ? "bg-orange-600 text-white"
+                                    : "bg-slate-100 hover:bg-slate-200 text-slate-700"
+                                }
+                            `}
+                        >
+                            {label}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            {/* Shadow */}
+            <div className="space-y-2">
+                <Label className="text-xs">✨ Ombre</Label>
+                <div className="flex flex-wrap gap-1">
+                    {SHADOW_OPTIONS.map(({ value, label }) => (
+                        <button
+                            key={value}
+                            onClick={() => updateStyle("boxShadow", value)}
+                            className={`
+                                px-3 py-1.5 text-xs rounded transition-all
+                                ${styles.boxShadow === value
+                                    ? "bg-orange-600 text-white"
+                                    : "bg-slate-100 hover:bg-slate-200 text-slate-700"
+                                }
+                            `}
+                        >
+                            {label}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            {/* Padding */}
+            <div className="space-y-2">
+                <Label className="text-xs">📏 Espacement interne</Label>
+                <div className="flex gap-1">
+                    {PADDING_OPTIONS.map(({ value, label }) => (
+                        <button
+                            key={value}
+                            onClick={() => updateStyle("padding", value)}
+                            className={`
+                                flex-1 py-1.5 text-xs rounded transition-all
+                                ${styles.padding === value
+                                    ? "bg-orange-600 text-white"
+                                    : "bg-slate-100 hover:bg-slate-200 text-slate-700"
+                                }
+                            `}
+                        >
+                            {label}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            {/* Preview */}
+            <div className="p-3 bg-slate-100 rounded-lg mt-4">
+                <p className="text-[10px] text-slate-400 mb-2">Aperçu carte</p>
+                <div
+                    className="bg-white p-3"
+                    style={{
+                        backgroundColor: styles.backgroundColor,
+                        borderRadius: styles.borderRadius || "8px",
+                        boxShadow: styles.boxShadow,
+                        padding: styles.padding,
+                    }}
+                >
+                    <div className="w-full h-16 bg-slate-200 rounded mb-2" />
+                    <div className="text-sm font-medium">Produit exemple</div>
+                    <div className="text-xs text-slate-500">29.99 TND</div>
+                </div>
+            </div>
+        </div>
+    );
+}

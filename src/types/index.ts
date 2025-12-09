@@ -91,15 +91,45 @@ export interface GlobalStyles {
     animations: AnimationSettings;
 }
 
-// ---------- ELEMENT OVERRIDES (Advanced Mode) ----------
+// ---------- ELEMENT OVERRIDES (Design System V2) ----------
 
+// Element types for the design system
+export type ElementType =
+    | "title"           // Headings (h1, h2, h3)
+    | "paragraph"       // Body text, descriptions
+    | "button"          // CTA buttons
+    | "image"           // Images
+    | "productCard"     // Product cards
+    | "container";      // Sections, containers
+
+// Complete style override interface for all element types
 export interface ElementStyleOverride {
+    // Text styles
     color?: string;
     fontSize?: string;
     fontWeight?: string;
     fontFamily?: string;
-    backgroundColor?: string;
     textAlign?: "left" | "center" | "right";
+    lineHeight?: string;
+    letterSpacing?: string;
+    textTransform?: "none" | "uppercase" | "lowercase" | "capitalize";
+
+    // Background & borders
+    backgroundColor?: string;
+    borderRadius?: string;
+    borderColor?: string;
+    borderWidth?: string;
+
+    // Spacing
+    padding?: string;
+
+    // Effects
+    boxShadow?: string;
+    opacity?: number;
+
+    // Image-specific
+    filter?: string;
+    objectFit?: "cover" | "contain" | "fill";
 }
 
 export interface ElementOverride {

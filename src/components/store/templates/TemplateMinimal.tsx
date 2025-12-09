@@ -225,13 +225,13 @@ export function TemplateMinimal({
                     >
                         <div className={`mx-auto max-w-2xl flex flex-col ${heroAlignClass}`}>
                             <div className="w-12 h-px mb-8" style={{ backgroundColor: hero.imageUrl ? "#fff" : global.hero.buttonBg }} />
-                            <EditableArea id="hero-title" type="text" editor={editor} className={`${headingSizeClass} font-light tracking-tight mb-4`}>
+                            <EditableArea id="hero-title" type="title" editor={editor} className={`${headingSizeClass} font-light tracking-tight mb-4`}>
                                 <span style={{ color: hero.imageUrl ? "#fff" : global.hero.textColor, fontFamily: `"${global.headingFont}", system-ui, sans-serif`, textTransform }}>
                                     {hero.title || storeName}
                                 </span>
                             </EditableArea>
                             {(hero.subtitle || editor?.isEditing) && (
-                                <EditableArea id="hero-subtitle" type="text" editor={editor} className="text-lg md:text-xl font-light mb-10 max-w-lg">
+                                <EditableArea id="hero-subtitle" type="paragraph" editor={editor} className="text-lg md:text-xl font-light mb-10 max-w-lg">
                                     <span style={{ color: hero.imageUrl ? "rgba(255,255,255,0.85)" : global.hero.textColor, opacity: hero.imageUrl ? 1 : 0.7 }}>
                                         {hero.subtitle || "[Sous-titre]"}
                                     </span>
@@ -266,7 +266,7 @@ export function TemplateMinimal({
                 <div className="mx-auto max-w-6xl">
                     {productGrid.title && (
                         <div className={`mb-12 ${global.hero.contentAlign === "center" ? "text-center" : ""}`}>
-                            <EditableArea id="products-title" type="text" editor={editor} className={`${headingSizeClass} font-light tracking-tight`}>
+                            <EditableArea id="products-title" type="title" editor={editor} className={`${headingSizeClass} font-light tracking-tight`}>
                                 <span style={{ color: global.colors.text, fontFamily: `"${global.headingFont}", system-ui, sans-serif`, textTransform }}>
                                     {productGrid.title}
                                 </span>
@@ -406,12 +406,12 @@ export function TemplateMinimal({
                                 </div>
                             )}
                             <div className={about.imagePosition === "left" ? "" : "order-first md:order-none"}>
-                                <EditableArea id="about-title" type="text" editor={editor} className={`${headingSizeClass} font-light tracking-tight mb-6`}>
+                                <EditableArea id="about-title" type="title" editor={editor} className={`${headingSizeClass} font-light tracking-tight mb-6`}>
                                     <span style={{ color: global.colors.text, fontFamily: `"${global.headingFont}", system-ui, sans-serif`, textTransform }}>
                                         {about.title || "[Titre À Propos]"}
                                     </span>
                                 </EditableArea>
-                                <EditableArea id="about-text" type="text" editor={editor} className={`${bodySizeClass} leading-relaxed`}>
+                                <EditableArea id="about-text" type="paragraph" editor={editor} className={`${bodySizeClass} leading-relaxed`}>
                                     <span style={{ color: global.colors.text, opacity: 0.7 }}>{about.text || "[Texte À Propos]"}</span>
                                 </EditableArea>
                             </div>
@@ -439,7 +439,7 @@ export function TemplateMinimal({
                             {footer.whatsapp && <a href={`https://wa.me/${footer.whatsapp.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer" className="transition-opacity hover:opacity-60" style={{ color: global.footer.accentColor }}><Phone className="h-5 w-5" /></a>}
                         </div>
                     )}
-                    <EditableArea id="footer-text" type="text" editor={editor} className="text-sm">
+                    <EditableArea id="footer-text" type="paragraph" editor={editor} className="text-sm">
                         <span style={{ color: global.footer.textColor }}>{footer.text || `© ${new Date().getFullYear()} ${storeName}`}</span>
                     </EditableArea>
                 </div>

@@ -5,7 +5,16 @@ import type { ElementStyleOverride } from "@/types";
 
 // ---------- TYPES ----------
 
-export type EditableType = "text" | "button" | "container" | "image" | "section";
+// Design System V2 element types
+export type EditableType =
+    | "title"           // Headings (h1, h2, h3)
+    | "paragraph"       // Body text, descriptions
+    | "button"          // CTA buttons
+    | "image"           // Images
+    | "productCard"     // Product cards
+    | "container"       // Sections, containers
+    | "text"            // Legacy - maps to title
+    | "section";        // Legacy - maps to container
 
 export interface EditableElement {
     id: string;

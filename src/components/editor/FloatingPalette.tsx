@@ -2,10 +2,13 @@
 
 import React, { useEffect, useRef } from "react";
 import { X, Copy, ClipboardPaste, Undo2, Redo2 } from "lucide-react";
-import type { EditableElement, EditorStateReturn } from "@/hooks/useEditorState";
-import { TextToolbar } from "./toolbars/TextToolbar";
+import type { EditorStateReturn } from "@/hooks/useEditorState";
+import { TitleToolbar } from "./toolbars/TitleToolbar";
+import { ParagraphToolbar } from "./toolbars/ParagraphToolbar";
 import { ButtonToolbar } from "./toolbars/ButtonToolbar";
 import { ImageToolbar } from "./toolbars/ImageToolbar";
+import { ProductCardToolbar } from "./toolbars/ProductCardToolbar";
+import { ContainerToolbar } from "./toolbars/ContainerToolbar";
 
 // ---------- PROPS ----------
 
@@ -86,30 +89,22 @@ export function FloatingPalette({ editor }: FloatingPaletteProps) {
 
     // Render the appropriate toolbar based on type
     const renderToolbar = () => {
+        const toolbarProps = {
+            elementId: id,
+            elementLabel: label,
+            currentStyles: currentStyles,
+            onSave: handleSave,
+            onReset: handleReset,
+            onClose: handleClose,
+        };
+
         switch (type) {
-            case "text":
-                return (
-                    <TextToolbar
-                        elementId={id}
-                        elementLabel={label}
-                        currentStyles={currentStyles}
-                        onSave={handleSave}
-                        onReset={handleReset}
-                        onClose={handleClose}
-                    />
-                );
+            case "title":
+                return <TitleToolbar {...toolbarProps} />;
+            case "paragraph":
+                return <ParagraphToolbar {...toolbarProps} />;
             case "button":
-            case "container":
-                return (
-                    <ButtonToolbar
-                        elementId={id}
-                        elementLabel={label}
-                        currentStyles={currentStyles}
-                        onSave={handleSave}
-                        onReset={handleReset}
-                        onClose={handleClose}
-                    />
-                );
+                return <ButtonToolbar {...toolbarProps} />;
             case "image":
                 return (
                     <ImageToolbar
@@ -119,17 +114,14 @@ export function FloatingPalette({ editor }: FloatingPaletteProps) {
                         onClose={handleClose}
                     />
                 );
+            case "productCard":
+                return <ProductCardToolbar {...toolbarProps} />;
+            case "container":
+                return <ContainerToolbar {...toolbarProps} />;
+            // Legacy "text" type - use TitleToolbar as default
+            case "text":
             default:
-                return (
-                    <TextToolbar
-                        elementId={id}
-                        elementLabel={label}
-                        currentStyles={currentStyles}
-                        onSave={handleSave}
-                        onReset={handleReset}
-                        onClose={handleClose}
-                    />
-                );
+                return <TitleToolbar {...toolbarProps} />;
         }
     };
 
