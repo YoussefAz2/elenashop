@@ -9,7 +9,6 @@ import { FloatingWhatsApp, PromoPopup } from "../common";
 import { Testimonials } from "../common/Testimonials";
 import { getDiscountedPrice, getPopupPromo } from "@/lib/promo";
 import { ShoppingBag, Instagram, Facebook, Phone, Store, Menu, X } from "lucide-react";
-import { EditableArea } from "@/components/editor";
 import type { EditorStateReturn } from "@/hooks/useEditorState";
 
 interface TemplateMinimalProps {
@@ -225,20 +224,16 @@ export function TemplateMinimal({
                     >
                         <div className={`mx-auto max-w-2xl flex flex-col ${heroAlignClass}`}>
                             <div className="w-12 h-px mb-8" style={{ backgroundColor: hero.imageUrl ? "#fff" : global.hero.buttonBg }} />
-                            <EditableArea id="hero-title" type="title" editor={editor} className={`${headingSizeClass} font-light tracking-tight mb-4`}>
-                                <span style={{ color: hero.imageUrl ? "#fff" : global.hero.textColor, fontFamily: `"${global.headingFont}", system-ui, sans-serif`, textTransform }}>
-                                    {hero.title || storeName}
-                                </span>
-                            </EditableArea>
+                            <span data-editable="title" data-editable-id="hero-title" className={`${headingSizeClass} font-light tracking-tight mb-4`} style={{ color: hero.imageUrl ? "#fff" : global.hero.textColor, fontFamily: `"${global.headingFont}", system-ui, sans-serif`, textTransform }}>
+                                {hero.title || storeName}
+                            </span>
                             {(hero.subtitle || editor?.isEditing) && (
-                                <EditableArea id="hero-subtitle" type="paragraph" editor={editor} className="text-lg md:text-xl font-light mb-10 max-w-lg">
-                                    <span style={{ color: hero.imageUrl ? "rgba(255,255,255,0.85)" : global.hero.textColor, opacity: hero.imageUrl ? 1 : 0.7 }}>
-                                        {hero.subtitle || "[Sous-titre]"}
-                                    </span>
-                                </EditableArea>
+                                <span data-editable="paragraph" data-editable-id="hero-subtitle" className="text-lg md:text-xl font-light mb-10 max-w-lg" style={{ color: hero.imageUrl ? "rgba(255,255,255,0.85)" : global.hero.textColor, opacity: hero.imageUrl ? 1 : 0.7 }}>
+                                    {hero.subtitle || "[Sous-titre]"}
+                                </span>
                             )}
                             {(hero.buttonText || editor?.isEditing) && (
-                                <EditableArea id="hero-button" type="button" editor={editor}>
+                                <div data-editable="button" data-editable-id="hero-button">
                                     <HoverButton
                                         href={hero.buttonUrl || "#products"}
                                         text={hero.buttonText || "[Bouton]"}
@@ -251,7 +246,7 @@ export function TemplateMinimal({
                                         duration={animationDuration}
                                         borderColor={global.colors.text}
                                     />
-                                </EditableArea>
+                                </div>
                             )}
                         </div>
                     </div>
@@ -266,28 +261,25 @@ export function TemplateMinimal({
                 <div className="mx-auto max-w-6xl">
                     {productGrid.title && (
                         <div className={`mb-12 ${global.hero.contentAlign === "center" ? "text-center" : ""}`}>
-                            <EditableArea id="products-title" type="title" editor={editor} className={`${headingSizeClass} font-light tracking-tight`}>
-                                <span style={{ color: global.colors.text, fontFamily: `"${global.headingFont}", system-ui, sans-serif`, textTransform }}>
-                                    {productGrid.title}
-                                </span>
-                            </EditableArea>
+                            <span data-editable="title" data-editable-id="products-title" className={`${headingSizeClass} font-light tracking-tight`} style={{ color: global.colors.text, fontFamily: `"${global.headingFont}", system-ui, sans-serif`, textTransform }}>
+                                {productGrid.title}
+                            </span>
                             <div className="w-8 h-px mt-4 mx-auto" style={{ backgroundColor: global.colors.primary }} />
                         </div>
                     )}
 
                     {/* Product Cards Style Editor - only visible in edit mode */}
                     {editor?.isEditing && (
-                        <EditableArea
-                            id="product-cards-style"
-                            type="productCard"
-                            label="Style des cartes produit"
-                            editor={editor}
+                        <div
+                            data-editable="productCard"
+                            data-editable-id="product-cards-style"
+                            data-editable-label="Style des cartes produit"
                             className="mb-6 p-3 text-center"
                         >
                             <span className="text-sm text-slate-500 flex items-center justify-center gap-2">
                                 🛍️ Cliquez pour personnaliser le style de toutes les cartes produit
                             </span>
-                        </EditableArea>
+                        </div>
                     )}
                     {products.length === 0 ? (
                         <div className="text-center py-20">
@@ -424,14 +416,12 @@ export function TemplateMinimal({
                                 </div>
                             )}
                             <div className={about.imagePosition === "left" ? "" : "order-first md:order-none"}>
-                                <EditableArea id="about-title" type="title" editor={editor} className={`${headingSizeClass} font-light tracking-tight mb-6`}>
-                                    <span style={{ color: global.colors.text, fontFamily: `"${global.headingFont}", system-ui, sans-serif`, textTransform }}>
-                                        {about.title || "[Titre À Propos]"}
-                                    </span>
-                                </EditableArea>
-                                <EditableArea id="about-text" type="paragraph" editor={editor} className={`${bodySizeClass} leading-relaxed`}>
-                                    <span style={{ color: global.colors.text, opacity: 0.7 }}>{about.text || "[Texte À Propos]"}</span>
-                                </EditableArea>
+                                <span data-editable="title" data-editable-id="about-title" className={`${headingSizeClass} font-light tracking-tight mb-6 block`} style={{ color: global.colors.text, fontFamily: `"${global.headingFont}", system-ui, sans-serif`, textTransform }}>
+                                    {about.title || "[Titre À Propos]"}
+                                </span>
+                                <span data-editable="paragraph" data-editable-id="about-text" className={`${bodySizeClass} leading-relaxed block`} style={{ color: global.colors.text, opacity: 0.7 }}>
+                                    {about.text || "[Texte À Propos]"}
+                                </span>
                             </div>
                             {about.imageUrl && about.imagePosition === "right" && (
                                 <div className="relative aspect-square rounded-lg overflow-hidden" style={{ borderRadius: global.borderRadius }}>
@@ -457,9 +447,9 @@ export function TemplateMinimal({
                             {footer.whatsapp && <a href={`https://wa.me/${footer.whatsapp.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer" className="transition-opacity hover:opacity-60" style={{ color: global.footer.accentColor }}><Phone className="h-5 w-5" /></a>}
                         </div>
                     )}
-                    <EditableArea id="footer-text" type="paragraph" editor={editor} className="text-sm">
-                        <span style={{ color: global.footer.textColor }}>{footer.text || `© ${new Date().getFullYear()} ${storeName}`}</span>
-                    </EditableArea>
+                    <span data-editable="paragraph" data-editable-id="footer-text" className="text-sm" style={{ color: global.footer.textColor }}>
+                        {footer.text || `© ${new Date().getFullYear()} ${storeName}`}
+                    </span>
                 </div>
             </footer>
 
