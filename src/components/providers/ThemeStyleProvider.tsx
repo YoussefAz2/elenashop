@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useMemo, ReactNode } from "react";
+import React, { createContext, useContext, useEffect, useMemo, useCallback, ReactNode } from "react";
 import type { ThemeConfig } from "@/types";
 
 // ---------- TYPES ----------
@@ -189,9 +189,9 @@ export function ThemeStyleProvider({
 
     const activePreset = config?.activePreset || null;
 
-    const applyPreset = (presetId: string) => {
+    const applyPreset = useCallback((presetId: string) => {
         onPresetChange?.(presetId);
-    };
+    }, [onPresetChange]);
 
     // Inject CSS variables into document
     useEffect(() => {
