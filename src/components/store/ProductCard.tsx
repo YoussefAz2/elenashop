@@ -24,6 +24,10 @@ interface ProductCardProps {
         backgroundColor?: string;
         borderRadius?: string;
         boxShadow?: string;
+        padding?: string;
+        titleColor?: string;
+        priceColor?: string;
+        descriptionColor?: string;
     };
 }
 
@@ -117,6 +121,7 @@ export function ProductCard({
             borderRadius: cardOverrides?.borderRadius || (variant === "street" ? "0" : styles.borderRadius),
             transition: animations?.enableAnimations ? `all ${animDuration} ease` : "none",
             boxShadow: cardOverrides?.boxShadow,
+            padding: cardOverrides?.padding,
         };
 
         // Apply hover effects
@@ -262,7 +267,7 @@ export function ProductCard({
             >
                 <h3
                     className={`mb-1 line-clamp-2 ${variant === "luxe" ? "font-normal tracking-wide" : variant === "street" ? "font-black uppercase text-base" : "font-medium text-base"}`}
-                    style={{ color: cards.textColor, fontFamily: variant === "luxe" ? `"${styles.headingFont}", serif` : undefined }}
+                    style={{ color: cardOverrides?.titleColor || cards.textColor, fontFamily: variant === "luxe" ? `"${styles.headingFont}", serif` : undefined }}
                 >
                     {product.title}
                 </h3>
@@ -270,7 +275,7 @@ export function ProductCard({
                 {showDescription && product.description && (
                     <p
                         className="mb-2 text-sm line-clamp-2"
-                        style={{ color: cards.textColor, opacity: 0.6 }}
+                        style={{ color: cardOverrides?.descriptionColor || cards.textColor, opacity: cardOverrides?.descriptionColor ? 1 : 0.6 }}
                     >
                         {product.description}
                     </p>
@@ -282,7 +287,7 @@ export function ProductCard({
                             <>
                                 <span
                                     className={`font-bold ${variant === "street" ? "text-3xl" : "text-2xl"}`}
-                                    style={{ color: cards.priceColor }}
+                                    style={{ color: cardOverrides?.priceColor || cards.priceColor }}
                                 >
                                     {discountedPrice.toFixed(0)}
                                 </span>
@@ -303,7 +308,7 @@ export function ProductCard({
                             <>
                                 <span
                                     className={`font-bold ${variant === "street" ? "text-3xl" : "text-2xl"}`}
-                                    style={{ color: cards.priceColor }}
+                                    style={{ color: cardOverrides?.priceColor || cards.priceColor }}
                                 >
                                     {product.price.toFixed(0)}
                                 </span>

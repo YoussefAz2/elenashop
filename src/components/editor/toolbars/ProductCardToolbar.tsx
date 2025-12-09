@@ -165,21 +165,87 @@ export function ProductCardToolbar({
                 </div>
             </div>
 
+            {/* Separator */}
+            <div className="border-t pt-4 mt-4">
+                <Label className="text-xs font-medium text-slate-600 mb-3 block">🎨 Couleurs du texte</Label>
+            </div>
+
+            {/* Title Color */}
+            <div className="space-y-2">
+                <Label className="text-xs">Couleur du titre</Label>
+                <div className="flex gap-2">
+                    <input
+                        type="color"
+                        value={styles.titleColor || "#1e293b"}
+                        onChange={(e) => updateStyle("titleColor", e.target.value)}
+                        className="w-10 h-8 rounded cursor-pointer border border-slate-200"
+                    />
+                    <input
+                        type="text"
+                        value={styles.titleColor || ""}
+                        onChange={(e) => updateStyle("titleColor", e.target.value)}
+                        placeholder="#1e293b"
+                        className="flex-1 border rounded px-2 text-xs"
+                    />
+                </div>
+            </div>
+
+            {/* Description Color */}
+            <div className="space-y-2">
+                <Label className="text-xs">Couleur de la description</Label>
+                <div className="flex gap-2">
+                    <input
+                        type="color"
+                        value={styles.descriptionColor || "#64748b"}
+                        onChange={(e) => updateStyle("descriptionColor", e.target.value)}
+                        className="w-10 h-8 rounded cursor-pointer border border-slate-200"
+                    />
+                    <input
+                        type="text"
+                        value={styles.descriptionColor || ""}
+                        onChange={(e) => updateStyle("descriptionColor", e.target.value)}
+                        placeholder="#64748b"
+                        className="flex-1 border rounded px-2 text-xs"
+                    />
+                </div>
+            </div>
+
+            {/* Price Color */}
+            <div className="space-y-2">
+                <Label className="text-xs">Couleur du prix</Label>
+                <div className="flex gap-2">
+                    <input
+                        type="color"
+                        value={styles.priceColor || "#ea580c"}
+                        onChange={(e) => updateStyle("priceColor", e.target.value)}
+                        className="w-10 h-8 rounded cursor-pointer border border-slate-200"
+                    />
+                    <input
+                        type="text"
+                        value={styles.priceColor || ""}
+                        onChange={(e) => updateStyle("priceColor", e.target.value)}
+                        placeholder="#ea580c"
+                        className="flex-1 border rounded px-2 text-xs"
+                    />
+                </div>
+            </div>
+
             {/* Preview */}
             <div className="p-3 bg-slate-100 rounded-lg mt-4">
                 <p className="text-[10px] text-slate-400 mb-2">Aperçu carte</p>
                 <div
-                    className="bg-white p-3"
+                    className="bg-white"
                     style={{
                         backgroundColor: styles.backgroundColor,
                         borderRadius: styles.borderRadius || "8px",
                         boxShadow: styles.boxShadow,
-                        padding: styles.padding,
+                        padding: styles.padding || "12px",
                     }}
                 >
                     <div className="w-full h-16 bg-slate-200 rounded mb-2" />
-                    <div className="text-sm font-medium">Produit exemple</div>
-                    <div className="text-xs text-slate-500">29.99 TND</div>
+                    <div className="text-sm font-medium" style={{ color: styles.titleColor || "#1e293b" }}>Produit exemple</div>
+                    <div className="text-xs mt-1" style={{ color: styles.descriptionColor || "#64748b" }}>Description courte</div>
+                    <div className="text-lg font-bold mt-2" style={{ color: styles.priceColor || "#ea580c" }}>29.99 TND</div>
                 </div>
             </div>
         </div>

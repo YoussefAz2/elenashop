@@ -130,6 +130,11 @@ export interface ElementStyleOverride {
     // Image-specific
     filter?: string;
     objectFit?: "cover" | "contain" | "fill";
+
+    // Product card text colors
+    titleColor?: string;
+    descriptionColor?: string;
+    priceColor?: string;
 }
 
 export interface ElementOverride {
