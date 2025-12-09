@@ -160,6 +160,22 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
                             </div>
                         </div>
                     )}
+
+                    {/* Product Cards Style Editor - only visible in edit mode */}
+                    {editor?.isEditing && (
+                        <div
+                            data-editable="productCard"
+                            data-editable-id="product-cards-style"
+                            data-editable-label="Style des cartes produit"
+                            className="mb-6 p-3 text-center"
+                            style={{ border: `3px dashed ${global.colors.primary}`, backgroundColor: `${global.colors.primary}10` }}
+                        >
+                            <span className="text-sm font-bold uppercase flex items-center justify-center gap-2" style={{ color: global.colors.primary }}>
+                                🛍️ Cliquez pour personnaliser le style de toutes les cartes produit
+                            </span>
+                        </div>
+                    )}
+
                     {products.length === 0 ? (
                         <div className="text-center py-16" style={{ border: `4px solid ${global.colors.text}`, boxShadow: `8px 8px 0 ${global.colors.primary}` }}>
                             <ShoppingBag className="h-20 w-20 mx-auto mb-4" style={{ color: global.colors.primary }} />
@@ -169,7 +185,7 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
                         <div className={`grid ${gapClass} ${productGrid.columns === 4 ? "grid-cols-2 lg:grid-cols-4" : productGrid.columns === 3 ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" : "grid-cols-1 sm:grid-cols-2"}`}>
                             {products.map((product) => {
                                 const priceInfo = getDiscountedPrice(product, promos);
-                                return <ProductCard key={product.id} product={product} sellerId={sellerId} storeName={storeName} styles={global} showDescription={productGrid.showDescription} showPrice={productGrid.showPrice} aspectRatio={productGrid.aspectRatio} textAlign="left" variant="street" showShadow={productGrid.cardShadow} discountedPrice={priceInfo.discountedPrice} hasDiscount={priceInfo.hasDiscount} cardOverrides={editor?.overrides?.["product-cards-style"]} />;
+                                return <ProductCard key={product.id} product={product} sellerId={sellerId} storeName={storeName} styles={global} showDescription={productGrid.showDescription} showPrice={productGrid.showPrice} aspectRatio={productGrid.aspectRatio} textAlign="left" variant="street" showShadow={productGrid.cardShadow} discountedPrice={priceInfo.discountedPrice} hasDiscount={priceInfo.hasDiscount} />;
                             })}
                         </div>
                     )}

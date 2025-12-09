@@ -318,7 +318,6 @@ export function TemplateMinimal({
                                                         showShadow={productGrid.cardShadow}
                                                         discountedPrice={priceInfo.discountedPrice}
                                                         hasDiscount={priceInfo.hasDiscount}
-                                                        cardOverrides={editor?.overrides?.["product-cards-style"]}
                                                     />
                                                 );
                                             })}
@@ -358,7 +357,6 @@ export function TemplateMinimal({
                                                         showShadow={productGrid.cardShadow}
                                                         discountedPrice={priceInfo.discountedPrice}
                                                         hasDiscount={priceInfo.hasDiscount}
-                                                        cardOverrides={editor?.overrides?.["product-cards-style"]}
                                                     />
                                                 );
                                             })}
@@ -387,7 +385,6 @@ export function TemplateMinimal({
                                         showShadow={productGrid.cardShadow}
                                         discountedPrice={priceInfo.discountedPrice}
                                         hasDiscount={priceInfo.hasDiscount}
-                                        cardOverrides={editor?.overrides?.["product-cards-style"]}
                                     />
                                 );
                             })}

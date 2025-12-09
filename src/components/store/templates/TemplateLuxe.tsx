@@ -154,6 +154,22 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
                             </span>
                         </div>
                     )}
+
+                    {/* Product Cards Style Editor - only visible in edit mode */}
+                    {editor?.isEditing && (
+                        <div
+                            data-editable="productCard"
+                            data-editable-id="product-cards-style"
+                            data-editable-label="Style des cartes produit"
+                            className="mb-6 p-3 text-center"
+                            style={{ border: `1px dashed ${global.colors.primary}40` }}
+                        >
+                            <span className="text-sm flex items-center justify-center gap-2" style={{ color: global.colors.primary }}>
+                                🛍️ Cliquez pour personnaliser le style de toutes les cartes produit
+                            </span>
+                        </div>
+                    )}
+
                     {products.length === 0 ? (
                         <div className="text-center py-24" style={{ border: `1px solid ${global.colors.primary}30`, backgroundColor: `${global.colors.primary}05` }}>
                             <ShoppingBag className="h-16 w-16 mx-auto mb-4" style={{ color: global.colors.primary, opacity: 0.5 }} />
@@ -163,7 +179,7 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
                         <div className={`grid ${gapClass} ${productGrid.columns === 4 ? "grid-cols-2 lg:grid-cols-4" : productGrid.columns === 3 ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" : "grid-cols-1 sm:grid-cols-2"}`}>
                             {products.map((product) => {
                                 const priceInfo = getDiscountedPrice(product, promos);
-                                return <ProductCard key={product.id} product={product} sellerId={sellerId} storeName={storeName} styles={global} showDescription={productGrid.showDescription} showPrice={productGrid.showPrice} aspectRatio={productGrid.aspectRatio} textAlign="center" variant="luxe" showShadow={productGrid.cardShadow} discountedPrice={priceInfo.discountedPrice} hasDiscount={priceInfo.hasDiscount} cardOverrides={editor?.overrides?.["product-cards-style"]} />;
+                                return <ProductCard key={product.id} product={product} sellerId={sellerId} storeName={storeName} styles={global} showDescription={productGrid.showDescription} showPrice={productGrid.showPrice} aspectRatio={productGrid.aspectRatio} textAlign="center" variant="luxe" showShadow={productGrid.cardShadow} discountedPrice={priceInfo.discountedPrice} hasDiscount={priceInfo.hasDiscount} />;
                             })}
                         </div>
                     )}

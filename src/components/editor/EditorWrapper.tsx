@@ -185,6 +185,40 @@ export function EditorWrapper({ editor, children, className = "" }: EditorWrappe
                 htmlEl.removeAttribute('data-editable-selected');
             }
         });
+
+        // ===== CENTRALIZED PRODUCT CARD STYLE APPLICATION =====
+        // Apply styles to ProductCard elements automatically - no cardOverrides needed in templates!
+        const cardStyleId = "product-cards-style";
+        const cardOverrides = editor.overrides[cardStyleId];
+
+        if (cardOverrides) {
+            // Apply to card containers
+            container.querySelectorAll('[data-editable-card="product-cards-style"]').forEach((el) => {
+                const htmlEl = el as HTMLElement;
+                if (cardOverrides.backgroundColor) htmlEl.style.backgroundColor = cardOverrides.backgroundColor;
+                if (cardOverrides.borderRadius) htmlEl.style.borderRadius = cardOverrides.borderRadius;
+                if (cardOverrides.boxShadow) htmlEl.style.boxShadow = cardOverrides.boxShadow;
+                if (cardOverrides.padding) htmlEl.style.padding = cardOverrides.padding;
+            });
+
+            // Apply to card titles
+            container.querySelectorAll('[data-card-title="product-cards-style"]').forEach((el) => {
+                const htmlEl = el as HTMLElement;
+                if (cardOverrides.titleColor) htmlEl.style.color = cardOverrides.titleColor;
+            });
+
+            // Apply to card descriptions
+            container.querySelectorAll('[data-card-description="product-cards-style"]').forEach((el) => {
+                const htmlEl = el as HTMLElement;
+                if (cardOverrides.descriptionColor) htmlEl.style.color = cardOverrides.descriptionColor;
+            });
+
+            // Apply to card prices
+            container.querySelectorAll('[data-card-price="product-cards-style"]').forEach((el) => {
+                const htmlEl = el as HTMLElement;
+                if (cardOverrides.priceColor) htmlEl.style.color = cardOverrides.priceColor;
+            });
+        }
     }, [editor?.isEditing, editor?.overrides, editor?.selectedElement]);
 
     return (

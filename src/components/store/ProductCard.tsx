@@ -19,16 +19,6 @@ interface ProductCardProps {
     showShadow?: boolean;
     discountedPrice?: number;
     hasDiscount?: boolean;
-    // Editor overrides for card styles
-    cardOverrides?: {
-        backgroundColor?: string;
-        borderRadius?: string;
-        boxShadow?: string;
-        padding?: string;
-        titleColor?: string;
-        priceColor?: string;
-        descriptionColor?: string;
-    };
 }
 
 export function ProductCard({
@@ -44,7 +34,6 @@ export function ProductCard({
     showShadow = true,
     discountedPrice,
     hasDiscount = false,
-    cardOverrides,
 }: ProductCardProps) {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [isHovered, setIsHovered] = useState(false);
@@ -117,11 +106,9 @@ export function ProductCard({
             : animations?.animationSpeed === "fast" ? "0.15s" : "0.3s";
 
         const base: React.CSSProperties = {
-            backgroundColor: cardOverrides?.backgroundColor || cards.backgroundColor,
-            borderRadius: cardOverrides?.borderRadius || (variant === "street" ? "0" : styles.borderRadius),
+            backgroundColor: cards.backgroundColor,
+            borderRadius: variant === "street" ? "0" : styles.borderRadius,
             transition: animations?.enableAnimations ? `all ${animDuration} ease` : "none",
-            boxShadow: cardOverrides?.boxShadow,
-            padding: cardOverrides?.padding,
         };
 
         // Apply hover effects
@@ -175,6 +162,7 @@ export function ProductCard({
             style={getCardStyle()}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
+            data-editable-card="product-cards-style"
         >
             {/* Product Image with Carousel */}
             <div
@@ -267,7 +255,8 @@ export function ProductCard({
             >
                 <h3
                     className={`mb-1 line-clamp-2 ${variant === "luxe" ? "font-normal tracking-wide" : variant === "street" ? "font-black uppercase text-base" : "font-medium text-base"}`}
-                    style={{ color: cardOverrides?.titleColor || cards.textColor, fontFamily: variant === "luxe" ? `"${styles.headingFont}", serif` : undefined }}
+                    style={{ color: cards.textColor, fontFamily: variant === "luxe" ? `"${styles.headingFont}", serif` : undefined }}
+                    data-card-title="product-cards-style"
                 >
                     {product.title}
                 </h3>
@@ -275,7 +264,8 @@ export function ProductCard({
                 {showDescription && product.description && (
                     <p
                         className="mb-2 text-sm line-clamp-2"
-                        style={{ color: cardOverrides?.descriptionColor || cards.textColor, opacity: cardOverrides?.descriptionColor ? 1 : 0.6 }}
+                        style={{ color: cards.textColor, opacity: 0.6 }}
+                        data-card-description="product-cards-style"
                     >
                         {product.description}
                     </p>
@@ -287,7 +277,8 @@ export function ProductCard({
                             <>
                                 <span
                                     className={`font-bold ${variant === "street" ? "text-3xl" : "text-2xl"}`}
-                                    style={{ color: cardOverrides?.priceColor || cards.priceColor }}
+                                    style={{ color: cards.priceColor }}
+                                    data-card-price="product-cards-style"
                                 >
                                     {discountedPrice.toFixed(0)}
                                 </span>
@@ -308,7 +299,8 @@ export function ProductCard({
                             <>
                                 <span
                                     className={`font-bold ${variant === "street" ? "text-3xl" : "text-2xl"}`}
-                                    style={{ color: cardOverrides?.priceColor || cards.priceColor }}
+                                    style={{ color: cards.priceColor }}
+                                    data-card-price="product-cards-style"
                                 >
                                     {product.price.toFixed(0)}
                                 </span>
