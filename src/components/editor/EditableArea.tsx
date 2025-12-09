@@ -171,27 +171,14 @@ export function EditableArea({
         >
             {renderContent()}
 
-            {/* Override badge */}
+            {/* Override badge - small indicator showing element has custom styles */}
             {hasOverride && !isSelected && (
                 <span className="absolute -top-1 -right-1 w-4 h-4 bg-purple-500 rounded-full flex items-center justify-center text-white text-[8px] shadow-sm z-10 pointer-events-none">
                     ✨
                 </span>
             )}
 
-            {/* Hover label */}
-            {isHovered && !isSelected && (
-                <div className="absolute -top-7 left-0 bg-blue-600 text-white text-[10px] font-medium px-2 py-0.5 rounded shadow-lg z-20 whitespace-nowrap pointer-events-none">
-                    {displayLabel}
-                </div>
-            )}
-
-            {/* Selected indicator */}
-            {isSelected && (
-                <div className="absolute -top-7 left-0 bg-blue-600 text-white text-xs font-medium px-2 py-1 rounded shadow-lg z-20 flex items-center gap-1 pointer-events-none">
-                    <span>✏️</span>
-                    <span>{displayLabel}</span>
-                </div>
-            )}
+            {/* Ring indicator is enough - labels removed to not block view */}
         </div>
     );
 }

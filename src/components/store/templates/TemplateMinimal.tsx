@@ -411,7 +411,9 @@ export function TemplateMinimal({
                                         {about.title}
                                     </span>
                                 </EditableArea>
-                                <p className={`${bodySizeClass} leading-relaxed`} style={{ color: global.colors.text, opacity: 0.7 }}>{about.text}</p>
+                                <EditableArea id="about-text" type="text" editor={editor} className={`${bodySizeClass} leading-relaxed`}>
+                                    <span style={{ color: global.colors.text, opacity: 0.7 }}>{about.text}</span>
+                                </EditableArea>
                             </div>
                             {about.imageUrl && about.imagePosition === "right" && (
                                 <div className="relative aspect-square rounded-lg overflow-hidden" style={{ borderRadius: global.borderRadius }}>
