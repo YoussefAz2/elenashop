@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { ThemeConfig, Product, Page, Promo, Category } from "@/types";
@@ -39,34 +39,6 @@ export function TemplateMinimal({
     const { typography, spacing, animations } = global;
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const popupPromo = getPopupPromo(promos);
-    const containerRef = useRef<HTMLDivElement>(null);
-
-    // Block ALL clicks in edit mode except for editable areas
-    useEffect(() => {
-        if (!editor?.isEditing) return;
-
-        const container = containerRef.current;
-        if (!container) return;
-
-        const blockClick = (e: MouseEvent) => {
-            const target = e.target as HTMLElement;
-            // Allow clicks on EditableArea elements (they have data-editable-area)
-            if (target.closest('[data-editable-area]')) {
-                return; // Let EditableArea handle it
-            }
-            // Block everything else
-            e.preventDefault();
-            e.stopPropagation();
-            e.stopImmediatePropagation();
-        };
-
-        // Use capture phase to intercept BEFORE React handlers
-        container.addEventListener('click', blockClick, true);
-
-        return () => {
-            container.removeEventListener('click', blockClick, true);
-        };
-    }, [editor?.isEditing]);
 
     // Typography classes
     const headingSizeClass = {
@@ -142,9 +114,7 @@ export function TemplateMinimal({
 
     return (
         <div
-            ref={containerRef}
             className={`min-h-screen ${bodySizeClass}`}
-            data-editing={editor?.isEditing ? "" : undefined}
             style={{
                 backgroundColor: global.colors.background,
                 color: global.colors.text,

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { ThemeConfig, Product, Page, Promo, Category } from "@/types";
@@ -29,25 +29,6 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
     const { typography, spacing, animations } = global;
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const popupPromo = getPopupPromo(promos);
-    const containerRef = useRef<HTMLDivElement>(null);
-
-    // Block ALL clicks in edit mode except for editable areas
-    useEffect(() => {
-        if (!editor?.isEditing) return;
-        const container = containerRef.current;
-        if (!container) return;
-
-        const blockClick = (e: MouseEvent) => {
-            const target = e.target as HTMLElement;
-            if (target.closest('[data-editable-area]')) return;
-            e.preventDefault();
-            e.stopPropagation();
-            e.stopImmediatePropagation();
-        };
-
-        container.addEventListener('click', blockClick, true);
-        return () => container.removeEventListener('click', blockClick, true);
-    }, [editor?.isEditing]);
 
     const headingSizeClass = { small: "text-2xl md:text-4xl", medium: "text-3xl md:text-5xl", large: "text-4xl md:text-6xl lg:text-7xl", xlarge: "text-5xl md:text-7xl lg:text-8xl" }[typography.headingSize];
     const bodySizeClass = { small: "text-sm", medium: "text-base", large: "text-lg" }[typography.bodySize];
@@ -71,7 +52,7 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
     };
 
     return (
-        <div ref={containerRef} data-editing={editor?.isEditing ? "" : undefined} className={`min-h-screen ${bodySizeClass}`} style={{ backgroundColor: global.colors.background, color: global.colors.text, fontFamily: `"${global.font}", Georgia, serif` }}>
+        <div className={`min-h-screen ${bodySizeClass}`} style={{ backgroundColor: global.colors.background, color: global.colors.text, fontFamily: `"${global.font}", Georgia, serif` }}>
             <div className={stickyClass}>
                 {announcement.enabled && (
                     <div className="py-2 px-4 text-center text-sm tracking-widest uppercase" style={{ backgroundColor: announcement.backgroundColor, color: announcement.textColor }}>

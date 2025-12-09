@@ -30,7 +30,7 @@ import { UpgradeModal } from "./UpgradeModal";
 import { TemplateMinimal, TemplateLuxe, TemplateStreet } from "@/components/store/templates";
 import { isTemplatePremium, getTemplateConfig } from "@/lib/templates";
 import { useEditorState } from "@/hooks/useEditorState";
-import { VisualEditorLayer } from "@/components/editor";
+import { VisualEditorLayer, EditorWrapper } from "@/components/editor";
 
 interface EditorClientProps {
     seller: Profile;
@@ -322,7 +322,9 @@ export function EditorClient({
 
         return (
             <VisualEditorLayer editor={editor}>
-                {template}
+                <EditorWrapper editor={editor}>
+                    {template}
+                </EditorWrapper>
             </VisualEditorLayer>
         );
     };
