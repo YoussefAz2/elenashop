@@ -16,9 +16,11 @@ interface VisualEditorLayerProps {
 
 export function VisualEditorLayer({ editor, children }: VisualEditorLayerProps) {
     const [isMobile, setIsMobile] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
 
     // Detect mobile
     useEffect(() => {
+        setIsMounted(true);
         const checkMobile = () => {
             setIsMobile(window.innerWidth < 768);
         };
@@ -37,6 +39,10 @@ export function VisualEditorLayer({ editor, children }: VisualEditorLayerProps) 
     const containerClassName = editor.isPreviewMode
         ? ""
         : "";
+
+    if (!isMounted) {
+        return <div className={containerClassName}>{children}</div>;
+    }
 
     return (
         <div className={containerClassName}>

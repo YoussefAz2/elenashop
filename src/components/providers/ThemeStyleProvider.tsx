@@ -195,7 +195,11 @@ export function ThemeStyleProvider({
 
     // Inject CSS variables into document
     useEffect(() => {
+        // Ensure we are in browser
+        if (typeof window === "undefined") return;
+
         const root = document.documentElement;
+        if (!root) return;
 
         root.style.setProperty("--theme-primary", variables.primary);
         root.style.setProperty("--theme-secondary", variables.secondary);
