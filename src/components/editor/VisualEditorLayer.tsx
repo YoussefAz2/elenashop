@@ -30,10 +30,12 @@ export function VisualEditorLayer({ editor, children }: VisualEditorLayerProps) 
         return () => window.removeEventListener("resize", checkMobile);
     }, []);
 
-    // Update editor state
+    // Update editor state - only depend on isMobile, not editor
+    // editor.setMobileView is a stable callback (useCallback with empty deps)
     useEffect(() => {
         editor.setMobileView(isMobile);
-    }, [isMobile, editor]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isMobile]);
 
     // When in preview mode, disable all pointer events on editable areas
     const containerClassName = editor.isPreviewMode
