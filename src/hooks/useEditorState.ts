@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import type { ElementStyleOverride } from "@/types";
 
 // ---------- TYPES ----------
@@ -41,7 +41,7 @@ export function useEditorState(
     initialOverrides: Record<string, ElementStyleOverride> = {},
     onOverridesChange?: (overrides: Record<string, ElementStyleOverride>) => void
 ) {
-    const [state, setState] = useState<EditorState>({
+    const [state, setState] = useState<EditorState>(() => ({
         isEditing: false,
         isPreviewMode: false,
         isMobile: false,
@@ -50,7 +50,19 @@ export function useEditorState(
         overrides: initialOverrides,
         copiedStyle: null,
         history: { past: [], future: [] },
-    });
+    }));
+
+    // Use refs to access current state in callbacks without adding to dependencies
+    const stateRef = useRef(state);
+    const onOverridesChangeRef = useRef(onOverridesChange);
+
+    useEffect(() => {
+        stateRef.current = state;
+    }, [state]);
+
+    useEffect(() => {
+        onOverridesChangeRef.current = onOverridesChange;
+    }, [onOverridesChange]);
 
     // ---------- MODE ACTIONS ----------
 
@@ -84,27 +96,11 @@ export function useEditorState(
 
     const setOverride = useCallback((elementId: string, styles: ElementStyleOverride) => {
         setState(s => {
-            // Save to history
             const newPast = [...s.history.past, s.overrides];
             const newOverrides = { ...s.overrides, [elementId]: styles };
 
-            onOverridesChange?.(newOverrides);
-
-            return {
-                ...s,
-                overrides: newOverrides,
-                history: { past: newPast.slice(-50), future: [] }, // Max 50 undo steps
-            };
-        });
-    }, [onOverridesChange]);
-
-    const resetOverride = useCallback((elementId: string) => {
-        setState(s => {
-            const newPast = [...s.history.past, s.overrides];
-            const newOverrides = { ...s.overrides };
-            delete newOverrides[elementId];
-
-            onOverridesChange?.(newOverrides);
+            // Call callback via ref to avoid dependency
+            onOverridesChangeRef.current?.(newOverrides);
 
             return {
                 ...s,
@@ -112,26 +108,43 @@ export function useEditorState(
                 history: { past: newPast.slice(-50), future: [] },
             };
         });
-    }, [onOverridesChange]);
+    }, []);
+
+    const resetOverride = useCallback((elementId: string) => {
+        setState(s => {
+            const newPast = [...s.history.past, s.overrides];
+            const newOverrides = { ...s.overrides };
+            delete newOverrides[elementId];
+
+            onOverridesChangeRef.current?.(newOverrides);
+
+            return {
+                ...s,
+                overrides: newOverrides,
+                history: { past: newPast.slice(-50), future: [] },
+            };
+        });
+    }, []);
 
     const getOverride = useCallback((elementId: string): ElementStyleOverride | undefined => {
-        return state.overrides[elementId];
-    }, [state.overrides]);
+        return stateRef.current.overrides[elementId];
+    }, []);
 
     // ---------- CLIPBOARD ACTIONS ----------
 
     const copyStyle = useCallback((elementId: string) => {
-        const style = state.overrides[elementId];
+        const style = stateRef.current.overrides[elementId];
         if (style) {
             setState(s => ({ ...s, copiedStyle: { ...style } }));
         }
-    }, [state.overrides]);
+    }, []);
 
     const pasteStyle = useCallback((elementId: string) => {
-        if (state.copiedStyle) {
-            setOverride(elementId, state.copiedStyle);
+        const copiedStyle = stateRef.current.copiedStyle;
+        if (copiedStyle) {
+            setOverride(elementId, copiedStyle);
         }
-    }, [state.copiedStyle, setOverride]);
+    }, [setOverride]);
 
     // ---------- HISTORY ACTIONS (UNDO/REDO) ----------
 
@@ -142,7 +155,7 @@ export function useEditorState(
             const previous = s.history.past[s.history.past.length - 1];
             const newPast = s.history.past.slice(0, -1);
 
-            onOverridesChange?.(previous);
+            onOverridesChangeRef.current?.(previous);
 
             return {
                 ...s,
@@ -153,7 +166,7 @@ export function useEditorState(
                 },
             };
         });
-    }, [onOverridesChange]);
+    }, []);
 
     const redo = useCallback(() => {
         setState(s => {
@@ -162,7 +175,7 @@ export function useEditorState(
             const next = s.history.future[0];
             const newFuture = s.history.future.slice(1);
 
-            onOverridesChange?.(next);
+            onOverridesChangeRef.current?.(next);
 
             return {
                 ...s,
@@ -173,44 +186,42 @@ export function useEditorState(
                 },
             };
         });
-    }, [onOverridesChange]);
+    }, []);
 
-    const canUndo = state.history.past.length > 0;
-    const canRedo = state.history.future.length > 0;
+    // ---------- STABLE ACTIONS OBJECT ----------
 
-    // ---------- RETURN ----------
-
-    return useMemo(() => ({
-        // State
-        ...state,
-        canUndo,
-        canRedo,
-        // Mode actions
+    // This object only contains stable callbacks, never changes
+    const actions = useMemo(() => ({
         setEditingMode,
         togglePreviewMode,
         setMobileView,
-        // Selection actions
         selectElement,
         hoverElement,
         clearSelection,
-        // Override actions
         setOverride,
         resetOverride,
         getOverride,
-        // Clipboard actions
         copyStyle,
         pasteStyle,
-        // History actions
         undo,
         redo,
     }), [
-        state, canUndo, canRedo,
         setEditingMode, togglePreviewMode, setMobileView,
         selectElement, hoverElement, clearSelection,
         setOverride, resetOverride, getOverride,
-        copyStyle, pasteStyle,
-        undo, redo,
+        copyStyle, pasteStyle, undo, redo,
     ]);
+
+    // ---------- RETURN ----------
+    // State values change, but actions object is stable
+    return {
+        // State values (these can change)
+        ...state,
+        canUndo: state.history.past.length > 0,
+        canRedo: state.history.future.length > 0,
+        // Stable actions (never change reference)
+        ...actions,
+    };
 }
 
 export type EditorStateReturn = ReturnType<typeof useEditorState>;
