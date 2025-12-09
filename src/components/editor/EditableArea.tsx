@@ -61,8 +61,9 @@ export function EditableArea({
     const isHovered = editor?.hoveredElement?.id === id;
     const hasOverride = editor?.overrides?.[id] !== undefined;
 
-    // Get override styles and apply them in a way that overrides child styles
-    const overrideStyles = editor?.getOverride?.(id);
+    // Get override styles DIRECTLY from editor.overrides (not getOverride which uses stale ref)
+    // This ensures real-time updates when state changes
+    const overrideStyles = editor?.overrides?.[id];
 
     // CSS variables for !important override via globals.css
     const appliedStyles: React.CSSProperties = overrideStyles ? {
