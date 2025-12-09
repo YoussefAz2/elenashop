@@ -172,6 +172,10 @@ export function EditorWrapper({ editor, children, className = "" }: EditorWrappe
                 if (overrides.lineHeight) htmlEl.style.lineHeight = overrides.lineHeight;
                 if (overrides.padding) htmlEl.style.padding = overrides.padding;
                 if (overrides.boxShadow) htmlEl.style.boxShadow = overrides.boxShadow;
+                if (overrides.textTransform) htmlEl.style.textTransform = overrides.textTransform;
+                if (overrides.letterSpacing) htmlEl.style.letterSpacing = overrides.letterSpacing;
+                if (overrides.borderColor) htmlEl.style.borderColor = overrides.borderColor;
+                if (overrides.borderWidth) htmlEl.style.borderWidth = overrides.borderWidth;
             }
 
             // Mark selected element

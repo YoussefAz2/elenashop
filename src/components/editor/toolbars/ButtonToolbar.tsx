@@ -106,22 +106,19 @@ export function ButtonToolbar({
                     Couleur du texte
                 </Label>
                 <div className="flex gap-2">
-                    <button
-                        onClick={() => updateStyle("color", "#ffffff")}
-                        className={`flex-1 py-2 rounded-lg border flex items-center justify-center gap-1 ${styles.color === "#ffffff" ? "border-blue-500 bg-blue-50" : ""
-                            }`}
-                    >
-                        <Sun className="w-3 h-3" />
-                        <span className="text-xs">Blanc</span>
-                    </button>
-                    <button
-                        onClick={() => updateStyle("color", "#1a1a1a")}
-                        className={`flex-1 py-2 rounded-lg border flex items-center justify-center gap-1 ${styles.color === "#1a1a1a" ? "border-blue-500 bg-blue-50" : ""
-                            }`}
-                    >
-                        <Moon className="w-3 h-3" />
-                        <span className="text-xs">Noir</span>
-                    </button>
+                    <input
+                        type="color"
+                        value={styles.color || "#ffffff"}
+                        onChange={(e) => updateStyle("color", e.target.value)}
+                        className="w-10 h-10 rounded-lg cursor-pointer border-2 border-slate-200"
+                    />
+                    <input
+                        type="text"
+                        value={styles.color || ""}
+                        onChange={(e) => updateStyle("color", e.target.value)}
+                        placeholder="#ffffff"
+                        className="flex-1 border rounded-lg px-3 text-sm"
+                    />
                 </div>
             </div>
 
@@ -132,8 +129,14 @@ export function ButtonToolbar({
                     {RADIUS_OPTIONS.map(({ value, label }) => (
                         <button
                             key={value}
-                            onClick={() => {/* TODO: Add borderRadius to overrides */ }}
-                            className="px-3 py-1 text-xs rounded bg-slate-100 hover:bg-slate-200 transition-colors"
+                            onClick={() => updateStyle("borderRadius", value)}
+                            className={`
+                                px-3 py-1.5 text-xs rounded transition-all
+                                ${styles.borderRadius === value
+                                    ? "bg-purple-600 text-white"
+                                    : "bg-slate-100 hover:bg-slate-200 text-slate-700"
+                                }
+                            `}
                         >
                             {label}
                         </button>
@@ -148,8 +151,14 @@ export function ButtonToolbar({
                     {SHADOW_OPTIONS.map(({ value, label }) => (
                         <button
                             key={value}
-                            onClick={() => {/* TODO: Add boxShadow to overrides */ }}
-                            className="flex-1 py-2 text-xs rounded bg-slate-100 hover:bg-slate-200 transition-colors"
+                            onClick={() => updateStyle("boxShadow", value)}
+                            className={`
+                                flex-1 py-2 text-xs rounded transition-all
+                                ${styles.boxShadow === value
+                                    ? "bg-purple-600 text-white"
+                                    : "bg-slate-100 hover:bg-slate-200 text-slate-700"
+                                }
+                            `}
                         >
                             {label}
                         </button>
@@ -161,10 +170,12 @@ export function ButtonToolbar({
             <div className="p-3 bg-slate-50 rounded-lg mt-4">
                 <p className="text-[10px] text-slate-400 mb-2">Aperçu</p>
                 <button
-                    className="w-full py-2 px-4 rounded-lg font-medium text-sm transition-all"
+                    className="w-full py-2 px-4 font-medium text-sm transition-all"
                     style={{
                         backgroundColor: styles.backgroundColor || "#3b82f6",
                         color: styles.color || "#ffffff",
+                        borderRadius: styles.borderRadius || "8px",
+                        boxShadow: styles.boxShadow || "none",
                     }}
                 >
                     Bouton exemple
