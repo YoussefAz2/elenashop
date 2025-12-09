@@ -242,10 +242,10 @@ export function TemplateMinimal({
                                     <HoverButton
                                         href={hero.buttonUrl || "#products"}
                                         text={hero.buttonText || "[Bouton]"}
-                                        bgColor={hero.imageUrl ? "#fff" : global.hero.buttonBg}
-                                        textColor={hero.imageUrl ? global.colors.text : global.hero.buttonText}
+                                        bgColor={editor?.overrides?.["hero-button"]?.backgroundColor || (hero.imageUrl ? "#fff" : global.hero.buttonBg)}
+                                        textColor={editor?.overrides?.["hero-button"]?.color || (hero.imageUrl ? global.colors.text : global.hero.buttonText)}
                                         hoverBg={global.buttons.hoverBg}
-                                        borderRadius={global.borderRadius}
+                                        borderRadius={editor?.overrides?.["hero-button"]?.borderRadius || global.borderRadius}
                                         buttonStyle={global.buttons.style}
                                         buttonSize={global.buttons.size}
                                         duration={animationDuration}
