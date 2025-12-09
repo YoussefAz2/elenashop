@@ -9,8 +9,8 @@ import { FloatingWhatsApp, PromoPopup } from "../common";
 import { Testimonials } from "../common/Testimonials";
 import { getDiscountedPrice, getPopupPromo } from "@/lib/promo";
 import { ShoppingBag, Store, Menu, X } from "lucide-react";
-import { Editable } from "../common/Editable";
-import type { ElementStyleOverride } from "@/types";
+import { EditableArea } from "@/components/editor";
+import type { EditorStateReturn } from "@/hooks/useEditorState";
 
 interface TemplateLuxeProps {
     config: ThemeConfig;
@@ -20,11 +20,10 @@ interface TemplateLuxeProps {
     storeName: string;
     pages?: Page[];
     promos?: Promo[];
-    isEditing?: boolean;
-    onUpdateOverride?: (id: string, styles: ElementStyleOverride | null) => void;
+    editor?: EditorStateReturn;
 }
 
-export function TemplateLuxe({ config, products, categories = [], sellerId, storeName, pages = [], promos = [], isEditing = false, onUpdateOverride }: TemplateLuxeProps) {
+export function TemplateLuxe({ config, products, categories = [], sellerId, storeName, pages = [], promos = [], editor }: TemplateLuxeProps) {
     const { global, homeContent } = config;
     const { header, announcement, hero, productGrid, testimonials, about, footer } = homeContent;
     const { typography, spacing, animations } = global;
@@ -128,13 +127,13 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
                         <div className="mb-8">
                             <div className="inline-block px-6 py-1 text-xs uppercase tracking-[0.3em] font-medium" style={{ border: `1px solid ${hero.imageUrl ? "rgba(255,255,255,0.3)" : global.colors.primary}`, color: hero.imageUrl ? "#fff" : global.colors.primary }}>Collection</div>
                         </div>
-                        <Editable id="hero-title" as="h1" className={`${headingSizeClass} font-normal italic mb-6 tracking-tight`} isEditing={isEditing} override={config.elementOverrides?.["hero-title"]} onUpdateOverride={onUpdateOverride}>
+                        <EditableArea id="hero-title" type="text" editor={editor} className={`${headingSizeClass} font-normal italic mb-6 tracking-tight`}>
                             <span style={{ color: hero.imageUrl ? "#fff" : global.hero.textColor, fontFamily: `"${global.headingFont}", Georgia, serif`, textTransform }}>{hero.title || storeName}</span>
-                        </Editable>
+                        </EditableArea>
                         {hero.subtitle && (
-                            <Editable id="hero-subtitle" as="p" className="text-xl md:text-2xl font-light italic mb-12 max-w-2xl" isEditing={isEditing} override={config.elementOverrides?.["hero-subtitle"]} onUpdateOverride={onUpdateOverride}>
+                            <EditableArea id="hero-subtitle" type="text" editor={editor} className="text-xl md:text-2xl font-light italic mb-12 max-w-2xl">
                                 <span style={{ color: hero.imageUrl ? "rgba(255,255,255,0.8)" : global.hero.textColor, opacity: hero.imageUrl ? 1 : 0.7 }}>{hero.subtitle}</span>
-                            </Editable>
+                            </EditableArea>
                         )}
                         {hero.buttonText && (
                             <HoverButton href={hero.buttonUrl || "#products"} text={hero.buttonText} bgColor={global.hero.buttonBg} textColor={global.hero.buttonText} hoverBg={global.buttons.hoverBg} accentColor={global.colors.primary} buttonStyle={global.buttons.style} buttonSize={global.buttons.size} duration={animationDuration} />
@@ -151,9 +150,9 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
                     {productGrid.title && (
                         <div className={`mb-16 ${global.hero.contentAlign === "center" ? "text-center" : ""}`}>
                             <p className="text-sm uppercase tracking-[0.3em] mb-4" style={{ color: global.colors.primary }}>Découvrez</p>
-                            <Editable id="products-title" as="h2" className={`${headingSizeClass} font-normal italic tracking-tight`} isEditing={isEditing} override={config.elementOverrides?.["products-title"]} onUpdateOverride={onUpdateOverride}>
+                            <EditableArea id="products-title" type="text" editor={editor} className={`${headingSizeClass} font-normal italic tracking-tight`}>
                                 <span style={{ color: global.colors.text, fontFamily: `"${global.headingFont}", Georgia, serif`, textTransform }}>{productGrid.title}</span>
-                            </Editable>
+                            </EditableArea>
                         </div>
                     )}
                     {products.length === 0 ? (
@@ -186,9 +185,9 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
                             {about.imageUrl && about.imagePosition === "left" && <div className="relative aspect-[4/5] overflow-hidden" style={{ border: `1px solid ${global.colors.primary}30` }}><Image src={about.imageUrl} alt={about.title} fill className="object-cover" /></div>}
                             <div className={about.imagePosition === "left" ? "" : "order-first md:order-none"}>
                                 <p className="text-sm uppercase tracking-[0.3em] mb-4" style={{ color: global.colors.primary }}>Notre Histoire</p>
-                                <Editable id="about-title" as="h2" className={`${headingSizeClass} font-normal italic tracking-tight mb-8`} isEditing={isEditing} override={config.elementOverrides?.["about-title"]} onUpdateOverride={onUpdateOverride}>
+                                <EditableArea id="about-title" type="text" editor={editor} className={`${headingSizeClass} font-normal italic tracking-tight mb-8`}>
                                     <span style={{ color: global.colors.text, fontFamily: `"${global.headingFont}", Georgia, serif`, textTransform }}>{about.title}</span>
-                                </Editable>
+                                </EditableArea>
                                 <p className={`${bodySizeClass} leading-relaxed italic`} style={{ color: global.colors.text, opacity: 0.7 }}>{about.text}</p>
                             </div>
                             {about.imageUrl && about.imagePosition === "right" && <div className="relative aspect-[4/5] overflow-hidden" style={{ border: `1px solid ${global.colors.primary}30` }}><Image src={about.imageUrl} alt={about.title} fill className="object-cover" /></div>}
@@ -210,9 +209,9 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
                             {footer.whatsapp && <a href={`https://wa.me/${footer.whatsapp.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer" className="text-sm uppercase tracking-[0.2em] transition-all hover:opacity-60" style={{ color: global.footer.textColor }}>WhatsApp</a>}
                         </div>
                     )}
-                    <Editable id="footer-text" as="p" className="text-xs uppercase tracking-[0.2em]" isEditing={isEditing} override={config.elementOverrides?.["footer-text"]} onUpdateOverride={onUpdateOverride}>
+                    <EditableArea id="footer-text" type="text" editor={editor} className="text-xs uppercase tracking-[0.2em]">
                         <span style={{ color: global.footer.textColor, opacity: 0.6 }}>{footer.text || `© ${new Date().getFullYear()} ${storeName}`}</span>
-                    </Editable>
+                    </EditableArea>
                 </div>
             </footer>
 

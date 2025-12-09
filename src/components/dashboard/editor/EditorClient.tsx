@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -20,13 +20,17 @@ import {
     Smartphone,
     Monitor,
     Paintbrush,
+    Wand2,
+    Eye,
 } from "lucide-react";
-import type { Profile, Product, Page, ThemeConfig } from "@/types";
+import type { Profile, Product, Page, ThemeConfig, ElementStyleOverride } from "@/types";
 import { DesignPanel } from "./DesignPanel";
 import { ContentPanel } from "./ContentPanel";
 import { UpgradeModal } from "./UpgradeModal";
 import { TemplateMinimal, TemplateLuxe, TemplateStreet } from "@/components/store/templates";
 import { isTemplatePremium, getTemplateConfig } from "@/lib/templates";
+import { useEditorState } from "@/hooks/useEditorState";
+import { VisualEditorLayer } from "@/components/editor";
 
 interface EditorClientProps {
     seller: Profile;
@@ -234,6 +238,17 @@ export function EditorClient({
     const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
     const [advancedMode, setAdvancedMode] = useState(false);
 
+    // Visual Editor V2 - centralized editor state
+    const handleOverridesChange = (overrides: Record<string, ElementStyleOverride>) => {
+        setConfig(prev => ({ ...prev, elementOverrides: overrides }));
+    };
+    const editor = useEditorState(config.elementOverrides || {}, handleOverridesChange);
+
+    // Sync advancedMode with editor.isEditing
+    useEffect(() => {
+        editor.setEditingMode(advancedMode);
+    }, [advancedMode, editor]);
+
     const router = useRouter();
     const supabase = createClient();
 
@@ -289,19 +304,26 @@ export function EditorClient({
             sellerId: seller.id,
             storeName: seller.store_name,
             pages,
-            // New editing props
-            isEditing: advancedMode,
-            onUpdateOverride: handleUpdateOverride,
+            // Visual Editor V2 props
+            editor,
         };
 
-        switch (config.templateId) {
-            case "luxe":
-                return <TemplateLuxe {...props} />;
-            case "street":
-                return <TemplateStreet {...props} />;
-            default:
-                return <TemplateMinimal {...props} />;
-        }
+        const template = (() => {
+            switch (config.templateId) {
+                case "luxe":
+                    return <TemplateLuxe {...props} />;
+                case "street":
+                    return <TemplateStreet {...props} />;
+                default:
+                    return <TemplateMinimal {...props} />;
+            }
+        })();
+
+        return (
+            <VisualEditorLayer editor={editor}>
+                {template}
+            </VisualEditorLayer>
+        );
     };
 
     return (
