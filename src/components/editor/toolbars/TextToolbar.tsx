@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
 import { Type, Palette, AlignLeft, AlignCenter, AlignRight, RotateCcw } from "lucide-react";
 import type { ElementStyleOverride } from "@/types";
 import { Label } from "@/components/ui/label";
@@ -49,16 +49,21 @@ export function TextToolbar({
     onReset,
     onClose,
 }: TextToolbarProps) {
-    // Immediate save on every change - no local state needed
+    // Use ref to always have access to latest currentStyles (fixes stale closure)
+    // Update synchronously during render, not in useEffect
+    const stylesRef = useRef(currentStyles);
+    stylesRef.current = currentStyles; // Synchronous update!
+
+    // Update style using ref to get latest value
     const updateStyle = <K extends keyof ElementStyleOverride>(
         key: K,
         value: ElementStyleOverride[K]
     ) => {
-        const newStyles = { ...currentStyles, [key]: value };
+        const newStyles = { ...stylesRef.current, [key]: value };
         onSave(newStyles);
     };
 
-    // Use currentStyles directly for rendering
+    // Use currentStyles directly for rendering (this is always fresh from props)
     const styles = currentStyles;
 
     return (
