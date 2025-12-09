@@ -158,6 +158,7 @@ export function EditableArea({
                 relative cursor-pointer transition-all duration-150
                 ${isSelected ? "ring-2 ring-blue-500 ring-offset-2" : ""}
                 ${isHovered && !isSelected ? "ring-1 ring-blue-400/50" : ""}
+                [&>*]:pointer-events-none
             `}
             style={appliedStyles}
             onClick={handleClick}
