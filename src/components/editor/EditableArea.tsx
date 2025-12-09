@@ -63,23 +63,25 @@ export function EditableArea({
 
     // Get override styles and apply them in a way that overrides child styles
     const overrideStyles = editor?.getOverride?.(id);
+
+    // CSS variables for !important override via globals.css
     const appliedStyles: React.CSSProperties = overrideStyles ? {
-        // Apply override styles directly
-        color: overrideStyles.color,
-        backgroundColor: overrideStyles.backgroundColor,
-        fontSize: overrideStyles.fontSize,
-        fontWeight: overrideStyles.fontWeight as React.CSSProperties["fontWeight"],
-        fontFamily: overrideStyles.fontFamily,
-        // Force children to inherit all text properties
-        ["--editable-color" as string]: overrideStyles.color || "inherit",
-        ["--editable-font-size" as string]: overrideStyles.fontSize || "inherit",
-        ["--editable-font-weight" as string]: overrideStyles.fontWeight || "inherit",
+        // CSS variables that get picked up by globals.css with !important
+        ["--editable-color" as string]: overrideStyles.color,
+        ["--editable-font-size" as string]: overrideStyles.fontSize,
+        ["--editable-font-weight" as string]: overrideStyles.fontWeight,
+        ["--editable-text-align" as string]: overrideStyles.textAlign,
+        ["--editable-bg-color" as string]: overrideStyles.backgroundColor,
     } : {};
 
-    // Apply CSS that forces inheritance to all children when there's an override
-    const inheritanceStyle: React.CSSProperties = overrideStyles ? {
-        ...appliedStyles,
-    } : {};
+    // Data attributes that enable the CSS !important rules
+    const dataAttributes: Record<string, boolean | undefined> = {
+        "data-editable-override-fontsize": !!overrideStyles?.fontSize,
+        "data-editable-override-color": !!overrideStyles?.color,
+        "data-editable-override-fontweight": !!overrideStyles?.fontWeight,
+        "data-editable-override-textalign": !!overrideStyles?.textAlign,
+        "data-editable-override-bgcolor": !!overrideStyles?.backgroundColor,
+    };
 
     // ---------- HANDLERS ----------
 
@@ -130,7 +132,16 @@ export function EditableArea({
 
     if (!isEditing) {
         return (
-            <div ref={ref} className={className} style={appliedStyles}>
+            <div
+                ref={ref}
+                className={className}
+                style={appliedStyles}
+                {...(dataAttributes["data-editable-override-fontsize"] ? { "data-editable-override-fontsize": "" } : {})}
+                {...(dataAttributes["data-editable-override-color"] ? { "data-editable-override-color": "" } : {})}
+                {...(dataAttributes["data-editable-override-fontweight"] ? { "data-editable-override-fontweight": "" } : {})}
+                {...(dataAttributes["data-editable-override-textalign"] ? { "data-editable-override-textalign": "" } : {})}
+                {...(dataAttributes["data-editable-override-bgcolor"] ? { "data-editable-override-bgcolor": "" } : {})}
+            >
                 {renderContent()}
             </div>
         );
@@ -151,6 +162,11 @@ export function EditableArea({
             onClick={handleClick}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
+            {...(dataAttributes["data-editable-override-fontsize"] ? { "data-editable-override-fontsize": "" } : {})}
+            {...(dataAttributes["data-editable-override-color"] ? { "data-editable-override-color": "" } : {})}
+            {...(dataAttributes["data-editable-override-fontweight"] ? { "data-editable-override-fontweight": "" } : {})}
+            {...(dataAttributes["data-editable-override-textalign"] ? { "data-editable-override-textalign": "" } : {})}
+            {...(dataAttributes["data-editable-override-bgcolor"] ? { "data-editable-override-bgcolor": "" } : {})}
         >
             {renderContent()}
 

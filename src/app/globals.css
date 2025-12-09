@@ -225,3 +225,46 @@ a,
 * {
   -webkit-tap-highlight-color: transparent;
 }
+
+/* ========================================
+   Visual Editor V2 - Override Styles
+   These rules ensure inline styles from the editor
+   override Tailwind CSS classes
+   ======================================== */
+
+/* Elements with custom font-size override */
+[data-editable-override-fontsize] {
+  font-size: var(--editable-font-size) !important;
+}
+
+[data-editable-override-fontsize]>* {
+  font-size: inherit !important;
+}
+
+/* Elements with custom color override */
+[data-editable-override-color] {
+  color: var(--editable-color) !important;
+}
+
+[data-editable-override-color]>* {
+  color: inherit !important;
+}
+
+/* Elements with custom font-weight override */
+[data-editable-override-fontweight] {
+  font-weight: var(--editable-font-weight) !important;
+}
+
+[data-editable-override-fontweight]>* {
+  font-weight: inherit !important;
+}
+
+/* Elements with custom text-align override */
+[data-editable-override-textalign] {
+  text-align: var(--editable-text-align) !important;
+}
+
+/* Elements with custom background-color override */
+[data-editable-override-bgcolor] {
+  background-color: var(--editable-bg-color) !important;
+}
