@@ -230,18 +230,18 @@ export function TemplateMinimal({
                                     {hero.title || storeName}
                                 </span>
                             </EditableArea>
-                            {hero.subtitle && (
+                            {(hero.subtitle || editor?.isEditing) && (
                                 <EditableArea id="hero-subtitle" type="text" editor={editor} className="text-lg md:text-xl font-light mb-10 max-w-lg">
                                     <span style={{ color: hero.imageUrl ? "rgba(255,255,255,0.85)" : global.hero.textColor, opacity: hero.imageUrl ? 1 : 0.7 }}>
-                                        {hero.subtitle}
+                                        {hero.subtitle || "[Sous-titre]"}
                                     </span>
                                 </EditableArea>
                             )}
-                            {hero.buttonText && (
+                            {(hero.buttonText || editor?.isEditing) && (
                                 <EditableArea id="hero-button" type="button" editor={editor}>
                                     <HoverButton
                                         href={hero.buttonUrl || "#products"}
-                                        text={hero.buttonText}
+                                        text={hero.buttonText || "[Bouton]"}
                                         bgColor={hero.imageUrl ? "#fff" : global.hero.buttonBg}
                                         textColor={hero.imageUrl ? global.colors.text : global.hero.buttonText}
                                         hoverBg={global.buttons.hoverBg}
@@ -393,10 +393,10 @@ export function TemplateMinimal({
             <Testimonials content={testimonials} styles={global} />
 
             {/* Section Divider */}
-            {spacing.showSectionDividers && about.visible && <div className="h-px" style={{ backgroundColor: `${global.colors.text}15` }} />}
+            {spacing.showSectionDividers && (about.visible || editor?.isEditing) && <div className="h-px" style={{ backgroundColor: `${global.colors.text}15` }} />}
 
             {/* About Section */}
-            {about.visible && (
+            {(about.visible || editor?.isEditing) && (
                 <section className={`${sectionPaddingClass} px-4`} style={{ backgroundColor: `${global.colors.text}05` }}>
                     <div className="mx-auto max-w-6xl">
                         <div className={`grid md:grid-cols-2 gap-12 items-center`}>
@@ -408,11 +408,11 @@ export function TemplateMinimal({
                             <div className={about.imagePosition === "left" ? "" : "order-first md:order-none"}>
                                 <EditableArea id="about-title" type="text" editor={editor} className={`${headingSizeClass} font-light tracking-tight mb-6`}>
                                     <span style={{ color: global.colors.text, fontFamily: `"${global.headingFont}", system-ui, sans-serif`, textTransform }}>
-                                        {about.title}
+                                        {about.title || "[Titre À Propos]"}
                                     </span>
                                 </EditableArea>
                                 <EditableArea id="about-text" type="text" editor={editor} className={`${bodySizeClass} leading-relaxed`}>
-                                    <span style={{ color: global.colors.text, opacity: 0.7 }}>{about.text}</span>
+                                    <span style={{ color: global.colors.text, opacity: 0.7 }}>{about.text || "[Texte À Propos]"}</span>
                                 </EditableArea>
                             </div>
                             {about.imageUrl && about.imagePosition === "right" && (
