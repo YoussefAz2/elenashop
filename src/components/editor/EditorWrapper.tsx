@@ -143,12 +143,32 @@ export function EditorWrapper({ editor, children, className = "" }: EditorWrappe
         };
     }, [editor?.isEditing, editor?.hoverElement, getEditableElement]);
 
-    // Apply styles to selected element
+    // Apply styles to editable elements
     useEffect(() => {
         if (!editor?.isEditing) return;
 
         const container = containerRef.current;
         if (!container) return;
+
+        // Helper to apply all style overrides to an HTMLElement
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const applyStyles = (el: HTMLElement, overrides: any) => {
+            if (overrides.color) el.style.color = overrides.color;
+            if (overrides.backgroundColor) el.style.backgroundColor = overrides.backgroundColor;
+            if (overrides.fontSize) el.style.fontSize = overrides.fontSize;
+            if (overrides.fontWeight) el.style.fontWeight = overrides.fontWeight;
+            if (overrides.fontFamily) el.style.fontFamily = overrides.fontFamily;
+            if (overrides.textAlign) el.style.textAlign = overrides.textAlign;
+            if (overrides.borderRadius) el.style.borderRadius = overrides.borderRadius;
+            if (overrides.opacity !== undefined) el.style.opacity = String(overrides.opacity);
+            if (overrides.lineHeight) el.style.lineHeight = overrides.lineHeight;
+            if (overrides.padding) el.style.padding = overrides.padding;
+            if (overrides.boxShadow) el.style.boxShadow = overrides.boxShadow;
+            if (overrides.textTransform) el.style.textTransform = overrides.textTransform;
+            if (overrides.letterSpacing) el.style.letterSpacing = overrides.letterSpacing;
+            if (overrides.borderColor) el.style.borderColor = overrides.borderColor;
+            if (overrides.borderWidth) el.style.borderWidth = overrides.borderWidth;
+        };
 
         // Find all editable elements and apply overrides
         const editableElements = container.querySelectorAll('[data-editable]');
@@ -156,26 +176,32 @@ export function EditorWrapper({ editor, children, className = "" }: EditorWrappe
         editableElements.forEach((el) => {
             const htmlEl = el as HTMLElement;
             const id = htmlEl.getAttribute('data-editable-id');
+            const type = htmlEl.getAttribute('data-editable');
 
             if (id && editor.overrides[id]) {
                 const overrides = editor.overrides[id];
 
-                // Apply style overrides
-                if (overrides.color) htmlEl.style.color = overrides.color;
-                if (overrides.backgroundColor) htmlEl.style.backgroundColor = overrides.backgroundColor;
-                if (overrides.fontSize) htmlEl.style.fontSize = overrides.fontSize;
-                if (overrides.fontWeight) htmlEl.style.fontWeight = overrides.fontWeight;
-                if (overrides.fontFamily) htmlEl.style.fontFamily = overrides.fontFamily;
-                if (overrides.textAlign) htmlEl.style.textAlign = overrides.textAlign;
-                if (overrides.borderRadius) htmlEl.style.borderRadius = overrides.borderRadius;
-                if (overrides.opacity !== undefined) htmlEl.style.opacity = String(overrides.opacity);
-                if (overrides.lineHeight) htmlEl.style.lineHeight = overrides.lineHeight;
-                if (overrides.padding) htmlEl.style.padding = overrides.padding;
-                if (overrides.boxShadow) htmlEl.style.boxShadow = overrides.boxShadow;
-                if (overrides.textTransform) htmlEl.style.textTransform = overrides.textTransform;
-                if (overrides.letterSpacing) htmlEl.style.letterSpacing = overrides.letterSpacing;
-                if (overrides.borderColor) htmlEl.style.borderColor = overrides.borderColor;
-                if (overrides.borderWidth) htmlEl.style.borderWidth = overrides.borderWidth;
+                // For buttons, apply styles to the child <a> or <button> element
+                if (type === 'button') {
+                    const targetEl = htmlEl.querySelector('a, button') as HTMLElement;
+                    if (targetEl) {
+                        applyStyles(targetEl, overrides);
+                    } else {
+                        // If no child, apply to the element itself
+                        applyStyles(htmlEl, overrides);
+                    }
+                }
+                // For containers/sections, apply background and spacing styles
+                else if (type === 'container' || type === 'section') {
+                    if (overrides.backgroundColor) htmlEl.style.backgroundColor = overrides.backgroundColor;
+                    if (overrides.padding) htmlEl.style.padding = overrides.padding;
+                    if (overrides.borderRadius) htmlEl.style.borderRadius = overrides.borderRadius;
+                    if (overrides.boxShadow) htmlEl.style.boxShadow = overrides.boxShadow;
+                }
+                // For text elements (title, paragraph, text)
+                else {
+                    applyStyles(htmlEl, overrides);
+                }
             }
 
             // Mark selected element
@@ -187,7 +213,6 @@ export function EditorWrapper({ editor, children, className = "" }: EditorWrappe
         });
 
         // ===== CENTRALIZED PRODUCT CARD STYLE APPLICATION =====
-        // Apply styles to ProductCard elements automatically - no cardOverrides needed in templates!
         const cardStyleId = "product-cards-style";
         const cardOverrides = editor.overrides[cardStyleId];
 

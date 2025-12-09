@@ -138,7 +138,9 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
                                 </span>
                             )}
                             {hero.buttonText && (
-                                <HoverButton href={hero.buttonUrl || "#products"} text={hero.buttonText} bgColor={global.hero.buttonBg} textColor={global.hero.buttonText} hoverBg={global.buttons.hoverBg} borderColor={global.colors.text} borderRadius={global.borderRadius} buttonStyle={global.buttons.style} buttonSize={global.buttons.size} duration={animationDuration} />
+                                <div data-editable="button" data-editable-id="hero-button">
+                                    <HoverButton href={hero.buttonUrl || "#products"} text={hero.buttonText} bgColor={global.hero.buttonBg} textColor={global.hero.buttonText} hoverBg={global.buttons.hoverBg} borderColor={global.colors.text} borderRadius={global.borderRadius} buttonStyle={global.buttons.style} buttonSize={global.buttons.size} duration={animationDuration} />
+                                </div>
                             )}
                         </div>
                     </div>
@@ -208,7 +210,7 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
                                 <span data-editable="title" data-editable-id="about-title" className={`${headingSizeClass} font-black uppercase tracking-tight mb-6 block`} style={{ color: global.colors.background, fontFamily: `"${global.headingFont}", Impact, sans-serif`, textTransform: textTransform || "uppercase" }}>
                                     {about.title}
                                 </span>
-                                <p className={`${bodySizeClass} font-medium leading-relaxed`} style={{ color: global.colors.background, opacity: 0.9 }}>{about.text}</p>
+                                <p data-editable="paragraph" data-editable-id="about-text" className={`${bodySizeClass} font-medium leading-relaxed`} style={{ color: global.colors.background, opacity: 0.9 }}>{about.text}</p>
                             </div>
                             {about.imageUrl && about.imagePosition === "right" && <div className="relative aspect-square overflow-hidden" style={{ border: `4px solid ${global.colors.text}`, boxShadow: `8px 8px 0 ${global.colors.text}` }}><Image src={about.imageUrl} alt={about.title} fill className="object-cover" /></div>}
                         </div>

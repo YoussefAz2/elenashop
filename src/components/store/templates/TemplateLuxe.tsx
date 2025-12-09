@@ -135,7 +135,9 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
                             </span>
                         )}
                         {hero.buttonText && (
-                            <HoverButton href={hero.buttonUrl || "#products"} text={hero.buttonText} bgColor={global.hero.buttonBg} textColor={global.hero.buttonText} hoverBg={global.buttons.hoverBg} accentColor={global.colors.primary} buttonStyle={global.buttons.style} buttonSize={global.buttons.size} duration={animationDuration} />
+                            <div data-editable="button" data-editable-id="hero-button">
+                                <HoverButton href={hero.buttonUrl || "#products"} text={hero.buttonText} bgColor={global.hero.buttonBg} textColor={global.hero.buttonText} hoverBg={global.buttons.hoverBg} accentColor={global.colors.primary} buttonStyle={global.buttons.style} buttonSize={global.buttons.size} duration={animationDuration} />
+                            </div>
                         )}
                     </div>
                     <div className="absolute bottom-8 left-1/2 -translate-x-1/2"><div className="w-px h-16 animate-pulse" style={{ backgroundColor: hero.imageUrl ? "rgba(255,255,255,0.3)" : `${global.colors.text}30` }} /></div>
@@ -203,7 +205,7 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
                                 <span data-editable="title" data-editable-id="about-title" className={`${headingSizeClass} font-normal italic tracking-tight mb-8 block`} style={{ color: global.colors.text, fontFamily: `"${global.headingFont}", Georgia, serif`, textTransform }}>
                                     {about.title}
                                 </span>
-                                <p className={`${bodySizeClass} leading-relaxed italic`} style={{ color: global.colors.text, opacity: 0.7 }}>{about.text}</p>
+                                <p data-editable="paragraph" data-editable-id="about-text" className={`${bodySizeClass} leading-relaxed italic`} style={{ color: global.colors.text, opacity: 0.7 }}>{about.text}</p>
                             </div>
                             {about.imageUrl && about.imagePosition === "right" && <div className="relative aspect-[4/5] overflow-hidden" style={{ border: `1px solid ${global.colors.primary}30` }}><Image src={about.imageUrl} alt={about.title} fill className="object-cover" /></div>}
                         </div>
