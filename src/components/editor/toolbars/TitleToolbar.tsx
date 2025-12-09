@@ -50,6 +50,17 @@ const LETTER_SPACINGS = [
     { value: "0.2em", label: "Très large" },
 ];
 
+const FONT_FAMILIES = [
+    { value: "inherit", label: "Par défaut" },
+    { value: "'Inter', sans-serif", label: "Inter" },
+    { value: "'Playfair Display', serif", label: "Playfair" },
+    { value: "'Montserrat', sans-serif", label: "Montserrat" },
+    { value: "'Roboto', sans-serif", label: "Roboto" },
+    { value: "'Poppins', sans-serif", label: "Poppins" },
+    { value: "'Cormorant Garamond', serif", label: "Cormorant" },
+    { value: "'Oswald', sans-serif", label: "Oswald" },
+];
+
 // ---------- COMPONENT ----------
 
 export function TitleToolbar({
@@ -107,6 +118,22 @@ export function TitleToolbar({
                         className="flex-1 border rounded-lg px-3 text-sm"
                     />
                 </div>
+            </div>
+
+            {/* Font Family */}
+            <div className="space-y-2">
+                <Label className="text-xs">🔤 Police</Label>
+                <select
+                    value={styles.fontFamily || "inherit"}
+                    onChange={(e) => updateStyle("fontFamily", e.target.value)}
+                    className="w-full border rounded-lg px-3 py-2 text-sm bg-white"
+                >
+                    {FONT_FAMILIES.map(({ value, label }) => (
+                        <option key={value} value={value} style={{ fontFamily: value }}>
+                            {label}
+                        </option>
+                    ))}
+                </select>
             </div>
 
             {/* Font Size */}

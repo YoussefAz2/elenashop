@@ -71,8 +71,11 @@ export function EditableArea({
         ["--editable-color" as string]: overrideStyles.color,
         ["--editable-font-size" as string]: overrideStyles.fontSize,
         ["--editable-font-weight" as string]: overrideStyles.fontWeight,
+        ["--editable-font-family" as string]: overrideStyles.fontFamily,
         ["--editable-text-align" as string]: overrideStyles.textAlign,
         ["--editable-bg-color" as string]: overrideStyles.backgroundColor,
+        ["--editable-line-height" as string]: overrideStyles.lineHeight,
+        ["--editable-opacity" as string]: overrideStyles.opacity,
     } : {};
 
     // Data attributes that enable the CSS !important rules
@@ -80,8 +83,11 @@ export function EditableArea({
         "data-editable-override-fontsize": !!overrideStyles?.fontSize,
         "data-editable-override-color": !!overrideStyles?.color,
         "data-editable-override-fontweight": !!overrideStyles?.fontWeight,
+        "data-editable-override-fontfamily": !!overrideStyles?.fontFamily,
         "data-editable-override-textalign": !!overrideStyles?.textAlign,
         "data-editable-override-bgcolor": !!overrideStyles?.backgroundColor,
+        "data-editable-override-lineheight": !!overrideStyles?.lineHeight,
+        "data-editable-override-opacity": !!overrideStyles?.opacity,
     };
 
     // ---------- HANDLERS ----------
@@ -168,8 +174,11 @@ export function EditableArea({
             {...(dataAttributes["data-editable-override-fontsize"] ? { "data-editable-override-fontsize": "" } : {})}
             {...(dataAttributes["data-editable-override-color"] ? { "data-editable-override-color": "" } : {})}
             {...(dataAttributes["data-editable-override-fontweight"] ? { "data-editable-override-fontweight": "" } : {})}
+            {...(dataAttributes["data-editable-override-fontfamily"] ? { "data-editable-override-fontfamily": "" } : {})}
             {...(dataAttributes["data-editable-override-textalign"] ? { "data-editable-override-textalign": "" } : {})}
             {...(dataAttributes["data-editable-override-bgcolor"] ? { "data-editable-override-bgcolor": "" } : {})}
+            {...(dataAttributes["data-editable-override-lineheight"] ? { "data-editable-override-lineheight": "" } : {})}
+            {...(dataAttributes["data-editable-override-opacity"] ? { "data-editable-override-opacity": "" } : {})}
         >
             {renderContent()}
 

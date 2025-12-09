@@ -40,6 +40,16 @@ const OPACITY_OPTIONS = [
     { value: 0.5, label: "50%" },
 ];
 
+const FONT_FAMILIES = [
+    { value: "inherit", label: "Par défaut" },
+    { value: "'Inter', sans-serif", label: "Inter" },
+    { value: "'Roboto', sans-serif", label: "Roboto" },
+    { value: "'Poppins', sans-serif", label: "Poppins" },
+    { value: "'Open Sans', sans-serif", label: "Open Sans" },
+    { value: "'Lato', sans-serif", label: "Lato" },
+    { value: "'Source Sans Pro', sans-serif", label: "Source Sans" },
+];
+
 // ---------- COMPONENT ----------
 
 export function ParagraphToolbar({
@@ -97,6 +107,22 @@ export function ParagraphToolbar({
                         className="flex-1 border rounded-lg px-3 text-sm"
                     />
                 </div>
+            </div>
+
+            {/* Font Family */}
+            <div className="space-y-2">
+                <Label className="text-xs">🔤 Police</Label>
+                <select
+                    value={styles.fontFamily || "inherit"}
+                    onChange={(e) => updateStyle("fontFamily", e.target.value)}
+                    className="w-full border rounded-lg px-3 py-2 text-sm bg-white"
+                >
+                    {FONT_FAMILIES.map(({ value, label }) => (
+                        <option key={value} value={value}>
+                            {label}
+                        </option>
+                    ))}
+                </select>
             </div>
 
             {/* Font Size */}

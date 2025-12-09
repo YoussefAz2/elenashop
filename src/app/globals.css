@@ -268,3 +268,22 @@ a,
 [data-editable-override-bgcolor] {
   background-color: var(--editable-bg-color) !important;
 }
+
+/* Elements with custom font-family override */
+[data-editable-override-fontfamily] {
+  font-family: var(--editable-font-family) !important;
+}
+
+[data-editable-override-fontfamily]>* {
+  font-family: inherit !important;
+}
+
+/* Elements with custom line-height override */
+[data-editable-override-lineheight] {
+  line-height: var(--editable-line-height) !important;
+}
+
+/* Elements with custom opacity override */
+[data-editable-override-opacity] {
+  opacity: var(--editable-opacity) !important;
+}
