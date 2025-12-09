@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef } from "react";
+import React from "react";
 import { Type, Palette, AlignLeft, AlignCenter, AlignRight, RotateCcw } from "lucide-react";
 import type { ElementStyleOverride } from "@/types";
 import { Label } from "@/components/ui/label";
@@ -49,21 +49,17 @@ export function TextToolbar({
     onReset,
     onClose,
 }: TextToolbarProps) {
-    // Use ref to always have access to latest currentStyles (fixes stale closure)
-    // Update synchronously during render, not in useEffect
-    const stylesRef = useRef(currentStyles);
-    stylesRef.current = currentStyles; // Synchronous update!
-
-    // Update style using ref to get latest value
+    // Simply pass only the changed property - setOverride will merge with existing
     const updateStyle = <K extends keyof ElementStyleOverride>(
         key: K,
         value: ElementStyleOverride[K]
     ) => {
-        const newStyles = { ...stylesRef.current, [key]: value };
-        onSave(newStyles);
+        // Only pass the single changed property
+        // setOverride now MERGES with existing styles, so no stale state issues!
+        onSave({ [key]: value } as ElementStyleOverride);
     };
 
-    // Use currentStyles directly for rendering (this is always fresh from props)
+    // Use currentStyles directly for rendering UI state
     const styles = currentStyles;
 
     return (

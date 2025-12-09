@@ -94,10 +94,15 @@ export function useEditorState(
 
     // ---------- OVERRIDE ACTIONS ----------
 
+    // MERGE styles with existing overrides (not replace)
+    // This fixes stale state issues because caller only needs to pass changed properties
     const setOverride = useCallback((elementId: string, styles: ElementStyleOverride) => {
         setState(s => {
             const newPast = [...s.history.past, s.overrides];
-            const newOverrides = { ...s.overrides, [elementId]: styles };
+            // MERGE with existing styles instead of replacing
+            const existingStyles = s.overrides[elementId] || {};
+            const mergedStyles = { ...existingStyles, ...styles };
+            const newOverrides = { ...s.overrides, [elementId]: mergedStyles };
 
             // Call callback via ref to avoid dependency
             onOverridesChangeRef.current?.(newOverrides);

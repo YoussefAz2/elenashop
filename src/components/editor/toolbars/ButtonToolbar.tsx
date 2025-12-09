@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Square, Palette, RotateCcw, Sun, Moon } from "lucide-react";
 import type { ElementStyleOverride } from "@/types";
 import { Label } from "@/components/ui/label";
@@ -48,20 +48,16 @@ export function ButtonToolbar({
     onReset,
     onClose,
 }: ButtonToolbarProps) {
-    const [styles, setStyles] = useState<ElementStyleOverride>(currentStyles);
-
-    useEffect(() => {
-        setStyles(currentStyles);
-    }, [currentStyles]);
-
+    // Simply pass only the changed property - setOverride will merge with existing
     const updateStyle = <K extends keyof ElementStyleOverride>(
         key: K,
         value: ElementStyleOverride[K]
     ) => {
-        const newStyles = { ...styles, [key]: value };
-        setStyles(newStyles);
-        onSave(newStyles);
+        onSave({ [key]: value } as ElementStyleOverride);
     };
+
+    // Use currentStyles directly for rendering
+    const styles = currentStyles;
 
     return (
         <div className="space-y-4">
