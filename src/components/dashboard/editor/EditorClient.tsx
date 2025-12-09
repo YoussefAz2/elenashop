@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -239,15 +239,17 @@ export function EditorClient({
     const [advancedMode, setAdvancedMode] = useState(false);
 
     // Visual Editor V2 - centralized editor state
-    const handleOverridesChange = (overrides: Record<string, ElementStyleOverride>) => {
+    const handleOverridesChange = useCallback((overrides: Record<string, ElementStyleOverride>) => {
         setConfig(prev => ({ ...prev, elementOverrides: overrides }));
-    };
+    }, []);
     const editor = useEditorState(config.elementOverrides || {}, handleOverridesChange);
 
     // Sync advancedMode with editor.isEditing
+    // NOTE: editor object reference changes every render, so we only depend on advancedMode
     useEffect(() => {
         editor.setEditingMode(advancedMode);
-    }, [advancedMode, editor]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [advancedMode]);
 
     const router = useRouter();
     const supabase = createClient();
