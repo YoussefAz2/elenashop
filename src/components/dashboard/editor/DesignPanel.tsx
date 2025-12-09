@@ -34,6 +34,8 @@ import type {
 import { DEFAULT_THEME_CONFIGS, AVAILABLE_FONTS, FONT_CATEGORIES } from "@/types";
 import { TEMPLATES } from "@/lib/templates";
 import { COLOR_PALETTES, applyPalette, type ColorPalette } from "@/lib/palettes";
+import { ThemePresets } from "./ThemePresets";
+import { THEME_PRESETS } from "@/components/providers/ThemeStyleProvider";
 
 interface DesignPanelProps {
     config: ThemeConfig;
@@ -137,6 +139,29 @@ export function DesignPanel({ config, onUpdateConfig, advancedMode: externalAdva
         return idx >= 0 ? idx : 3;
     };
 
+    const handleSelectPreset = (presetId: string) => {
+        const preset = THEME_PRESETS[presetId];
+        if (preset && preset.variables) {
+            onUpdateConfig({
+                ...config,
+                activePreset: presetId,
+                global: {
+                    ...config.global,
+                    colors: {
+                        ...config.global.colors,
+                        primary: preset.variables.primary || config.global.colors.primary,
+                        secondary: preset.variables.secondary || config.global.colors.secondary,
+                        background: preset.variables.background || config.global.colors.background,
+                        text: preset.variables.text || config.global.colors.text,
+                    },
+                    borderRadius: preset.variables.radius || config.global.borderRadius,
+                    font: preset.variables.fontBody || config.global.font,
+                    headingFont: preset.variables.fontHeading || config.global.headingFont,
+                },
+            });
+        }
+    };
+
     return (
         <div className="p-4 space-y-4">
             {/* Template Selection */}
@@ -179,37 +204,11 @@ export function DesignPanel({ config, onUpdateConfig, advancedMode: externalAdva
                         </div>
                     </AccordionTrigger>
                     <AccordionContent className="pb-4 space-y-4">
-                        {/* Palette Selector - Always Visible */}
-                        <div className="space-y-2">
-                            <Label className="text-xs text-slate-500">Palette de couleurs</Label>
-                            <div className="grid grid-cols-3 gap-2">
-                                {COLOR_PALETTES.map((palette) => (
-                                    <button
-                                        key={palette.id}
-                                        onClick={() => applyColorPalette(palette)}
-                                        className="relative p-2 rounded-lg border-2 transition-all hover:scale-105 active:scale-95"
-                                        style={{
-                                            borderColor: config.global.colors.primary === palette.colors.primary ? palette.preview.primary : "#e2e8f0",
-                                            backgroundColor: config.global.colors.primary === palette.colors.primary ? `${palette.preview.primary}10` : "white",
-                                        }}
-                                    >
-                                        {/* Check mark if selected */}
-                                        {config.global.colors.primary === palette.colors.primary && (
-                                            <div className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center" style={{ backgroundColor: palette.preview.primary }}>
-                                                <Check className="h-3 w-3 text-white" />
-                                            </div>
-                                        )}
-                                        {/* Color preview */}
-                                        <div className="flex gap-1 mb-1.5">
-                                            <div className="w-4 h-4 rounded-full" style={{ backgroundColor: palette.preview.primary }} />
-                                            <div className="w-4 h-4 rounded-full" style={{ backgroundColor: palette.preview.secondary }} />
-                                            <div className="w-4 h-4 rounded-full" style={{ backgroundColor: palette.preview.accent }} />
-                                        </div>
-                                        <p className="text-[10px] font-medium text-center">{palette.emoji} {palette.name}</p>
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
+                        {/* Theme Presets */}
+                        <ThemePresets
+                            activePreset={config.activePreset || null}
+                            onSelectPreset={handleSelectPreset}
+                        />
 
                         {/* Advanced Mode Toggle */}
                         <div className="flex items-center justify-between pt-2 border-t border-slate-100">
