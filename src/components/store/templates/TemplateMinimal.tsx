@@ -274,6 +274,21 @@ export function TemplateMinimal({
                             <div className="w-8 h-px mt-4 mx-auto" style={{ backgroundColor: global.colors.primary }} />
                         </div>
                     )}
+
+                    {/* Product Cards Style Editor - only visible in edit mode */}
+                    {editor?.isEditing && (
+                        <EditableArea
+                            id="product-cards-style"
+                            type="productCard"
+                            label="Style des cartes produit"
+                            editor={editor}
+                            className="mb-6 p-3 text-center"
+                        >
+                            <span className="text-sm text-slate-500 flex items-center justify-center gap-2">
+                                🛍️ Cliquez pour personnaliser le style de toutes les cartes produit
+                            </span>
+                        </EditableArea>
+                    )}
                     {products.length === 0 ? (
                         <div className="text-center py-20">
                             <ShoppingBag className="h-12 w-12 mx-auto mb-4" style={{ color: global.colors.text, opacity: 0.2 }} />
@@ -311,6 +326,7 @@ export function TemplateMinimal({
                                                         showShadow={productGrid.cardShadow}
                                                         discountedPrice={priceInfo.discountedPrice}
                                                         hasDiscount={priceInfo.hasDiscount}
+                                                        cardOverrides={editor?.overrides?.["product-cards-style"]}
                                                     />
                                                 );
                                             })}
@@ -350,6 +366,7 @@ export function TemplateMinimal({
                                                         showShadow={productGrid.cardShadow}
                                                         discountedPrice={priceInfo.discountedPrice}
                                                         hasDiscount={priceInfo.hasDiscount}
+                                                        cardOverrides={editor?.overrides?.["product-cards-style"]}
                                                     />
                                                 );
                                             })}
@@ -378,6 +395,7 @@ export function TemplateMinimal({
                                         showShadow={productGrid.cardShadow}
                                         discountedPrice={priceInfo.discountedPrice}
                                         hasDiscount={priceInfo.hasDiscount}
+                                        cardOverrides={editor?.overrides?.["product-cards-style"]}
                                     />
                                 );
                             })}

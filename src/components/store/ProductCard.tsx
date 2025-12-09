@@ -19,6 +19,12 @@ interface ProductCardProps {
     showShadow?: boolean;
     discountedPrice?: number;
     hasDiscount?: boolean;
+    // Editor overrides for card styles
+    cardOverrides?: {
+        backgroundColor?: string;
+        borderRadius?: string;
+        boxShadow?: string;
+    };
 }
 
 export function ProductCard({
@@ -34,6 +40,7 @@ export function ProductCard({
     showShadow = true,
     discountedPrice,
     hasDiscount = false,
+    cardOverrides,
 }: ProductCardProps) {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [isHovered, setIsHovered] = useState(false);
@@ -106,9 +113,10 @@ export function ProductCard({
             : animations?.animationSpeed === "fast" ? "0.15s" : "0.3s";
 
         const base: React.CSSProperties = {
-            backgroundColor: cards.backgroundColor,
-            borderRadius: variant === "street" ? "0" : styles.borderRadius,
+            backgroundColor: cardOverrides?.backgroundColor || cards.backgroundColor,
+            borderRadius: cardOverrides?.borderRadius || (variant === "street" ? "0" : styles.borderRadius),
             transition: animations?.enableAnimations ? `all ${animDuration} ease` : "none",
+            boxShadow: cardOverrides?.boxShadow,
         };
 
         // Apply hover effects
