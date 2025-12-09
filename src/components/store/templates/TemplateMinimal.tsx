@@ -238,18 +238,20 @@ export function TemplateMinimal({
                                 </EditableArea>
                             )}
                             {hero.buttonText && (
-                                <HoverButton
-                                    href={hero.buttonUrl || "#products"}
-                                    text={hero.buttonText}
-                                    bgColor={hero.imageUrl ? "#fff" : global.hero.buttonBg}
-                                    textColor={hero.imageUrl ? global.colors.text : global.hero.buttonText}
-                                    hoverBg={global.buttons.hoverBg}
-                                    borderRadius={global.borderRadius}
-                                    buttonStyle={global.buttons.style}
-                                    buttonSize={global.buttons.size}
-                                    duration={animationDuration}
-                                    borderColor={global.colors.text}
-                                />
+                                <EditableArea id="hero-button" type="button" editor={editor}>
+                                    <HoverButton
+                                        href={hero.buttonUrl || "#products"}
+                                        text={hero.buttonText}
+                                        bgColor={hero.imageUrl ? "#fff" : global.hero.buttonBg}
+                                        textColor={hero.imageUrl ? global.colors.text : global.hero.buttonText}
+                                        hoverBg={global.buttons.hoverBg}
+                                        borderRadius={global.borderRadius}
+                                        buttonStyle={global.buttons.style}
+                                        buttonSize={global.buttons.size}
+                                        duration={animationDuration}
+                                        borderColor={global.colors.text}
+                                    />
+                                </EditableArea>
                             )}
                         </div>
                     </div>

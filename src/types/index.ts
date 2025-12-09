@@ -99,6 +99,7 @@ export interface ElementStyleOverride {
     fontWeight?: string;
     fontFamily?: string;
     backgroundColor?: string;
+    textAlign?: "left" | "center" | "right";
 }
 
 export interface ElementOverride {

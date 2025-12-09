@@ -122,6 +122,7 @@ export function EditableArea({
                     ...(overrideStyles.fontSize && { fontSize: overrideStyles.fontSize }),
                     ...(overrideStyles.fontWeight && { fontWeight: overrideStyles.fontWeight }),
                     ...(overrideStyles.backgroundColor && { backgroundColor: overrideStyles.backgroundColor }),
+                    ...(overrideStyles.textAlign && { textAlign: overrideStyles.textAlign }),
                 },
             });
         });

@@ -145,19 +145,25 @@ export function TextToolbar({
                 </div>
             </div>
 
-            {/* Alignment (placeholder for text-align) */}
+            {/* Alignment */}
             <div className="space-y-2">
                 <Label className="text-xs">📐 Alignement</Label>
                 <div className="flex gap-1">
                     {[
-                        { icon: AlignLeft, value: "left" },
-                        { icon: AlignCenter, value: "center" },
-                        { icon: AlignRight, value: "right" },
+                        { icon: AlignLeft, value: "left" as const },
+                        { icon: AlignCenter, value: "center" as const },
+                        { icon: AlignRight, value: "right" as const },
                     ].map(({ icon: Icon, value }) => (
                         <button
                             key={value}
-                            onClick={() => {/* TODO: Add textAlign to overrides */ }}
-                            className="p-2 rounded bg-slate-100 hover:bg-slate-200 transition-colors"
+                            onClick={() => updateStyle("textAlign", value)}
+                            className={`
+                                p-2 rounded transition-colors
+                                ${styles.textAlign === value
+                                    ? "bg-blue-600 text-white"
+                                    : "bg-slate-100 hover:bg-slate-200 text-slate-700"
+                                }
+                            `}
                         >
                             <Icon className="w-4 h-4" />
                         </button>
