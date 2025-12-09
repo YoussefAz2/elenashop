@@ -29,8 +29,9 @@ import { ContentPanel } from "./ContentPanel";
 import { UpgradeModal } from "./UpgradeModal";
 import { TemplateMinimal, TemplateLuxe, TemplateStreet } from "@/components/store/templates";
 import { isTemplatePremium, getTemplateConfig } from "@/lib/templates";
-import { useEditorState } from "@/hooks/useEditorState";
-import { VisualEditorLayer } from "@/components/editor";
+// Visual Editor V2 - temporarily disabled to fix infinite loop
+// import { useEditorState } from "@/hooks/useEditorState";
+// import { VisualEditorLayer } from "@/components/editor";
 
 interface EditorClientProps {
     seller: Profile;
@@ -238,18 +239,15 @@ export function EditorClient({
     const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
     const [advancedMode, setAdvancedMode] = useState(false);
 
-    // Visual Editor V2 - centralized editor state
-    const handleOverridesChange = useCallback((overrides: Record<string, ElementStyleOverride>) => {
-        setConfig(prev => ({ ...prev, elementOverrides: overrides }));
-    }, []);
-    const editor = useEditorState(config.elementOverrides || {}, handleOverridesChange);
-
-    // Sync advancedMode with editor.isEditing
-    // NOTE: editor object reference changes every render, so we only depend on advancedMode
-    useEffect(() => {
-        editor.setEditingMode(advancedMode);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [advancedMode]);
+    // Visual Editor V2 - TEMPORARILY DISABLED to fix infinite loop
+    // const handleOverridesChange = useCallback((overrides: Record<string, ElementStyleOverride>) => {
+    //     setConfig(prev => ({ ...prev, elementOverrides: overrides }));
+    // }, []);
+    // const editor = useEditorState(config.elementOverrides || {}, handleOverridesChange);
+    //
+    // useEffect(() => {
+    //     editor.setEditingMode(advancedMode);
+    // }, [advancedMode]);
 
     const router = useRouter();
     const supabase = createClient();
@@ -306,8 +304,8 @@ export function EditorClient({
             sellerId: seller.id,
             storeName: seller.store_name,
             pages,
-            // Visual Editor V2 props
-            editor,
+            // Visual Editor V2 disabled
+            // editor,
         };
 
         const template = (() => {
@@ -321,11 +319,8 @@ export function EditorClient({
             }
         })();
 
-        return (
-            <VisualEditorLayer editor={editor}>
-                {template}
-            </VisualEditorLayer>
-        );
+        // Visual Editor V2 disabled - return template directly
+        return template;
     };
 
     return (
