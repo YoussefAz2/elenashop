@@ -287,3 +287,21 @@ a,
 [data-editable-override-opacity] {
   opacity: var(--editable-opacity) !important;
 }
+
+/* ========================================
+   Visual Editor V2 - Edit Mode Protection
+   Disable all links and buttons in edit mode
+   to prevent accidental navigation
+   ======================================== */
+
+[data-editing] a,
+[data-editing] button {
+  pointer-events: none !important;
+  cursor: default !important;
+}
+
+/* Re-enable pointer events for EditableArea wrappers so they can be clicked */
+[data-editing] [data-editable-area] {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+}

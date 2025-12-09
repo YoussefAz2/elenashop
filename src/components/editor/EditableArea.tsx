@@ -159,6 +159,7 @@ export function EditableArea({
     return (
         <div
             ref={ref}
+            data-editable-area=""
             className={`
                 ${className}
                 relative cursor-pointer transition-all duration-150

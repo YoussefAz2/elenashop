@@ -114,7 +114,8 @@ export function TemplateMinimal({
 
     return (
         <div
-            className={`min-h-screen ${bodySizeClass} ${editor?.isEditing ? "[&_a:not([data-editable-link])]:pointer-events-none [&_button:not([data-editable-button])]:pointer-events-none" : ""}`}
+            className={`min-h-screen ${bodySizeClass}`}
+            data-editing={editor?.isEditing ? "" : undefined}
             style={{
                 backgroundColor: global.colors.background,
                 color: global.colors.text,
