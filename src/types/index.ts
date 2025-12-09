@@ -292,7 +292,8 @@ export interface ThemeConfig {
     floatingWhatsApp: FloatingWhatsAppConfig;
     promoPopup: PromoPopupConfig;
     seo: SEOConfig;
-    // Element-specific overrides (click-to-edit system)
+    // Visual Editor V2
+    activePreset?: string;
     elementOverrides?: Record<string, ElementStyleOverride>;
 }
 
