@@ -60,7 +60,7 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
                 )}
 
                 {header.visible && (
-                    <header className="py-6 px-8 backdrop-blur-md" style={{ backgroundColor: `${global.colors.background}ee`, borderBottom: `1px solid ${global.colors.primary}20` }}>
+                    <header data-editable="container" data-editable-id="header-section" data-editable-label="Section Header" className="py-6 px-8 backdrop-blur-md" style={{ backgroundColor: `${global.colors.background}ee`, borderBottom: `1px solid ${global.colors.primary}20` }}>
                         <div className="max-w-6xl mx-auto flex items-center justify-between">
                             <div className="flex items-center gap-4">
                                 {header.logoUrl ? (
@@ -107,7 +107,7 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
             {spacing.showSectionDividers && <div className="h-px" style={{ backgroundColor: `${global.colors.primary}30` }} />}
 
             {hero.visible && (
-                <section className={`relative ${heroHeightClass} flex items-center justify-center overflow-hidden`}>
+                <section data-editable="container" data-editable-id="hero-section" data-editable-label="Section Hero" className={`relative ${heroHeightClass} flex items-center justify-center overflow-hidden`}>
                     {/* Background image with filter - separate from content */}
                     {hero.imageUrl && (
                         <div
@@ -196,7 +196,7 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
             {spacing.showSectionDividers && about.visible && <div className="h-px" style={{ backgroundColor: `${global.colors.primary}30` }} />}
 
             {about.visible && (
-                <section className={`${sectionPaddingClass} px-4`} style={{ borderTop: `1px solid ${global.colors.primary}20` }}>
+                <section data-editable="container" data-editable-id="about-section" data-editable-label="Section À Propos" className={`${sectionPaddingClass} px-4`} style={{ borderTop: `1px solid ${global.colors.primary}20` }}>
                     <div className="mx-auto max-w-6xl">
                         <div className="grid md:grid-cols-2 gap-16 items-center">
                             {about.imageUrl && about.imagePosition === "left" && <div data-editable="image" data-editable-id="about-image" data-editable-label="Image À Propos" className="relative aspect-[4/5] overflow-hidden" style={{ border: `1px solid ${global.colors.primary}30` }}><Image src={about.imageUrl} alt={about.title} fill className="object-cover" /></div>}

@@ -60,7 +60,7 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
                 )}
 
                 {header.visible && (
-                    <header className="py-4 px-6" style={{ backgroundColor: global.colors.background, borderBottom: `3px solid ${global.colors.text}` }}>
+                    <header data-editable="container" data-editable-id="header-section" data-editable-label="Section Header" className="py-4 px-6" style={{ backgroundColor: global.colors.background, borderBottom: `3px solid ${global.colors.text}` }}>
                         <div className="max-w-6xl mx-auto flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 {header.logoUrl ? (
@@ -109,7 +109,7 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
             {spacing.showSectionDividers && <div className="h-1" style={{ backgroundColor: global.colors.primary }} />}
 
             {hero.visible && (
-                <section className="relative overflow-hidden">
+                <section data-editable="container" data-editable-id="hero-section" data-editable-label="Section Hero" className="relative overflow-hidden">
                     {/* Background image with filter - separate from content */}
                     {hero.imageUrl && (
                         <div
@@ -202,7 +202,7 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
             {spacing.showSectionDividers && about.visible && <div className="h-1" style={{ backgroundColor: global.colors.primary }} />}
 
             {about.visible && (
-                <section className={`${sectionPaddingClass} px-4`} style={{ backgroundColor: global.colors.primary }}>
+                <section data-editable="container" data-editable-id="about-section" data-editable-label="Section À Propos" className={`${sectionPaddingClass} px-4`} style={{ backgroundColor: global.colors.primary }}>
                     <div className="mx-auto max-w-6xl">
                         <div className="grid md:grid-cols-2 gap-8 items-center">
                             {about.imageUrl && about.imagePosition === "left" && <div data-editable="image" data-editable-id="about-image" data-editable-label="Image À Propos" className="relative aspect-square overflow-hidden" style={{ border: `4px solid ${global.colors.text}`, boxShadow: `8px 8px 0 ${global.colors.text}` }}><Image src={about.imageUrl} alt={about.title} fill className="object-cover" /></div>}

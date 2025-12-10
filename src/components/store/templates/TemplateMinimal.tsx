@@ -132,6 +132,7 @@ export function TemplateMinimal({
                 {/* Header */}
                 {header.visible && (
                     <header
+                        data-editable="container" data-editable-id="header-section" data-editable-label="Section Header"
                         className="py-4 px-6 border-b backdrop-blur-md"
                         style={{ backgroundColor: `${global.colors.background}ee`, borderColor: `${global.colors.text}15` }}
                     >
@@ -202,7 +203,7 @@ export function TemplateMinimal({
 
             {/* Hero */}
             {hero.visible && (
-                <section className="relative overflow-hidden">
+                <section data-editable="container" data-editable-id="hero-section" data-editable-label="Section Hero" className="relative overflow-hidden">
                     {/* Background image with filter - separate from content */}
                     {hero.imageUrl && (
                         <div
@@ -404,7 +405,7 @@ export function TemplateMinimal({
 
             {/* About Section */}
             {(about.visible || editor?.isEditing) && (
-                <section className={`${sectionPaddingClass} px-4`} style={{ backgroundColor: `${global.colors.text}05` }}>
+                <section data-editable="container" data-editable-id="about-section" data-editable-label="Section À Propos" className={`${sectionPaddingClass} px-4`} style={{ backgroundColor: `${global.colors.text}05` }}>
                     <div className="mx-auto max-w-6xl">
                         <div className={`grid md:grid-cols-2 gap-12 items-center`}>
                             {about.imageUrl && about.imagePosition === "left" && (
