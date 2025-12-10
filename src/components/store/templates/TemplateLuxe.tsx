@@ -54,7 +54,7 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
         <div className={`min-h-screen ${bodySizeClass}`} style={{ backgroundColor: global.colors.background, color: global.colors.text, fontFamily: `"${global.font}", Georgia, serif` }}>
             <div className={stickyClass}>
                 {announcement.enabled && (
-                    <div className="py-2 px-4 text-center text-sm tracking-widest uppercase" style={{ backgroundColor: announcement.backgroundColor, color: announcement.textColor }}>
+                    <div data-editable="container" data-editable-id="announcement-bar" data-editable-label="Barre d'annonce" className="py-2 px-4 text-center text-sm tracking-widest uppercase" style={{ backgroundColor: announcement.backgroundColor, color: announcement.textColor }}>
                         {announcement.link ? <a href={announcement.link} className="hover:opacity-80 transition-opacity">{announcement.text}</a> : announcement.text}
                     </div>
                 )}
@@ -68,7 +68,7 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
                                 ) : (
                                     <Store className="w-5 h-5" style={{ color: global.colors.primary }} />
                                 )}
-                                {header.showStoreName && <Link href={`/${storeName}`} className="text-lg italic hover:opacity-80 transition-opacity" style={{ color: global.colors.text, fontFamily: `"${global.headingFont}", Georgia, serif` }}>{storeName}</Link>}
+                                {header.showStoreName && <span data-editable="title" data-editable-id="header-store-name" data-editable-label="Nom de la boutique" className="text-lg italic hover:opacity-80 transition-opacity cursor-pointer" style={{ color: global.colors.text, fontFamily: `"${global.headingFont}", Georgia, serif` }}>{storeName}</span>}
                             </div>
 
                             {/* Navigation - Desktop */}
@@ -146,7 +146,7 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
 
             {spacing.showSectionDividers && <div className="h-px" style={{ backgroundColor: `${global.colors.primary}30` }} />}
 
-            <section id="products" className={`${sectionPaddingClass} px-4`}>
+            <section id="products" data-editable="container" data-editable-id="products-section" data-editable-label="Section Produits" className={`${sectionPaddingClass} px-4`}>
                 <div className="mx-auto max-w-6xl">
                     {productGrid.title && (
                         <div className={`mb-16 ${global.hero.contentAlign === "center" ? "text-center" : ""}`}>
@@ -215,7 +215,7 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
 
             {spacing.showSectionDividers && <div className="h-px" style={{ backgroundColor: `${global.colors.primary}30` }} />}
 
-            <footer className="py-16" style={{ backgroundColor: global.footer.backgroundColor, borderTop: `1px solid ${global.colors.primary}30` }}>
+            <footer data-editable="container" data-editable-id="footer-section" data-editable-label="Section Footer" className="py-16" style={{ backgroundColor: global.footer.backgroundColor, borderTop: `1px solid ${global.colors.primary}30` }}>
                 <div className="mx-auto max-w-6xl px-4 text-center">
                     <p className="text-2xl italic mb-6" style={{ color: global.footer.accentColor, fontFamily: `"${global.headingFont}", Georgia, serif` }}>{storeName}</p>
                     {footer.showSocials && (footer.instagram || footer.facebook || footer.tiktok || footer.whatsapp) && (

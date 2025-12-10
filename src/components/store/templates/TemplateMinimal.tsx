@@ -124,7 +124,7 @@ export function TemplateMinimal({
             <div className={stickyClass}>
                 {/* Announcement Banner */}
                 {announcement.enabled && (
-                    <div className="py-2 px-4 text-center text-sm" style={{ backgroundColor: announcement.backgroundColor, color: announcement.textColor }}>
+                    <div data-editable="container" data-editable-id="announcement-bar" data-editable-label="Barre d'annonce" className="py-2 px-4 text-center text-sm" style={{ backgroundColor: announcement.backgroundColor, color: announcement.textColor }}>
                         {announcement.link ? <a href={announcement.link} className="hover:underline">{announcement.text}</a> : announcement.text}
                     </div>
                 )}
@@ -144,7 +144,7 @@ export function TemplateMinimal({
                                         <Store className="w-4 h-4" style={{ color: global.colors.primary }} />
                                     </div>
                                 )}
-                                {header.showStoreName && <Link href={`/${storeName}`} className="font-medium hover:opacity-80 transition-opacity" style={{ color: global.colors.text }}>{storeName}</Link>}
+                                {header.showStoreName && <span data-editable="title" data-editable-id="header-store-name" data-editable-label="Nom de la boutique" className="font-medium hover:opacity-80 transition-opacity cursor-pointer" style={{ color: global.colors.text }}>{storeName}</span>}
                             </div>
 
                             {/* Navigation Links - Desktop */}
@@ -257,7 +257,7 @@ export function TemplateMinimal({
             {spacing.showSectionDividers && <div className="h-px" style={{ backgroundColor: `${global.colors.text}15` }} />}
 
             {/* Products - Grouped by Category */}
-            <section id="products" className={`${sectionPaddingClass} px-4`}>
+            <section id="products" data-editable="container" data-editable-id="products-section" data-editable-label="Section Produits" className={`${sectionPaddingClass} px-4`}>
                 <div className="mx-auto max-w-6xl">
                     {productGrid.title && (
                         <div className={`mb-12 ${global.hero.contentAlign === "center" ? "text-center" : ""}`}>
@@ -434,7 +434,7 @@ export function TemplateMinimal({
             {spacing.showSectionDividers && <div className="h-px" style={{ backgroundColor: `${global.colors.text}15` }} />}
 
             {/* Footer */}
-            <footer className="py-12" style={{ backgroundColor: global.footer.backgroundColor, borderTop: `1px solid ${global.colors.text}10` }}>
+            <footer data-editable="container" data-editable-id="footer-section" data-editable-label="Section Footer" className="py-12" style={{ backgroundColor: global.footer.backgroundColor, borderTop: `1px solid ${global.colors.text}10` }}>
                 <div className="mx-auto max-w-6xl px-4 text-center">
                     {footer.showSocials && (footer.instagram || footer.facebook || footer.tiktok || footer.whatsapp) && (
                         <div className="flex justify-center gap-6 mb-6">

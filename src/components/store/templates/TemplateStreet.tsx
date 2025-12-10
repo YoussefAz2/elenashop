@@ -54,7 +54,7 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
         <div className={`min-h-screen ${bodySizeClass}`} style={{ backgroundColor: global.colors.background, color: global.colors.text, fontFamily: `"${global.font}", Impact, sans-serif` }}>
             <div className={stickyClass}>
                 {announcement.enabled && (
-                    <div className="py-2 px-4 text-center text-sm font-black uppercase tracking-wider" style={{ backgroundColor: announcement.backgroundColor, color: announcement.textColor }}>
+                    <div data-editable="container" data-editable-id="announcement-bar" data-editable-label="Barre d'annonce" className="py-2 px-4 text-center text-sm font-black uppercase tracking-wider" style={{ backgroundColor: announcement.backgroundColor, color: announcement.textColor }}>
                         {announcement.link ? <a href={announcement.link} className="hover:underline">{announcement.text}</a> : announcement.text}
                     </div>
                 )}
@@ -70,7 +70,7 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
                                         <Store className="w-5 h-5" style={{ color: global.colors.background }} />
                                     </div>
                                 )}
-                                {header.showStoreName && <Link href={`/${storeName}`} className="text-xl font-black uppercase hover:opacity-80 transition-opacity" style={{ color: global.colors.text }}>{storeName}</Link>}
+                                {header.showStoreName && <span data-editable="title" data-editable-id="header-store-name" data-editable-label="Nom de la boutique" className="text-xl font-black uppercase hover:opacity-80 transition-opacity cursor-pointer" style={{ color: global.colors.text }}>{storeName}</span>}
                             </div>
 
                             {/* Navigation - Desktop */}
@@ -150,7 +150,7 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
 
             {spacing.showSectionDividers && <div className="h-1" style={{ backgroundColor: global.colors.primary }} />}
 
-            <section id="products" className={`${sectionPaddingClass} px-4`}>
+            <section id="products" data-editable="container" data-editable-id="products-section" data-editable-label="Section Produits" className={`${sectionPaddingClass} px-4`}>
                 <div className="mx-auto max-w-6xl">
                     {productGrid.title && (
                         <div className="mb-8">
@@ -220,7 +220,7 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
 
             {spacing.showSectionDividers && <div className="h-1" style={{ backgroundColor: global.colors.primary }} />}
 
-            <footer className="py-10" style={{ borderTop: `4px solid ${global.colors.text}`, backgroundColor: global.footer.backgroundColor }}>
+            <footer data-editable="container" data-editable-id="footer-section" data-editable-label="Section Footer" className="py-10" style={{ borderTop: `4px solid ${global.colors.text}`, backgroundColor: global.footer.backgroundColor }}>
                 <div className="mx-auto max-w-6xl px-4">
                     <div className="flex flex-wrap items-center justify-between gap-6">
                         <p className="text-2xl font-black uppercase tracking-tight" style={{ color: global.footer.textColor }}>{storeName}</p>
