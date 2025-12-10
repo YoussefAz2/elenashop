@@ -165,7 +165,7 @@ export function TemplateMinimal({
                             )}
 
                             <div className="flex items-center gap-4">
-                                {header.showProductCount && <span className="text-sm hidden sm:inline" style={{ color: global.colors.text, opacity: 0.6 }}>{products.length} produits</span>}
+                                {header.showProductCount && <span data-editable="title" data-editable-id="header-product-count" data-editable-label="Compteur produits" className="text-sm hidden sm:inline cursor-pointer hover:opacity-80 transition-opacity" style={{ color: global.colors.text, opacity: 0.6 }}>{products.length} produits</span>}
 
                                 {/* Mobile menu button */}
                                 {pages.length > 0 && (
@@ -221,7 +221,7 @@ export function TemplateMinimal({
                     {/* Content - no filter */}
                     <div
                         className={`relative px-6 ${heroHeightClass}`}
-                        style={{ backgroundColor: hero.imageUrl ? "transparent" : global.hero.backgroundColor }}
+                        style={{ backgroundColor: "transparent" }}
                     >
                         <div className={`mx-auto max-w-2xl flex flex-col ${heroAlignClass}`}>
                             <div className="w-12 h-px mb-8" style={{ backgroundColor: hero.imageUrl ? "#fff" : global.hero.buttonBg }} />

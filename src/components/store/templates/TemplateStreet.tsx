@@ -83,7 +83,7 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
                             )}
 
                             <div className="flex items-center gap-3">
-                                {header.showProductCount && <span className="text-sm font-bold uppercase px-3 py-1 hidden sm:inline" style={{ backgroundColor: global.colors.text, color: global.colors.background }}>{products.length} drops</span>}
+                                {header.showProductCount && <span data-editable="button" data-editable-id="header-product-count" data-editable-label="Compteur drops" className="text-sm font-bold uppercase px-3 py-1 hidden sm:inline cursor-pointer hover:opacity-80 transition-opacity" style={{ backgroundColor: global.colors.text, color: global.colors.background }}>{products.length} drops</span>}
                                 {pages.length > 0 && (
                                     <button className="md:hidden p-2" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} style={{ backgroundColor: global.colors.primary, color: global.colors.background }}>
                                         {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -123,7 +123,7 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
                         />
                     )}
                     {hero.imageUrl && <div className="absolute inset-0" style={getOverlayStyle()} />}
-                    <div className={`relative px-4 ${heroHeightClass}`} style={{ backgroundColor: hero.imageUrl ? "transparent" : global.hero.backgroundColor }}>
+                    <div className={`relative px-4 ${heroHeightClass}`} style={{ backgroundColor: "transparent" }}>
                         <div className={`mx-auto max-w-5xl ${heroAlignClass}`}>
                             <div className="mb-4 flex items-center gap-2">
                                 <Zap className="h-6 w-6" style={{ color: global.colors.primary }} />

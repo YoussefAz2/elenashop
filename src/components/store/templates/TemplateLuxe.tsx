@@ -81,7 +81,7 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
                             )}
 
                             <div className="flex items-center gap-4">
-                                {header.showProductCount && <span className="text-xs uppercase tracking-[0.2em] hidden sm:inline" style={{ color: global.colors.primary }}>{products.length} pièces</span>}
+                                {header.showProductCount && <span data-editable="title" data-editable-id="header-product-count" data-editable-label="Compteur produits" className="text-xs uppercase tracking-[0.2em] hidden sm:inline cursor-pointer hover:opacity-80 transition-opacity" style={{ color: global.colors.primary }}>{products.length} pièces</span>}
                                 {pages.length > 0 && (
                                     <button className="md:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} style={{ color: global.colors.primary }}>
                                         {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -120,7 +120,7 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
                             }}
                         />
                     )}
-                    <div className="absolute inset-0" style={getOverlayStyle()} />
+                    {hero.imageUrl && <div className="absolute inset-0" style={getOverlayStyle()} />}
                     <div className="absolute top-8 left-8 right-8 bottom-8 pointer-events-none" style={{ border: `1px solid ${global.colors.primary}40` }} />
                     <div className={`relative z-10 mx-auto max-w-4xl px-8 flex flex-col ${heroAlignClass}`}>
                         <div className="mb-8">
