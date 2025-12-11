@@ -106,7 +106,7 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
                 )}
             </div>
 
-            {spacing.showSectionDividers && <div className="h-1" style={{ backgroundColor: global.colors.primary }} />}
+            {(spacing.showSectionDividers || editor?.isEditing) && <div data-editable="divider" data-editable-id="divider-header" data-editable-label="Séparateur Header" className="h-1" style={{ backgroundColor: global.colors.primary }} />}
 
             {hero.visible && (
                 <section data-editable="container" data-editable-id="hero-section" data-editable-label="Section Hero" className="relative overflow-hidden">
@@ -148,7 +148,7 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
                 </section>
             )}
 
-            {spacing.showSectionDividers && <div className="h-1" style={{ backgroundColor: global.colors.primary }} />}
+            {(spacing.showSectionDividers || editor?.isEditing) && <div data-editable="divider" data-editable-id="divider-hero" data-editable-label="Séparateur Hero" className="h-1" style={{ backgroundColor: global.colors.primary }} />}
 
             <section id="products" data-editable="container" data-editable-id="products-section" data-editable-label="Section Produits" className={`${sectionPaddingClass} px-4`}>
                 <div className="mx-auto max-w-6xl">
@@ -194,12 +194,12 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
                 </div>
             </section>
 
-            {spacing.showSectionDividers && testimonials.visible && <div className="h-1" style={{ backgroundColor: global.colors.primary }} />}
+            {(spacing.showSectionDividers || editor?.isEditing) && testimonials.visible && <div data-editable="divider" data-editable-id="divider-products" data-editable-label="Séparateur Produits" className="h-1" style={{ backgroundColor: global.colors.primary }} />}
 
             {/* Testimonials Section */}
             <Testimonials content={testimonials} styles={global} />
 
-            {spacing.showSectionDividers && about.visible && <div className="h-1" style={{ backgroundColor: global.colors.primary }} />}
+            {(spacing.showSectionDividers || editor?.isEditing) && about.visible && <div data-editable="divider" data-editable-id="divider-testimonials" data-editable-label="Séparateur Témoignages" className="h-1" style={{ backgroundColor: global.colors.primary }} />}
 
             {about.visible && (
                 <section data-editable="container" data-editable-id="about-section" data-editable-label="Section À Propos" className={`${sectionPaddingClass} px-4`} style={{ backgroundColor: global.colors.primary }}>
@@ -218,7 +218,7 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
                 </section>
             )}
 
-            {spacing.showSectionDividers && <div className="h-1" style={{ backgroundColor: global.colors.primary }} />}
+            {(spacing.showSectionDividers || editor?.isEditing) && <div data-editable="divider" data-editable-id="divider-about" data-editable-label="Séparateur À propos" className="h-1" style={{ backgroundColor: global.colors.primary }} />}
 
             <footer data-editable="container" data-editable-id="footer-section" data-editable-label="Section Footer" className="py-10" style={{ borderTop: `4px solid ${global.colors.text}`, backgroundColor: global.footer.backgroundColor }}>
                 <div className="mx-auto max-w-6xl px-4">

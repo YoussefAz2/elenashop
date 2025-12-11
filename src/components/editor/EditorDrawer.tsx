@@ -7,6 +7,7 @@ import { TitleToolbar } from "./toolbars/TitleToolbar";
 import { ButtonToolbar } from "./toolbars/ButtonToolbar";
 import { ImageToolbar } from "./toolbars/ImageToolbar";
 import { IconToolbar } from "./toolbars/IconToolbar";
+import { DividerToolbar } from "./toolbars/DividerToolbar";
 
 // ---------- PROPS ----------
 
@@ -158,6 +159,17 @@ export function EditorDrawer({ editor }: EditorDrawerProps) {
             case "icon":
                 return (
                     <IconToolbar
+                        elementId={elementId}
+                        elementLabel={elementLabel}
+                        currentStyles={currentStyles}
+                        onSave={handleSave}
+                        onReset={handleReset}
+                        onClose={handleClose}
+                    />
+                );
+            case "divider":
+                return (
+                    <DividerToolbar
                         elementId={elementId}
                         elementLabel={elementLabel}
                         currentStyles={currentStyles}

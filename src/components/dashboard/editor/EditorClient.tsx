@@ -236,7 +236,7 @@ export function EditorClient({
     const [previewMode, setPreviewMode] = useState<"mobile" | "desktop">("mobile");
     const [showUpgradeModal, setShowUpgradeModal] = useState(false);
     const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
-    const [advancedMode, setAdvancedMode] = useState(false);
+    const [advancedMode, setAdvancedMode] = useState(true);
 
     // Visual Editor V2 - centralized editor state (fixed with stable refs)
     const handleOverridesChange = useCallback((overrides: Record<string, ElementStyleOverride>) => {

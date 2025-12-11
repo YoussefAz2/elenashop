@@ -147,6 +147,9 @@ export interface ElementStyleOverride {
     // Product card button colors (new)
     buttonBgColor?: string;
     buttonTextColor?: string;
+
+    // Divider width (for section dividers)
+    width?: string;
 }
 
 export interface ElementOverride {

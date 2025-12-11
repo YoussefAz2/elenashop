@@ -45,6 +45,7 @@ export function EditorWrapper({ editor, children, className = "" }: EditorWrappe
             productCard: "Cartes produit",
             container: "Section",
             icon: "Icône",
+            divider: "Séparateur",
             text: "Texte",
             section: "Section"
         };
@@ -233,6 +234,13 @@ export function EditorWrapper({ editor, children, className = "" }: EditorWrappe
                             svgEl.style.color = iconColor;
                         }
                     }
+                }
+                // For dividers, apply divider-specific styles
+                else if (type === 'divider') {
+                    if (overrides.backgroundColor) htmlEl.style.backgroundColor = overrides.backgroundColor;
+                    if (overrides.borderWidth) htmlEl.style.height = overrides.borderWidth;
+                    if (overrides.width) htmlEl.style.width = overrides.width;
+                    if (overrides.opacity !== undefined) htmlEl.style.opacity = String(overrides.opacity);
                 }
                 // For text elements (title, paragraph, text)
                 else {

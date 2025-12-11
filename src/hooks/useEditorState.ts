@@ -14,6 +14,7 @@ export type EditableType =
     | "productCard"     // Product cards
     | "container"       // Sections, containers
     | "icon"            // Icons (social, logo icons)
+    | "divider"         // Section dividers
     | "text"            // Legacy - maps to title
     | "section";        // Legacy - maps to container
 
