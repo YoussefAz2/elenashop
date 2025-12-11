@@ -221,7 +221,6 @@ export function TemplateMinimal({
                     {/* Content - no filter */}
                     <div
                         className={`relative px-6 ${heroHeightClass}`}
-                        style={{ backgroundColor: global.colors.background }}
                     >
                         <div className={`mx-auto max-w-2xl flex flex-col ${heroAlignClass}`}>
                             <div className="w-12 h-px mb-8" style={{ backgroundColor: hero.imageUrl ? "#fff" : global.hero.buttonBg }} />

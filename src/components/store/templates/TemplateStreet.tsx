@@ -144,7 +144,7 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
                             )}
                         </div>
                     </div>
-                    <div className="h-2" style={{ backgroundColor: global.colors.primary }} />
+                    <div data-editable="divider" data-editable-id="divider-hero-bottom" data-editable-label="Barre décorative Hero" className="h-2" style={{ backgroundColor: global.colors.primary }} />
                 </section>
             )}
 

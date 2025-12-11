@@ -183,20 +183,29 @@ export function EditorWrapper({ editor, children, className = "" }: EditorWrappe
             if (id && editor.overrides[id]) {
                 const overrides = editor.overrides[id];
 
-                // For buttons/badges, apply to the element AND its children
+                // For buttons/badges, apply to children elements, not the wrapper
                 if (type === 'button') {
-                    // Apply to the element itself (for badges like New Drop, Collection)
-                    applyStyles(htmlEl, overrides);
-
-                    // Also apply to child a/button elements (for wrapped buttons)
+                    // Get the child button/link element
                     const childLink = htmlEl.querySelector('a, button') as HTMLElement;
+
                     if (childLink) {
+                        // Apply all styles to the actual button/link
                         applyStyles(childLink, overrides);
+                    } else {
+                        // For badges without a/button child (like New Drop), apply directly but carefully
+                        // Apply text styling to wrapper
+                        if (overrides.color) htmlEl.style.color = overrides.color;
+                        if (overrides.fontWeight) htmlEl.style.fontWeight = overrides.fontWeight;
+                        if (overrides.fontSize) htmlEl.style.fontSize = overrides.fontSize;
+                        // Don't apply backgroundColor to wrapper - it expands beyond the visible content
                     }
 
                     // Apply text color to all child spans
                     htmlEl.querySelectorAll('span').forEach((span) => {
                         if (overrides.color) span.style.color = overrides.color;
+                        if (overrides.backgroundColor) span.style.backgroundColor = overrides.backgroundColor;
+                        if (overrides.padding) span.style.padding = overrides.padding;
+                        if (overrides.borderRadius) span.style.borderRadius = overrides.borderRadius;
                     });
 
                     // Apply icon color to child SVGs

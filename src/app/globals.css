@@ -336,3 +336,15 @@ a,
     min-height: 24px !important;
   }
 }
+
+/* Ensure buttons/badges are clickable above other elements */
+[data-editing] [data-editable="button"] {
+  position: relative;
+  z-index: 20;
+}
+
+/* Title elements have slightly lower z-index so badges above them are accessible */
+[data-editing] [data-editable="title"] {
+  position: relative;
+  z-index: 15;
+}
