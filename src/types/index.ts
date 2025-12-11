@@ -143,6 +143,10 @@ export interface ElementStyleOverride {
 
     // Icon color (new)
     iconColor?: string;
+
+    // Product card button colors (new)
+    buttonBgColor?: string;
+    buttonTextColor?: string;
 }
 
 export interface ElementOverride {

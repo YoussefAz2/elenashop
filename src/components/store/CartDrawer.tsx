@@ -182,6 +182,7 @@ export function CartDrawer({
         <Sheet open={isOpen} onOpenChange={handleOpenChange}>
             <SheetTrigger asChild>
                 <button
+                    data-card-button="product-cards-style"
                     className="w-full h-12 font-semibold text-base transition-all duration-200 hover:opacity-90 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
                     style={{
                         backgroundColor: buttonStyles.backgroundColor,

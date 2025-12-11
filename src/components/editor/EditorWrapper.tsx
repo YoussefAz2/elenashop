@@ -182,15 +182,26 @@ export function EditorWrapper({ editor, children, className = "" }: EditorWrappe
             if (id && editor.overrides[id]) {
                 const overrides = editor.overrides[id];
 
-                // For buttons, apply styles to the child <a> or <button> element
+                // For buttons/badges, apply to the element AND its children
                 if (type === 'button') {
-                    const targetEl = htmlEl.querySelector('a, button') as HTMLElement;
-                    if (targetEl) {
-                        applyStyles(targetEl, overrides);
-                    } else {
-                        // If no child, apply to the element itself
-                        applyStyles(htmlEl, overrides);
+                    // Apply to the element itself (for badges like New Drop, Collection)
+                    applyStyles(htmlEl, overrides);
+
+                    // Also apply to child a/button elements (for wrapped buttons)
+                    const childLink = htmlEl.querySelector('a, button') as HTMLElement;
+                    if (childLink) {
+                        applyStyles(childLink, overrides);
                     }
+
+                    // Apply text color to all child spans
+                    htmlEl.querySelectorAll('span').forEach((span) => {
+                        if (overrides.color) span.style.color = overrides.color;
+                    });
+
+                    // Apply icon color to child SVGs
+                    htmlEl.querySelectorAll('svg').forEach((svg) => {
+                        if (overrides.color) svg.style.color = overrides.color;
+                    });
                 }
                 // For images, apply to child img element
                 else if (type === 'image') {
@@ -282,6 +293,13 @@ export function EditorWrapper({ editor, children, className = "" }: EditorWrappe
             container.querySelectorAll('[data-card-price="product-cards-style"]').forEach((el) => {
                 const htmlEl = el as HTMLElement;
                 if (cardOverrides.priceColor) htmlEl.style.color = cardOverrides.priceColor;
+            });
+
+            // Apply to card buttons (COMMANDER buttons)
+            container.querySelectorAll('[data-card-button="product-cards-style"]').forEach((el) => {
+                const htmlEl = el as HTMLElement;
+                if (cardOverrides.buttonBgColor) htmlEl.style.backgroundColor = cardOverrides.buttonBgColor;
+                if (cardOverrides.buttonTextColor) htmlEl.style.color = cardOverrides.buttonTextColor;
             });
         }
     }, [editor?.isEditing, editor?.overrides, editor?.selectedElement]);

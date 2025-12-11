@@ -312,6 +312,51 @@ export function ProductCardToolbar({
                 </div>
             </div>
 
+            {/* Separator - Button Section */}
+            <div className="border-t pt-4 mt-4">
+                <Label className="text-xs font-medium text-slate-600 mb-3 block">🔘 Bouton "Commander"</Label>
+            </div>
+
+            {/* Button Background Color */}
+            <div className="space-y-2">
+                <Label className="text-xs">Couleur du bouton</Label>
+                <div className="flex gap-2">
+                    <input
+                        type="color"
+                        value={styles.buttonBgColor || "#8b5cf6"}
+                        onChange={(e) => updateStyle("buttonBgColor", e.target.value)}
+                        className="w-10 h-8 rounded cursor-pointer border border-slate-200"
+                    />
+                    <input
+                        type="text"
+                        value={styles.buttonBgColor || ""}
+                        onChange={(e) => updateStyle("buttonBgColor", e.target.value)}
+                        placeholder="#8b5cf6"
+                        className="flex-1 border rounded px-2 text-xs"
+                    />
+                </div>
+            </div>
+
+            {/* Button Text Color */}
+            <div className="space-y-2">
+                <Label className="text-xs">Couleur texte bouton</Label>
+                <div className="flex gap-2">
+                    <input
+                        type="color"
+                        value={styles.buttonTextColor || "#ffffff"}
+                        onChange={(e) => updateStyle("buttonTextColor", e.target.value)}
+                        className="w-10 h-8 rounded cursor-pointer border border-slate-200"
+                    />
+                    <input
+                        type="text"
+                        value={styles.buttonTextColor || ""}
+                        onChange={(e) => updateStyle("buttonTextColor", e.target.value)}
+                        placeholder="#ffffff"
+                        className="flex-1 border rounded px-2 text-xs"
+                    />
+                </div>
+            </div>
+
             {/* Preview */}
             <div className="p-3 bg-slate-100 rounded-lg mt-4">
                 <p className="text-[10px] text-slate-400 mb-2">Aperçu carte</p>
@@ -328,8 +373,18 @@ export function ProductCardToolbar({
                     <div className="text-sm font-medium" style={{ color: styles.titleColor || "#1e293b" }}>Produit exemple</div>
                     <div className="text-xs mt-1" style={{ color: styles.descriptionColor || "#64748b" }}>Description courte</div>
                     <div className="text-lg font-bold mt-2" style={{ color: styles.priceColor || "#ea580c" }}>29.99 TND</div>
+                    <div
+                        className="mt-3 text-center py-2 text-sm font-medium rounded"
+                        style={{
+                            backgroundColor: styles.buttonBgColor || "#8b5cf6",
+                            color: styles.buttonTextColor || "#ffffff"
+                        }}
+                    >
+                        COMMANDER
+                    </div>
                 </div>
             </div>
         </div>
     );
 }
+
