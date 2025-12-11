@@ -7,6 +7,7 @@ export { EditorDrawer } from "./EditorDrawer";
 export { EditorControls } from "./EditorControls";
 
 // Toolbars
-export { TextToolbar } from "./toolbars/TextToolbar";
+export { TitleToolbar } from "./toolbars/TitleToolbar";
 export { ButtonToolbar } from "./toolbars/ButtonToolbar";
 export { ImageToolbar } from "./toolbars/ImageToolbar";
+
