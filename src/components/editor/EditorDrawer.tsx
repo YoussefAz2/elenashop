@@ -4,10 +4,13 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import { X, GripHorizontal, Undo2, Redo2, Copy, ClipboardPaste } from "lucide-react";
 import type { EditorStateReturn } from "@/hooks/useEditorState";
 import { TitleToolbar } from "./toolbars/TitleToolbar";
+import { ParagraphToolbar } from "./toolbars/ParagraphToolbar";
 import { ButtonToolbar } from "./toolbars/ButtonToolbar";
+import { ContainerToolbar } from "./toolbars/ContainerToolbar";
 import { ImageToolbar } from "./toolbars/ImageToolbar";
 import { IconToolbar } from "./toolbars/IconToolbar";
 import { DividerToolbar } from "./toolbars/DividerToolbar";
+import { ProductCardToolbar } from "./toolbars/ProductCardToolbar";
 
 // ---------- PROPS ----------
 
@@ -122,6 +125,7 @@ export function EditorDrawer({ editor }: EditorDrawerProps) {
         if (!elementId) return null;
 
         switch (elementType) {
+            case "title":
             case "text":
                 return (
                     <TitleToolbar
@@ -133,10 +137,43 @@ export function EditorDrawer({ editor }: EditorDrawerProps) {
                         onClose={handleClose}
                     />
                 );
+            case "paragraph":
+                return (
+                    <ParagraphToolbar
+                        elementId={elementId}
+                        elementLabel={elementLabel}
+                        currentStyles={currentStyles}
+                        onSave={handleSave}
+                        onReset={handleReset}
+                        onClose={handleClose}
+                    />
+                );
             case "button":
-            case "container":
                 return (
                     <ButtonToolbar
+                        elementId={elementId}
+                        elementLabel={elementLabel}
+                        currentStyles={currentStyles}
+                        onSave={handleSave}
+                        onReset={handleReset}
+                        onClose={handleClose}
+                    />
+                );
+            case "container":
+            case "section":
+                return (
+                    <ContainerToolbar
+                        elementId={elementId}
+                        elementLabel={elementLabel}
+                        currentStyles={currentStyles}
+                        onSave={handleSave}
+                        onReset={handleReset}
+                        onClose={handleClose}
+                    />
+                );
+            case "productCard":
+                return (
+                    <ProductCardToolbar
                         elementId={elementId}
                         elementLabel={elementLabel}
                         currentStyles={currentStyles}

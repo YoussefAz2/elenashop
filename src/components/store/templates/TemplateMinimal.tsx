@@ -401,7 +401,7 @@ export function TemplateMinimal({
             <Testimonials content={testimonials} styles={global} />
 
             {/* Section Divider */}
-            {spacing.showSectionDividers && (about.visible || editor?.isEditing) && <div data-editable="divider" data-editable-id="divider-testimonials" data-editable-label="Séparateur Témoignages" className="h-px" style={{ backgroundColor: `${global.colors.text}15` }} />}
+            {(spacing.showSectionDividers || editor?.isEditing || config.elementOverrides?.["divider-testimonials"]) && about.visible && <div data-editable="divider" data-editable-id="divider-testimonials" data-editable-label="Séparateur Témoignages" className="h-px" style={{ backgroundColor: `${global.colors.text}15` }} />}
 
             {/* About Section */}
             {(about.visible || editor?.isEditing) && (
