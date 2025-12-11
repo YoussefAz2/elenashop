@@ -334,6 +334,15 @@ export interface SEOConfig {
     ogImage: string;
 }
 
+// ---------- CUSTOM PRESETS ----------
+
+export interface CustomPreset {
+    id: string;           // Unique ID (uuid)
+    name: string;         // User-defined name
+    createdAt: string;    // ISO timestamp
+    elementOverrides: Record<string, ElementStyleOverride>;
+}
+
 // ---------- MAIN CONFIG ----------
 
 export interface ThemeConfig {
@@ -349,6 +358,7 @@ export interface ThemeConfig {
     // Visual Editor V2
     activePreset?: string;
     elementOverrides?: Record<string, ElementStyleOverride>;
+    customPresets?: CustomPreset[];
 }
 
 export interface NavItem {

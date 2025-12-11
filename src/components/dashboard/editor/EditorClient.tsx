@@ -31,6 +31,7 @@ import { TemplateMinimal, TemplateLuxe, TemplateStreet } from "@/components/stor
 import { isTemplatePremium, getTemplateConfig } from "@/lib/templates";
 import { useEditorState } from "@/hooks/useEditorState";
 import { VisualEditorLayer, EditorWrapper } from "@/components/editor";
+import { PresetManager } from "@/components/editor/PresetManager";
 
 interface EditorClientProps {
     seller: Profile;
@@ -297,6 +298,42 @@ export function EditorClient({
         });
     };
 
+    // ---------- PRESET MANAGEMENT ----------
+
+    const handleSavePreset = useCallback((name: string) => {
+        const newPreset = {
+            id: crypto.randomUUID(),
+            name,
+            createdAt: new Date().toISOString(),
+            elementOverrides: { ...editor.overrides },
+        };
+        setConfig(prev => ({
+            ...prev,
+            customPresets: [...(prev.customPresets || []), newPreset],
+        }));
+    }, [editor.overrides]);
+
+    const handleLoadPreset = useCallback((presetId: string) => {
+        const preset = config.customPresets?.find(p => p.id === presetId);
+        if (preset) {
+            setConfig(prev => ({
+                ...prev,
+                elementOverrides: { ...preset.elementOverrides },
+            }));
+            // Also update the editor state
+            Object.entries(preset.elementOverrides).forEach(([id, styles]) => {
+                editor.setOverride(id, styles);
+            });
+        }
+    }, [config.customPresets, editor]);
+
+    const handleDeletePreset = useCallback((presetId: string) => {
+        setConfig(prev => ({
+            ...prev,
+            customPresets: (prev.customPresets || []).filter(p => p.id !== presetId),
+        }));
+    }, []);
+
     // Render the correct template based on templateId
     const renderPreview = () => {
         const props = {
@@ -396,6 +433,16 @@ export function EditorClient({
             <div className="flex-1 flex overflow-hidden">
                 {/* Left Sidebar - Controls (Hidden on Mobile) */}
                 <aside className="hidden md:flex w-80 border-r border-slate-200 bg-white dark:bg-slate-900 dark:border-slate-800 flex-col flex-shrink-0">
+                    {/* Preset Manager */}
+                    <div className="p-3 border-b border-slate-200 dark:border-slate-700">
+                        <PresetManager
+                            customPresets={config.customPresets || []}
+                            currentOverrides={editor.overrides}
+                            onSavePreset={handleSavePreset}
+                            onLoadPreset={handleLoadPreset}
+                            onDeletePreset={handleDeletePreset}
+                        />
+                    </div>
                     {/* Tabs */}
                     <div className="flex border-b border-slate-200 dark:border-slate-800">
                         <TabButton
