@@ -124,7 +124,7 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
                     <div className="absolute top-8 left-8 right-8 bottom-8 pointer-events-none" style={{ border: `1px solid ${global.colors.primary}40` }} />
                     <div className={`relative z-10 mx-auto max-w-4xl px-8 flex flex-col ${heroAlignClass}`}>
                         <div className="mb-8">
-                            <div className="inline-block px-6 py-1 text-xs uppercase tracking-[0.3em] font-medium" style={{ border: `1px solid ${hero.imageUrl ? "rgba(255,255,255,0.3)" : global.colors.primary}`, color: hero.imageUrl ? "#fff" : global.colors.primary }}>Collection</div>
+                            <span data-editable="button" data-editable-id="hero-badge" data-editable-label="Badge Collection" className="inline-block px-6 py-1 text-xs uppercase tracking-[0.3em] font-medium cursor-pointer hover:opacity-80 transition-opacity" style={{ border: `1px solid ${hero.imageUrl ? "rgba(255,255,255,0.3)" : global.colors.primary}`, color: hero.imageUrl ? "#fff" : global.colors.primary }}>Collection</span>
                         </div>
                         <span data-editable="title" data-editable-id="hero-title" className={`${headingSizeClass} font-normal italic mb-6 tracking-tight`} style={{ color: hero.imageUrl ? "#fff" : global.hero.textColor, fontFamily: `"${global.headingFont}", Georgia, serif`, textTransform }}>
                             {hero.title || storeName}
@@ -150,7 +150,7 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
                 <div className="mx-auto max-w-6xl">
                     {productGrid.title && (
                         <div className={`mb-16 ${global.hero.contentAlign === "center" ? "text-center" : ""}`}>
-                            <p className="text-sm uppercase tracking-[0.3em] mb-4" style={{ color: global.colors.primary }}>Découvrez</p>
+                            <span data-editable="paragraph" data-editable-id="products-label" data-editable-label="Label Produits" className="text-sm uppercase tracking-[0.3em] mb-4 block cursor-pointer hover:opacity-80 transition-opacity" style={{ color: global.colors.primary }}>Découvrez</span>
                             <span data-editable="title" data-editable-id="products-title" className={`${headingSizeClass} font-normal italic tracking-tight`} style={{ color: global.colors.text, fontFamily: `"${global.headingFont}", Georgia, serif`, textTransform }}>
                                 {productGrid.title}
                             </span>
@@ -217,9 +217,9 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
 
             <footer data-editable="container" data-editable-id="footer-section" data-editable-label="Section Footer" className="py-16" style={{ backgroundColor: global.footer.backgroundColor, borderTop: `1px solid ${global.colors.primary}30` }}>
                 <div className="mx-auto max-w-6xl px-4 text-center">
-                    <p className="text-2xl italic mb-6" style={{ color: global.footer.accentColor, fontFamily: `"${global.headingFont}", Georgia, serif` }}>{storeName}</p>
+                    <span data-editable="title" data-editable-id="footer-store-name" data-editable-label="Nom boutique footer" className="text-2xl italic mb-6 block cursor-pointer hover:opacity-80 transition-opacity" style={{ color: global.footer.accentColor, fontFamily: `"${global.headingFont}", Georgia, serif` }}>{storeName}</span>
                     {footer.showSocials && (footer.instagram || footer.facebook || footer.tiktok || footer.whatsapp) && (
-                        <div className="flex justify-center gap-8 mb-8 flex-wrap">
+                        <div data-editable="paragraph" data-editable-id="footer-social-links" data-editable-label="Liens réseaux" className="flex justify-center gap-8 mb-8 flex-wrap cursor-pointer hover:opacity-80 transition-opacity">
                             {footer.instagram && <a href={`https://instagram.com/${footer.instagram}`} target="_blank" rel="noopener noreferrer" className="text-sm uppercase tracking-[0.2em] transition-all hover:opacity-60" style={{ color: global.footer.textColor }}>Instagram</a>}
                             {footer.facebook && <a href={`https://facebook.com/${footer.facebook}`} target="_blank" rel="noopener noreferrer" className="text-sm uppercase tracking-[0.2em] transition-all hover:opacity-60" style={{ color: global.footer.textColor }}>Facebook</a>}
                             {footer.tiktok && <a href={`https://tiktok.com/@${footer.tiktok}`} target="_blank" rel="noopener noreferrer" className="text-sm uppercase tracking-[0.2em] transition-all hover:opacity-60" style={{ color: global.footer.textColor }}>TikTok</a>}

@@ -125,7 +125,7 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
                     {hero.imageUrl && <div className="absolute inset-0" style={getOverlayStyle()} />}
                     <div className={`relative px-4 ${heroHeightClass}`} style={{ backgroundColor: "transparent" }}>
                         <div className={`mx-auto max-w-5xl ${heroAlignClass}`}>
-                            <div className="mb-4 flex items-center gap-2">
+                            <div data-editable="button" data-editable-id="hero-badge" data-editable-label="Badge Hero" className="mb-4 flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
                                 <Zap className="h-6 w-6" style={{ color: global.colors.primary }} />
                                 <span className="text-sm font-black uppercase tracking-wider" style={{ color: global.colors.primary }}>New Drop</span>
                             </div>
@@ -223,9 +223,9 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
             <footer data-editable="container" data-editable-id="footer-section" data-editable-label="Section Footer" className="py-10" style={{ borderTop: `4px solid ${global.colors.text}`, backgroundColor: global.footer.backgroundColor }}>
                 <div className="mx-auto max-w-6xl px-4">
                     <div className="flex flex-wrap items-center justify-between gap-6">
-                        <p className="text-2xl font-black uppercase tracking-tight" style={{ color: global.footer.textColor }}>{storeName}</p>
+                        <span data-editable="title" data-editable-id="footer-store-name" data-editable-label="Nom boutique footer" className="text-2xl font-black uppercase tracking-tight cursor-pointer hover:opacity-80 transition-opacity" style={{ color: global.footer.textColor }}>{storeName}</span>
                         {footer.showSocials && (
-                            <div className="flex gap-4 flex-wrap">
+                            <div data-editable="button" data-editable-id="footer-social-links" data-editable-label="Liens réseaux" className="flex gap-4 flex-wrap cursor-pointer hover:opacity-80 transition-opacity">
                                 {footer.instagram && <a href={`https://instagram.com/${footer.instagram}`} target="_blank" rel="noopener noreferrer" className="px-4 py-2 text-sm font-black uppercase transition-all hover:scale-105" style={{ backgroundColor: global.footer.accentColor, color: global.footer.backgroundColor }}>@{footer.instagram}</a>}
                                 {footer.facebook && <a href={`https://facebook.com/${footer.facebook}`} target="_blank" rel="noopener noreferrer" className="px-4 py-2 text-sm font-black uppercase transition-all hover:scale-105" style={{ backgroundColor: global.footer.accentColor, color: global.footer.backgroundColor }}>Facebook</a>}
                                 {footer.tiktok && <a href={`https://tiktok.com/@${footer.tiktok}`} target="_blank" rel="noopener noreferrer" className="px-4 py-2 text-sm font-black uppercase transition-all hover:scale-105" style={{ backgroundColor: global.footer.accentColor, color: global.footer.backgroundColor }}>TikTok</a>}
