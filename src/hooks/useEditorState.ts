@@ -75,6 +75,15 @@ export function useEditorState(
         onOverridesChangeRef.current = onOverridesChange;
     }, [onOverridesChange]);
 
+    // Sync editor state when initialOverrides changes externally (e.g., theme preset clears it)
+    useEffect(() => {
+        setState(s => ({
+            ...s,
+            overrides: initialOverrides,
+            selectedElement: null, // Clear selection to avoid stale state
+        }));
+    }, [initialOverrides]);
+
     // ---------- MODE ACTIONS ----------
 
     const setEditingMode = useCallback((editing: boolean) => {
