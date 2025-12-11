@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { X, GripHorizontal, Undo2, Redo2, Copy, ClipboardPaste } from "lucide-react";
 import type { EditorStateReturn } from "@/hooks/useEditorState";
-import { TextToolbar } from "./toolbars/TextToolbar";
+import { TitleToolbar } from "./toolbars/TitleToolbar";
 import { ButtonToolbar } from "./toolbars/ButtonToolbar";
 import { ImageToolbar } from "./toolbars/ImageToolbar";
 import { IconToolbar } from "./toolbars/IconToolbar";
@@ -123,7 +123,7 @@ export function EditorDrawer({ editor }: EditorDrawerProps) {
         switch (elementType) {
             case "text":
                 return (
-                    <TextToolbar
+                    <TitleToolbar
                         elementId={elementId}
                         elementLabel={elementLabel}
                         currentStyles={currentStyles}
@@ -168,7 +168,7 @@ export function EditorDrawer({ editor }: EditorDrawerProps) {
                 );
             default:
                 return (
-                    <TextToolbar
+                    <TitleToolbar
                         elementId={elementId}
                         elementLabel={elementLabel}
                         currentStyles={currentStyles}

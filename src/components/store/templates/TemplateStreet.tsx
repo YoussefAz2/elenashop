@@ -181,7 +181,7 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
                     {products.length === 0 ? (
                         <div className="text-center py-16" style={{ border: `4px solid ${global.colors.text}`, boxShadow: `8px 8px 0 ${global.colors.primary}` }}>
                             <ShoppingBag className="h-20 w-20 mx-auto mb-4" style={{ color: global.colors.primary }} />
-                            <p className="text-2xl font-black uppercase" style={{ color: global.colors.text }}>Coming Soon</p>
+                            <span data-editable="paragraph" data-editable-id="empty-products-text" data-editable-label="Texte produits vide" className="text-2xl font-black uppercase cursor-pointer hover:opacity-80 transition-opacity" style={{ color: global.colors.text }}>Coming Soon</span>
                         </div>
                     ) : (
                         <div className={`grid ${gapClass} ${productGrid.columns === 4 ? "grid-cols-2 lg:grid-cols-4" : productGrid.columns === 3 ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" : "grid-cols-1 sm:grid-cols-2"}`}>

@@ -175,7 +175,7 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
                     {products.length === 0 ? (
                         <div className="text-center py-24" style={{ border: `1px solid ${global.colors.primary}30`, backgroundColor: `${global.colors.primary}05` }}>
                             <ShoppingBag className="h-16 w-16 mx-auto mb-4" style={{ color: global.colors.primary, opacity: 0.5 }} />
-                            <p className="text-xl italic" style={{ color: global.colors.text, opacity: 0.6 }}>Collection à venir...</p>
+                            <span data-editable="paragraph" data-editable-id="empty-products-text" data-editable-label="Texte produits vide" className="text-xl italic cursor-pointer hover:opacity-80 transition-opacity" style={{ color: global.colors.text, opacity: 0.6 }}>Collection à venir...</span>
                         </div>
                     ) : (
                         <div className={`grid ${gapClass} ${productGrid.columns === 4 ? "grid-cols-2 lg:grid-cols-4" : productGrid.columns === 3 ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" : "grid-cols-1 sm:grid-cols-2"}`}>
@@ -201,7 +201,7 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
                         <div className="grid md:grid-cols-2 gap-16 items-center">
                             {about.imageUrl && about.imagePosition === "left" && <div data-editable="image" data-editable-id="about-image" data-editable-label="Image À Propos" className="relative aspect-[4/5] overflow-hidden" style={{ border: `1px solid ${global.colors.primary}30` }}><Image src={about.imageUrl} alt={about.title} fill className="object-cover" /></div>}
                             <div className={about.imagePosition === "left" ? "" : "order-first md:order-none"}>
-                                <p className="text-sm uppercase tracking-[0.3em] mb-4" style={{ color: global.colors.primary }}>Notre Histoire</p>
+                                <span data-editable="paragraph" data-editable-id="about-label" data-editable-label="Label À Propos" className="text-sm uppercase tracking-[0.3em] mb-4 block cursor-pointer hover:opacity-80 transition-opacity" style={{ color: global.colors.primary }}>Notre Histoire</span>
                                 <span data-editable="title" data-editable-id="about-title" className={`${headingSizeClass} font-normal italic tracking-tight mb-8 block`} style={{ color: global.colors.text, fontFamily: `"${global.headingFont}", Georgia, serif`, textTransform }}>
                                     {about.title}
                                 </span>
