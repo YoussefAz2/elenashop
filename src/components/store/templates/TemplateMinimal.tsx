@@ -203,7 +203,7 @@ export function TemplateMinimal({
 
             {/* Hero */}
             {hero.visible && (
-                <section data-editable="container" data-editable-id="hero-section" data-editable-label="Section Hero" className="relative overflow-hidden">
+                <section data-editable="container" data-editable-id="hero-section" data-editable-label="Section Hero" className="relative overflow-hidden" style={{ backgroundColor: global.colors.background }}>
                     {/* Background image with filter - separate from content */}
                     {hero.imageUrl && (
                         <div
@@ -221,7 +221,7 @@ export function TemplateMinimal({
                     {/* Content - no filter */}
                     <div
                         className={`relative px-6 ${heroHeightClass}`}
-                        style={{ backgroundColor: "transparent" }}
+                        style={{ backgroundColor: global.colors.background }}
                     >
                         <div className={`mx-auto max-w-2xl flex flex-col ${heroAlignClass}`}>
                             <div className="w-12 h-px mb-8" style={{ backgroundColor: hero.imageUrl ? "#fff" : global.hero.buttonBg }} />
@@ -258,7 +258,7 @@ export function TemplateMinimal({
             {(spacing.showSectionDividers || editor?.isEditing || config.elementOverrides?.["divider-hero"]) && <div data-editable="divider" data-editable-id="divider-hero" data-editable-label="Séparateur Hero" className="h-px" style={{ backgroundColor: `${global.colors.text}15` }} />}
 
             {/* Products - Grouped by Category */}
-            <section id="products" data-editable="container" data-editable-id="products-section" data-editable-label="Section Produits" className={`${sectionPaddingClass} px-4`}>
+            <section id="products" data-editable="container" data-editable-id="products-section" data-editable-label="Section Produits" className={`${sectionPaddingClass} px-4`} style={{ backgroundColor: global.colors.background }}>
                 <div className="mx-auto max-w-6xl">
                     {productGrid.title && (
                         <div className={`mb-12 ${global.hero.contentAlign === "center" ? "text-center" : ""}`}>

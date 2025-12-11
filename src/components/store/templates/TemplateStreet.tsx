@@ -109,7 +109,7 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
             {(spacing.showSectionDividers || editor?.isEditing || config.elementOverrides?.["divider-header"]) && <div data-editable="divider" data-editable-id="divider-header" data-editable-label="Séparateur Header" className="h-1" style={{ backgroundColor: global.colors.primary }} />}
 
             {hero.visible && (
-                <section data-editable="container" data-editable-id="hero-section" data-editable-label="Section Hero" className="relative overflow-hidden">
+                <section data-editable="container" data-editable-id="hero-section" data-editable-label="Section Hero" className="relative overflow-hidden" style={{ backgroundColor: global.colors.background }}>
                     {/* Background image with filter - separate from content */}
                     {hero.imageUrl && (
                         <div
@@ -123,7 +123,7 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
                         />
                     )}
                     {hero.imageUrl && <div className="absolute inset-0" style={getOverlayStyle()} />}
-                    <div className={`relative px-4 ${heroHeightClass}`} style={{ backgroundColor: "transparent" }}>
+                    <div className={`relative px-4 ${heroHeightClass}`}>
                         <div className={`mx-auto max-w-5xl ${heroAlignClass}`}>
                             <div data-editable="button" data-editable-id="hero-badge" data-editable-label="Badge Hero" className="mb-4 flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
                                 <Zap className="h-6 w-6" style={{ color: global.colors.primary }} />
@@ -150,7 +150,7 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
 
             {(spacing.showSectionDividers || editor?.isEditing || config.elementOverrides?.["divider-hero"]) && <div data-editable="divider" data-editable-id="divider-hero" data-editable-label="Séparateur Hero" className="h-1" style={{ backgroundColor: global.colors.primary }} />}
 
-            <section id="products" data-editable="container" data-editable-id="products-section" data-editable-label="Section Produits" className={`${sectionPaddingClass} px-4`}>
+            <section id="products" data-editable="container" data-editable-id="products-section" data-editable-label="Section Produits" className={`${sectionPaddingClass} px-4`} style={{ backgroundColor: global.colors.background }}>
                 <div className="mx-auto max-w-6xl">
                     {productGrid.title && (
                         <div className="mb-8">

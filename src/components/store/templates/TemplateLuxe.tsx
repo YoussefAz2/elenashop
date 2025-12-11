@@ -107,7 +107,7 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
             {(spacing.showSectionDividers || editor?.isEditing || config.elementOverrides?.["divider-header"]) && <div data-editable="divider" data-editable-id="divider-header" data-editable-label="Séparateur Header" className="h-px" style={{ backgroundColor: `${global.colors.primary}30` }} />}
 
             {hero.visible && (
-                <section data-editable="container" data-editable-id="hero-section" data-editable-label="Section Hero" className={`relative ${heroHeightClass} flex items-center justify-center overflow-hidden`}>
+                <section data-editable="container" data-editable-id="hero-section" data-editable-label="Section Hero" className={`relative ${heroHeightClass} flex items-center justify-center overflow-hidden`} style={{ backgroundColor: global.colors.background }}>
                     {/* Background image with filter - separate from content */}
                     {hero.imageUrl && (
                         <div
@@ -146,7 +146,7 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
 
             {(spacing.showSectionDividers || editor?.isEditing || config.elementOverrides?.["divider-hero"]) && <div data-editable="divider" data-editable-id="divider-hero" data-editable-label="Séparateur Hero" className="h-px" style={{ backgroundColor: `${global.colors.primary}30` }} />}
 
-            <section id="products" data-editable="container" data-editable-id="products-section" data-editable-label="Section Produits" className={`${sectionPaddingClass} px-4`}>
+            <section id="products" data-editable="container" data-editable-id="products-section" data-editable-label="Section Produits" className={`${sectionPaddingClass} px-4`} style={{ backgroundColor: global.colors.background }}>
                 <div className="mx-auto max-w-6xl">
                     {productGrid.title && (
                         <div className={`mb-16 ${global.hero.contentAlign === "center" ? "text-center" : ""}`}>
