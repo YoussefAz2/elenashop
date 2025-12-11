@@ -321,11 +321,11 @@ a,
 }
 
 /* Divider enlarged clickable zone - only in edit mode */
-/* Divider fills entire clickable height - no transparent gaps showing body background */
+/* Divider fills entire clickable height - ensures selector covers visible divider */
 [data-editing] [data-editable="divider"] {
   position: relative;
   z-index: 10;
-  min-height: 8px !important;
+  min-height: 16px !important;
   cursor: pointer;
 }
 
@@ -333,6 +333,6 @@ a,
 @media (max-width: 768px),
 (pointer: coarse) {
   [data-editing] [data-editable="divider"] {
-    min-height: 16px !important;
+    min-height: 24px !important;
   }
 }
