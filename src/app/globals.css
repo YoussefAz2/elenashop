@@ -321,22 +321,18 @@ a,
 }
 
 /* Divider enlarged clickable zone - only in edit mode */
-/* Makes the divider element larger while keeping the visible line thin using background-size */
+/* Divider fills entire clickable height - no transparent gaps showing body background */
 [data-editing] [data-editable="divider"] {
   position: relative;
   z-index: 10;
-  min-height: 24px !important;
+  min-height: 8px !important;
   cursor: pointer;
-  /* Keep the background color in a thin strip in the middle */
-  background-size: 100% 1px !important;
-  background-repeat: no-repeat !important;
-  background-position: center !important;
 }
 
 /* Larger clickable zone on mobile/touch devices */
 @media (max-width: 768px),
 (pointer: coarse) {
   [data-editing] [data-editable="divider"] {
-    min-height: 40px !important;
+    min-height: 16px !important;
   }
 }
