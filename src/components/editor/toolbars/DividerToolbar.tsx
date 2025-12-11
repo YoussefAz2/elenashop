@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Minus, Palette, RotateCcw } from "lucide-react";
+import { Minus, Palette, RotateCcw, AlignLeft, AlignCenter, AlignRight } from "lucide-react";
 import type { ElementStyleOverride } from "@/types";
 import { Label } from "@/components/ui/label";
 
@@ -39,6 +39,12 @@ const WIDTH_OPTIONS = [
     { value: "40%", label: "40%" },
 ];
 
+const ALIGN_OPTIONS = [
+    { value: "left", label: "Gauche", icon: AlignLeft },
+    { value: "center", label: "Centre", icon: AlignCenter },
+    { value: "right", label: "Droite", icon: AlignRight },
+] as const;
+
 // ---------- COMPONENT ----------
 
 export function DividerToolbar({
@@ -62,6 +68,17 @@ export function DividerToolbar({
     const dividerHeight = styles.borderWidth || "1px";
     const dividerOpacity = styles.opacity?.toString() || "1";
     const dividerWidth = styles.width || "100%";
+    const dividerAlign = styles.dividerAlign || "center";
+
+    // Calculate margin for alignment preview
+    const getAlignStyle = (): React.CSSProperties => {
+        if (dividerWidth === "100%") return {};
+        switch (dividerAlign) {
+            case "left": return { marginRight: "auto", marginLeft: 0 };
+            case "right": return { marginLeft: "auto", marginRight: 0 };
+            default: return { marginLeft: "auto", marginRight: "auto" };
+        }
+    };
 
     return (
         <div className="space-y-4">
@@ -169,20 +186,42 @@ export function DividerToolbar({
                 </div>
             </div>
 
+            {/* Alignment */}
+            <div className="space-y-2">
+                <Label className="text-xs">📍 Position</Label>
+                <div className="flex gap-1">
+                    {ALIGN_OPTIONS.map(({ value, label, icon: Icon }) => (
+                        <button
+                            key={value}
+                            onClick={() => updateStyle("dividerAlign", value)}
+                            className={`
+                                flex-1 py-2 text-xs rounded transition-all flex items-center justify-center gap-1
+                                ${dividerAlign === value
+                                    ? "bg-slate-800 text-white"
+                                    : "bg-slate-100 hover:bg-slate-200 text-slate-700"
+                                }
+                            `}
+                        >
+                            <Icon className="w-3 h-3" />
+                            {label}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
             {/* Preview */}
             <div className="p-4 bg-slate-100 rounded-lg mt-4">
                 <p className="text-[10px] text-slate-400 mb-3">Aperçu</p>
-                <div className="flex justify-center">
-                    <div
-                        style={{
-                            backgroundColor: styles.backgroundColor || "#8b5cf6",
-                            height: dividerHeight,
-                            width: dividerWidth,
-                            opacity: parseFloat(dividerOpacity),
-                            borderRadius: "2px",
-                        }}
-                    />
-                </div>
+                <div
+                    style={{
+                        backgroundColor: styles.backgroundColor || "#8b5cf6",
+                        height: dividerHeight,
+                        width: dividerWidth,
+                        opacity: parseFloat(dividerOpacity),
+                        borderRadius: "2px",
+                        ...getAlignStyle(),
+                    }}
+                />
             </div>
         </div>
     );

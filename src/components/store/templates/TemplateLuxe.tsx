@@ -104,7 +104,7 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
                 )}
             </div>
 
-            {(spacing.showSectionDividers || editor?.isEditing) && <div data-editable="divider" data-editable-id="divider-header" data-editable-label="Séparateur Header" className="h-px" style={{ backgroundColor: `${global.colors.primary}30` }} />}
+            {(spacing.showSectionDividers || editor?.isEditing || config.elementOverrides?.["divider-header"]) && <div data-editable="divider" data-editable-id="divider-header" data-editable-label="Séparateur Header" className="h-px" style={{ backgroundColor: `${global.colors.primary}30` }} />}
 
             {hero.visible && (
                 <section data-editable="container" data-editable-id="hero-section" data-editable-label="Section Hero" className={`relative ${heroHeightClass} flex items-center justify-center overflow-hidden`}>
@@ -144,7 +144,7 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
                 </section>
             )}
 
-            {(spacing.showSectionDividers || editor?.isEditing) && <div data-editable="divider" data-editable-id="divider-hero" data-editable-label="Séparateur Hero" className="h-px" style={{ backgroundColor: `${global.colors.primary}30` }} />}
+            {(spacing.showSectionDividers || editor?.isEditing || config.elementOverrides?.["divider-hero"]) && <div data-editable="divider" data-editable-id="divider-hero" data-editable-label="Séparateur Hero" className="h-px" style={{ backgroundColor: `${global.colors.primary}30` }} />}
 
             <section id="products" data-editable="container" data-editable-id="products-section" data-editable-label="Section Produits" className={`${sectionPaddingClass} px-4`}>
                 <div className="mx-auto max-w-6xl">
@@ -188,12 +188,12 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
                 </div>
             </section>
 
-            {(spacing.showSectionDividers || editor?.isEditing) && testimonials.visible && <div data-editable="divider" data-editable-id="divider-products" data-editable-label="Séparateur Produits" className="h-px" style={{ backgroundColor: `${global.colors.primary}30` }} />}
+            {(spacing.showSectionDividers || editor?.isEditing || config.elementOverrides?.["divider-products"]) && testimonials.visible && <div data-editable="divider" data-editable-id="divider-products" data-editable-label="Séparateur Produits" className="h-px" style={{ backgroundColor: `${global.colors.primary}30` }} />}
 
             {/* Testimonials Section */}
             <Testimonials content={testimonials} styles={global} />
 
-            {(spacing.showSectionDividers || editor?.isEditing) && about.visible && <div data-editable="divider" data-editable-id="divider-testimonials" data-editable-label="Séparateur Témoignages" className="h-px" style={{ backgroundColor: `${global.colors.primary}30` }} />}
+            {(spacing.showSectionDividers || editor?.isEditing || config.elementOverrides?.["divider-testimonials"]) && about.visible && <div data-editable="divider" data-editable-id="divider-testimonials" data-editable-label="Séparateur Témoignages" className="h-px" style={{ backgroundColor: `${global.colors.primary}30` }} />}
 
             {about.visible && (
                 <section data-editable="container" data-editable-id="about-section" data-editable-label="Section À Propos" className={`${sectionPaddingClass} px-4`} style={{ borderTop: `1px solid ${global.colors.primary}20` }}>
@@ -213,7 +213,7 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
                 </section>
             )}
 
-            {(spacing.showSectionDividers || editor?.isEditing) && <div data-editable="divider" data-editable-id="divider-about" data-editable-label="Séparateur À propos" className="h-px" style={{ backgroundColor: `${global.colors.primary}30` }} />}
+            {(spacing.showSectionDividers || editor?.isEditing || config.elementOverrides?.["divider-about"]) && <div data-editable="divider" data-editable-id="divider-about" data-editable-label="Séparateur À propos" className="h-px" style={{ backgroundColor: `${global.colors.primary}30` }} />}
 
             <footer data-editable="container" data-editable-id="footer-section" data-editable-label="Section Footer" className="py-16" style={{ backgroundColor: global.footer.backgroundColor, borderTop: `1px solid ${global.colors.primary}30` }}>
                 <div className="mx-auto max-w-6xl px-4 text-center">

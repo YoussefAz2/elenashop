@@ -241,6 +241,23 @@ export function EditorWrapper({ editor, children, className = "" }: EditorWrappe
                     if (overrides.borderWidth) htmlEl.style.height = overrides.borderWidth;
                     if (overrides.width) htmlEl.style.width = overrides.width;
                     if (overrides.opacity !== undefined) htmlEl.style.opacity = String(overrides.opacity);
+                    // Apply alignment via margin
+                    if (overrides.dividerAlign && overrides.width !== "100%") {
+                        switch (overrides.dividerAlign) {
+                            case "left":
+                                htmlEl.style.marginLeft = "0";
+                                htmlEl.style.marginRight = "auto";
+                                break;
+                            case "right":
+                                htmlEl.style.marginLeft = "auto";
+                                htmlEl.style.marginRight = "0";
+                                break;
+                            default: // center
+                                htmlEl.style.marginLeft = "auto";
+                                htmlEl.style.marginRight = "auto";
+                                break;
+                        }
+                    }
                 }
                 // For text elements (title, paragraph, text)
                 else {

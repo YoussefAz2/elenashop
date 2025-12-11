@@ -150,6 +150,9 @@ export interface ElementStyleOverride {
 
     // Divider width (for section dividers)
     width?: string;
+
+    // Divider alignment (left, center, right)
+    dividerAlign?: "left" | "center" | "right";
 }
 
 export interface ElementOverride {

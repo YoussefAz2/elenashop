@@ -199,7 +199,7 @@ export function TemplateMinimal({
             </div>
 
             {/* Section Divider */}
-            {(spacing.showSectionDividers || editor?.isEditing) && <div data-editable="divider" data-editable-id="divider-header" data-editable-label="Séparateur Header" className="h-px" style={{ backgroundColor: `${global.colors.text}15` }} />}
+            {(spacing.showSectionDividers || editor?.isEditing || config.elementOverrides?.["divider-header"]) && <div data-editable="divider" data-editable-id="divider-header" data-editable-label="Séparateur Header" className="h-px" style={{ backgroundColor: `${global.colors.text}15` }} />}
 
             {/* Hero */}
             {hero.visible && (
@@ -255,7 +255,7 @@ export function TemplateMinimal({
             )}
 
             {/* Section Divider */}
-            {(spacing.showSectionDividers || editor?.isEditing) && <div data-editable="divider" data-editable-id="divider-hero" data-editable-label="Séparateur Hero" className="h-px" style={{ backgroundColor: `${global.colors.text}15` }} />}
+            {(spacing.showSectionDividers || editor?.isEditing || config.elementOverrides?.["divider-hero"]) && <div data-editable="divider" data-editable-id="divider-hero" data-editable-label="Séparateur Hero" className="h-px" style={{ backgroundColor: `${global.colors.text}15` }} />}
 
             {/* Products - Grouped by Category */}
             <section id="products" data-editable="container" data-editable-id="products-section" data-editable-label="Section Produits" className={`${sectionPaddingClass} px-4`}>
@@ -395,7 +395,7 @@ export function TemplateMinimal({
             </section>
 
             {/* Section Divider */}
-            {(spacing.showSectionDividers || editor?.isEditing) && testimonials.visible && <div data-editable="divider" data-editable-id="divider-products" data-editable-label="Séparateur Produits" className="h-px" style={{ backgroundColor: `${global.colors.text}15` }} />}
+            {(spacing.showSectionDividers || editor?.isEditing || config.elementOverrides?.["divider-products"]) && testimonials.visible && <div data-editable="divider" data-editable-id="divider-products" data-editable-label="Séparateur Produits" className="h-px" style={{ backgroundColor: `${global.colors.text}15` }} />}
 
             {/* Testimonials Section */}
             <Testimonials content={testimonials} styles={global} />
@@ -432,7 +432,7 @@ export function TemplateMinimal({
             )}
 
             {/* Section Divider */}
-            {(spacing.showSectionDividers || editor?.isEditing) && <div data-editable="divider" data-editable-id="divider-about" data-editable-label="Séparateur À propos" className="h-px" style={{ backgroundColor: `${global.colors.text}15` }} />}
+            {(spacing.showSectionDividers || editor?.isEditing || config.elementOverrides?.["divider-about"]) && <div data-editable="divider" data-editable-id="divider-about" data-editable-label="Séparateur À propos" className="h-px" style={{ backgroundColor: `${global.colors.text}15` }} />}
 
             {/* Footer */}
             <footer data-editable="container" data-editable-id="footer-section" data-editable-label="Section Footer" className="py-12" style={{ backgroundColor: global.footer.backgroundColor, borderTop: `1px solid ${global.colors.text}10` }}>
