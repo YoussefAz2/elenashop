@@ -141,7 +141,7 @@ export function TemplateMinimal({
                                 {header.logoUrl ? (
                                     <img src={header.logoUrl} alt={storeName} style={{ width: header.logoSize || 40, height: header.logoSize || 40 }} className="object-contain rounded" />
                                 ) : (
-                                    <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: `${global.colors.primary}15` }}>
+                                    <div data-editable="icon" data-editable-id="header-logo-icon" data-editable-label="Icône Logo" className="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity" style={{ backgroundColor: `${global.colors.primary}15` }}>
                                         <Store className="w-4 h-4" style={{ color: global.colors.primary }} />
                                     </div>
                                 )}
@@ -438,7 +438,7 @@ export function TemplateMinimal({
             <footer data-editable="container" data-editable-id="footer-section" data-editable-label="Section Footer" className="py-12" style={{ backgroundColor: global.footer.backgroundColor, borderTop: `1px solid ${global.colors.text}10` }}>
                 <div className="mx-auto max-w-6xl px-4 text-center">
                     {footer.showSocials && (footer.instagram || footer.facebook || footer.tiktok || footer.whatsapp) && (
-                        <div className="flex justify-center gap-6 mb-6">
+                        <div data-editable="icon" data-editable-id="footer-social-icons" data-editable-label="Icônes réseaux" className="flex justify-center gap-6 mb-6">
                             {footer.instagram && <a href={`https://instagram.com/${footer.instagram}`} target="_blank" rel="noopener noreferrer" className="transition-opacity hover:opacity-60" style={{ color: global.footer.accentColor }}><Instagram className="h-5 w-5" /></a>}
                             {footer.facebook && <a href={`https://facebook.com/${footer.facebook}`} target="_blank" rel="noopener noreferrer" className="transition-opacity hover:opacity-60" style={{ color: global.footer.accentColor }}><Facebook className="h-5 w-5" /></a>}
                             {footer.tiktok && <a href={`https://tiktok.com/@${footer.tiktok}`} target="_blank" rel="noopener noreferrer" className="transition-opacity hover:opacity-60 font-bold text-sm" style={{ color: global.footer.accentColor }}>TikTok</a>}

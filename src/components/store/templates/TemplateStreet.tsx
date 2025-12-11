@@ -66,7 +66,7 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
                                 {header.logoUrl ? (
                                     <img src={header.logoUrl} alt={storeName} style={{ width: header.logoSize || 44, height: header.logoSize || 44, boxShadow: `3px 3px 0 ${global.colors.text}` }} className="object-contain" />
                                 ) : (
-                                    <div className="w-10 h-10 flex items-center justify-center" style={{ backgroundColor: global.colors.primary, boxShadow: `3px 3px 0 ${global.colors.text}` }}>
+                                    <div data-editable="icon" data-editable-id="header-logo-icon" data-editable-label="Icône Logo" className="w-10 h-10 flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity" style={{ backgroundColor: global.colors.primary, boxShadow: `3px 3px 0 ${global.colors.text}` }}>
                                         <Store className="w-5 h-5" style={{ color: global.colors.background }} />
                                     </div>
                                 )}

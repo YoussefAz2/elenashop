@@ -13,6 +13,7 @@ export type EditableType =
     | "image"           // Images
     | "productCard"     // Product cards
     | "container"       // Sections, containers
+    | "icon"            // Icons (social, logo icons)
     | "text"            // Legacy - maps to title
     | "section";        // Legacy - maps to container
 

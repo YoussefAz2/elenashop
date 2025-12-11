@@ -135,6 +135,14 @@ export interface ElementStyleOverride {
     titleColor?: string;
     descriptionColor?: string;
     priceColor?: string;
+
+    // Product card info box (new)
+    infoBoxBackgroundColor?: string;
+    infoBoxPadding?: string;
+    infoBoxFullWidth?: boolean;
+
+    // Icon color (new)
+    iconColor?: string;
 }
 
 export interface ElementOverride {

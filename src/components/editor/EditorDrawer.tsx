@@ -6,6 +6,7 @@ import type { EditorStateReturn } from "@/hooks/useEditorState";
 import { TextToolbar } from "./toolbars/TextToolbar";
 import { ButtonToolbar } from "./toolbars/ButtonToolbar";
 import { ImageToolbar } from "./toolbars/ImageToolbar";
+import { IconToolbar } from "./toolbars/IconToolbar";
 
 // ---------- PROPS ----------
 
@@ -146,6 +147,17 @@ export function EditorDrawer({ editor }: EditorDrawerProps) {
             case "image":
                 return (
                     <ImageToolbar
+                        elementId={elementId}
+                        elementLabel={elementLabel}
+                        currentStyles={currentStyles}
+                        onSave={handleSave}
+                        onReset={handleReset}
+                        onClose={handleClose}
+                    />
+                );
+            case "icon":
+                return (
+                    <IconToolbar
                         elementId={elementId}
                         elementLabel={elementLabel}
                         currentStyles={currentStyles}

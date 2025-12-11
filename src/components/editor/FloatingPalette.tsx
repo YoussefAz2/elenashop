@@ -9,6 +9,7 @@ import { ButtonToolbar } from "./toolbars/ButtonToolbar";
 import { ImageToolbar } from "./toolbars/ImageToolbar";
 import { ProductCardToolbar } from "./toolbars/ProductCardToolbar";
 import { ContainerToolbar } from "./toolbars/ContainerToolbar";
+import { IconToolbar } from "./toolbars/IconToolbar";
 
 // ---------- PROPS ----------
 
@@ -111,6 +112,8 @@ export function FloatingPalette({ editor }: FloatingPaletteProps) {
                 return <ProductCardToolbar {...toolbarProps} />;
             case "container":
                 return <ContainerToolbar {...toolbarProps} />;
+            case "icon":
+                return <IconToolbar {...toolbarProps} />;
             // Legacy "text" type - use TitleToolbar as default
             case "text":
             default:

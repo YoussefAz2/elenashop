@@ -1,13 +1,13 @@
 "use client";
 
 import React from "react";
-import { Box, Palette, RotateCcw } from "lucide-react";
+import { Sparkles, Palette, RotateCcw } from "lucide-react";
 import type { ElementStyleOverride } from "@/types";
 import { Label } from "@/components/ui/label";
 
 // ---------- PROPS ----------
 
-interface ContainerToolbarProps {
+interface IconToolbarProps {
     elementId: string;
     elementLabel: string;
     currentStyles: ElementStyleOverride;
@@ -16,26 +16,30 @@ interface ContainerToolbarProps {
     onClose: () => void;
 }
 
-// ---------- CONSTANTS ----------
+// ---------- COLOR PRESETS ----------
 
-const PADDING_OPTIONS = [
-    { value: "16px", label: "Petit" },
-    { value: "24px", label: "Normal" },
-    { value: "32px", label: "Moyen" },
-    { value: "48px", label: "Grand" },
-    { value: "64px", label: "Très grand" },
+const COLOR_PRESETS = [
+    { value: "#18181b", label: "Noir" },
+    { value: "#ffffff", label: "Blanc" },
+    { value: "#ef4444", label: "Rouge" },
+    { value: "#f97316", label: "Orange" },
+    { value: "#eab308", label: "Jaune" },
+    { value: "#22c55e", label: "Vert" },
+    { value: "#3b82f6", label: "Bleu" },
+    { value: "#8b5cf6", label: "Violet" },
+    { value: "#ec4899", label: "Rose" },
 ];
 
 // ---------- COMPONENT ----------
 
-export function ContainerToolbar({
+export function IconToolbar({
     elementId,
     elementLabel,
     currentStyles,
     onSave,
     onReset,
     onClose,
-}: ContainerToolbarProps) {
+}: IconToolbarProps) {
     const updateStyle = <K extends keyof ElementStyleOverride>(
         key: K,
         value: ElementStyleOverride[K]
@@ -50,7 +54,7 @@ export function ContainerToolbar({
             {/* Header */}
             <div className="flex items-center justify-between pb-2 border-b">
                 <div className="flex items-center gap-2">
-                    <Box className="w-4 h-4 text-indigo-600" />
+                    <Sparkles className="w-4 h-4 text-pink-600" />
                     <span className="font-medium text-sm">{elementLabel}</span>
                 </div>
                 <button
@@ -62,65 +66,63 @@ export function ContainerToolbar({
                 </button>
             </div>
 
-            {/* Background Color */}
+            {/* Icon Color */}
             <div className="space-y-2">
                 <Label className="flex items-center gap-2 text-xs">
                     <Palette className="w-3 h-3" />
-                    Couleur de fond
+                    Couleur de l'icône
                 </Label>
                 <div className="flex gap-2">
                     <input
                         type="color"
-                        value={styles.backgroundColor || "#ffffff"}
-                        onChange={(e) => updateStyle("backgroundColor", e.target.value)}
+                        value={styles.iconColor || styles.color || "#18181b"}
+                        onChange={(e) => updateStyle("iconColor", e.target.value)}
                         className="w-10 h-10 rounded-lg cursor-pointer border-2 border-slate-200"
                     />
                     <input
                         type="text"
-                        value={styles.backgroundColor || ""}
-                        onChange={(e) => updateStyle("backgroundColor", e.target.value)}
-                        placeholder="#ffffff"
+                        value={styles.iconColor || styles.color || ""}
+                        onChange={(e) => updateStyle("iconColor", e.target.value)}
+                        placeholder="#18181b"
                         className="flex-1 border rounded-lg px-3 text-sm"
                     />
                 </div>
             </div>
 
-            {/* Padding */}
+            {/* Quick Color Presets */}
             <div className="space-y-2">
-                <Label className="text-xs">📏 Espacement interne</Label>
-                <div className="flex flex-wrap gap-1">
-                    {PADDING_OPTIONS.map(({ value, label }) => (
+                <Label className="text-xs">🎨 Couleurs rapides</Label>
+                <div className="flex flex-wrap gap-2">
+                    {COLOR_PRESETS.map(({ value, label }) => (
                         <button
                             key={value}
-                            onClick={() => updateStyle("padding", value)}
+                            onClick={() => updateStyle("iconColor", value)}
                             className={`
-                                px-2 py-1.5 text-xs rounded transition-all
-                                ${styles.padding === value
-                                    ? "bg-indigo-600 text-white"
-                                    : "bg-slate-100 hover:bg-slate-200 text-slate-700"
+                                w-8 h-8 rounded-lg border-2 transition-all hover:scale-110
+                                ${(styles.iconColor || styles.color) === value
+                                    ? "border-pink-500 ring-2 ring-pink-200"
+                                    : "border-slate-200"
                                 }
                             `}
-                        >
-                            {label}
-                        </button>
+                            style={{ backgroundColor: value }}
+                            title={label}
+                        />
                     ))}
                 </div>
             </div>
 
             {/* Preview */}
-            <div className="p-3 bg-slate-100 rounded-lg mt-4">
-                <p className="text-[10px] text-slate-400 mb-2">Aperçu section</p>
+            <div className="p-4 bg-slate-100 rounded-lg mt-4 flex items-center justify-center">
                 <div
-                    className="h-16 flex items-center justify-center text-xs text-slate-400 rounded"
-                    style={{
-                        backgroundColor: styles.backgroundColor || "#f8fafc",
-                        padding: styles.padding ? `calc(${styles.padding} / 3)` : "12px",
-                    }}
+                    className="w-12 h-12 rounded-full flex items-center justify-center"
+                    style={{ backgroundColor: `${styles.iconColor || styles.color || "#18181b"}20` }}
                 >
-                    Contenu de section
+                    <Sparkles
+                        className="w-6 h-6"
+                        style={{ color: styles.iconColor || styles.color || "#18181b" }}
+                    />
                 </div>
             </div>
         </div>
     );
 }
-

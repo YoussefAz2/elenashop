@@ -66,7 +66,7 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
                                 {header.logoUrl ? (
                                     <img src={header.logoUrl} alt={storeName} style={{ width: header.logoSize || 48, height: header.logoSize || 48 }} className="object-contain" />
                                 ) : (
-                                    <Store className="w-5 h-5" style={{ color: global.colors.primary }} />
+                                    <Store data-editable="icon" data-editable-id="header-logo-icon" data-editable-label="Icône Logo" className="w-5 h-5 cursor-pointer hover:opacity-80 transition-opacity" style={{ color: global.colors.primary }} />
                                 )}
                                 {header.showStoreName && <span data-editable="title" data-editable-id="header-store-name" data-editable-label="Nom de la boutique" className="text-lg italic hover:opacity-80 transition-opacity cursor-pointer" style={{ color: global.colors.text, fontFamily: `"${global.headingFont}", Georgia, serif` }}>{storeName}</span>}
                             </div>

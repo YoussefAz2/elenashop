@@ -44,6 +44,7 @@ export function EditorWrapper({ editor, children, className = "" }: EditorWrappe
             image: "Image",
             productCard: "Cartes produit",
             container: "Section",
+            icon: "Icône",
             text: "Texte",
             section: "Section"
         };
@@ -209,8 +210,18 @@ export function EditorWrapper({ editor, children, className = "" }: EditorWrappe
                 else if (type === 'container' || type === 'section') {
                     if (overrides.backgroundColor) htmlEl.style.backgroundColor = overrides.backgroundColor;
                     if (overrides.padding) htmlEl.style.padding = overrides.padding;
-                    if (overrides.borderRadius) htmlEl.style.borderRadius = overrides.borderRadius;
-                    if (overrides.boxShadow) htmlEl.style.boxShadow = overrides.boxShadow;
+                }
+                // For icons, apply icon color
+                else if (type === 'icon') {
+                    const iconColor = overrides.iconColor || overrides.color;
+                    if (iconColor) {
+                        // Apply to the element itself and any child SVG/icon
+                        htmlEl.style.color = iconColor;
+                        const svgEl = htmlEl.querySelector('svg');
+                        if (svgEl) {
+                            svgEl.style.color = iconColor;
+                        }
+                    }
                 }
                 // For text elements (title, paragraph, text)
                 else {
@@ -238,6 +249,21 @@ export function EditorWrapper({ editor, children, className = "" }: EditorWrappe
                 if (cardOverrides.borderRadius) htmlEl.style.borderRadius = cardOverrides.borderRadius;
                 if (cardOverrides.boxShadow) htmlEl.style.boxShadow = cardOverrides.boxShadow;
                 if (cardOverrides.padding) htmlEl.style.padding = cardOverrides.padding;
+            });
+
+            // Apply to info box (title/price area)
+            container.querySelectorAll('[data-card-info-box="product-cards-style"]').forEach((el) => {
+                const htmlEl = el as HTMLElement;
+                if (cardOverrides.infoBoxBackgroundColor) htmlEl.style.backgroundColor = cardOverrides.infoBoxBackgroundColor;
+                if (cardOverrides.infoBoxPadding) htmlEl.style.padding = cardOverrides.infoBoxPadding;
+                if (cardOverrides.infoBoxFullWidth) {
+                    htmlEl.style.marginLeft = `-${cardOverrides.padding || '0px'}`;
+                    htmlEl.style.marginRight = `-${cardOverrides.padding || '0px'}`;
+                    htmlEl.style.marginBottom = `-${cardOverrides.padding || '0px'}`;
+                    htmlEl.style.paddingLeft = cardOverrides.padding || '16px';
+                    htmlEl.style.paddingRight = cardOverrides.padding || '16px';
+                    htmlEl.style.paddingBottom = cardOverrides.padding || '16px';
+                }
             });
 
             // Apply to card titles

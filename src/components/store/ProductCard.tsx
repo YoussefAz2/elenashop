@@ -252,6 +252,7 @@ export function ProductCard({
             <div
                 className={`p-4 ${isCenter ? "text-center" : ""}`}
                 style={{ backgroundColor: cards.backgroundColor }}
+                data-card-info-box="product-cards-style"
             >
                 <h3
                     className={`mb-1 line-clamp-2 ${variant === "luxe" ? "font-normal tracking-wide" : variant === "street" ? "font-black uppercase text-base" : "font-medium text-base"}`}
