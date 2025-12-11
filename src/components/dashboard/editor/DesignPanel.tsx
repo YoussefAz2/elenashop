@@ -30,6 +30,8 @@ export function DesignPanel({
             ...config,
             templateId,
             global: preset.global,
+            // Clear element overrides when switching templates
+            elementOverrides: {},
         });
     };
 
@@ -40,6 +42,8 @@ export function DesignPanel({
             onUpdateConfig({
                 ...config,
                 activePreset: presetId,
+                // Clear element overrides so theme applies fully
+                elementOverrides: {},
                 global: {
                     ...config.global,
                     colors: {
@@ -69,8 +73,8 @@ export function DesignPanel({
                             key={template.id}
                             onClick={() => selectTemplate(template.id)}
                             className={`relative p-3 rounded-lg border-2 transition-all ${config.templateId === template.id
-                                    ? "border-blue-500 ring-2 ring-blue-500/20"
-                                    : "border-slate-200 hover:border-slate-300"
+                                ? "border-blue-500 ring-2 ring-blue-500/20"
+                                : "border-slate-200 hover:border-slate-300"
                                 }`}
                         >
                             {template.isPremium && (
