@@ -60,7 +60,7 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
                 )}
 
                 {header.visible && (
-                    <header data-editable="container" data-editable-id="header-section" data-editable-label="Section Header" className="py-4 px-6" style={{ backgroundColor: global.colors.background, borderBottom: `3px solid ${global.colors.text}` }}>
+                    <header data-editable="container" data-editable-id="header-section" data-editable-label="Section Header" className="py-4 px-6" style={{ backgroundColor: global.colors.background }}>
                         <div className="max-w-6xl mx-auto flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 {header.logoUrl ? (
@@ -220,7 +220,7 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
 
             {(spacing.showSectionDividers || editor?.isEditing || config.elementOverrides?.["divider-about"]) && <div data-editable="divider" data-editable-id="divider-about" data-editable-label="Séparateur À propos" className="h-1" style={{ backgroundColor: global.colors.primary }} />}
 
-            <footer data-editable="container" data-editable-id="footer-section" data-editable-label="Section Footer" className="py-10" style={{ borderTop: `4px solid ${global.colors.text}`, backgroundColor: global.footer.backgroundColor }}>
+            <footer data-editable="container" data-editable-id="footer-section" data-editable-label="Section Footer" className="py-10" style={{ backgroundColor: global.footer.backgroundColor }}>
                 <div className="mx-auto max-w-6xl px-4">
                     <div className="flex flex-wrap items-center justify-between gap-6">
                         <span data-editable="title" data-editable-id="footer-store-name" data-editable-label="Nom boutique footer" className="text-2xl font-black uppercase tracking-tight cursor-pointer hover:opacity-80 transition-opacity" style={{ color: global.footer.textColor }}>{storeName}</span>
