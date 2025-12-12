@@ -149,26 +149,41 @@ export function TemplateMinimal({
                             </div>
 
                             {/* Navigation Links - Desktop */}
-                            {pages.length > 0 && (
-                                <nav className="hidden md:flex items-center gap-6">
-                                    {pages.map((page) => (
-                                        <Link
-                                            key={page.id}
-                                            href={`/${storeName}/${page.slug}`}
-                                            className="text-sm hover:opacity-70 transition-opacity"
-                                            style={{ color: global.colors.text }}
-                                        >
-                                            {page.title}
-                                        </Link>
-                                    ))}
-                                </nav>
-                            )}
+                            <nav className="hidden md:flex items-center gap-6">
+                                {/* Custom pages from database */}
+                                {pages.map((page) => (
+                                    <Link
+                                        key={page.id}
+                                        href={`/${storeName}/${page.slug}`}
+                                        className="text-sm hover:opacity-70 transition-opacity"
+                                        style={{ color: global.colors.text }}
+                                    >
+                                        {page.title}
+                                    </Link>
+                                ))}
+                                {/* Built-in pages */}
+                                {config.aboutPageContent?.visible && (
+                                    <Link href={`/${storeName}/a-propos`} className="text-sm hover:opacity-70 transition-opacity" style={{ color: global.colors.text }}>
+                                        À propos
+                                    </Link>
+                                )}
+                                {config.contactPageContent?.visible && (
+                                    <Link href={`/${storeName}/contact`} className="text-sm hover:opacity-70 transition-opacity" style={{ color: global.colors.text }}>
+                                        Contact
+                                    </Link>
+                                )}
+                                {config.faqPageContent?.visible && (
+                                    <Link href={`/${storeName}/faq`} className="text-sm hover:opacity-70 transition-opacity" style={{ color: global.colors.text }}>
+                                        FAQ
+                                    </Link>
+                                )}
+                            </nav>
 
                             <div className="flex items-center gap-4">
                                 {header.showProductCount && <span data-editable="title" data-editable-id="header-product-count" data-editable-label="Compteur produits" className="text-sm hidden sm:inline cursor-pointer hover:opacity-80 transition-opacity" style={{ color: global.colors.text, opacity: 0.6 }}>{products.length} produits</span>}
 
                                 {/* Mobile menu button */}
-                                {pages.length > 0 && (
+                                {(pages.length > 0 || config.aboutPageContent?.visible || config.contactPageContent?.visible || config.faqPageContent?.visible) && (
                                     <button className="md:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} style={{ color: global.colors.text }}>
                                         {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                                     </button>
@@ -177,7 +192,7 @@ export function TemplateMinimal({
                         </div>
 
                         {/* Mobile Navigation */}
-                        {mobileMenuOpen && pages.length > 0 && (
+                        {mobileMenuOpen && (
                             <nav className="md:hidden pt-4 pb-2 border-t mt-4" style={{ borderColor: `${global.colors.text}15` }}>
                                 <div className="flex flex-col gap-3">
                                     {pages.map((page) => (
@@ -191,6 +206,21 @@ export function TemplateMinimal({
                                             {page.title}
                                         </Link>
                                     ))}
+                                    {config.aboutPageContent?.visible && (
+                                        <Link href={`/${storeName}/a-propos`} className="text-sm py-2 hover:opacity-70 transition-opacity" style={{ color: global.colors.text }} onClick={() => setMobileMenuOpen(false)}>
+                                            À propos
+                                        </Link>
+                                    )}
+                                    {config.contactPageContent?.visible && (
+                                        <Link href={`/${storeName}/contact`} className="text-sm py-2 hover:opacity-70 transition-opacity" style={{ color: global.colors.text }} onClick={() => setMobileMenuOpen(false)}>
+                                            Contact
+                                        </Link>
+                                    )}
+                                    {config.faqPageContent?.visible && (
+                                        <Link href={`/${storeName}/faq`} className="text-sm py-2 hover:opacity-70 transition-opacity" style={{ color: global.colors.text }} onClick={() => setMobileMenuOpen(false)}>
+                                            FAQ
+                                        </Link>
+                                    )}
                                 </div>
                             </nav>
                         )}

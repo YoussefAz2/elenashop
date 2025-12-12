@@ -74,17 +74,24 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
                             </div>
 
                             {/* Navigation - Desktop */}
-                            {pages.length > 0 && (
-                                <nav className="hidden md:flex items-center gap-6">
-                                    {pages.map((page) => (
-                                        <Link key={page.id} href={`/${storeName}/${page.slug}`} className="text-sm font-bold uppercase hover:opacity-70 transition-opacity px-3 py-1" style={{ backgroundColor: `${global.colors.primary}30`, color: global.colors.text }}>{page.title}</Link>
-                                    ))}
-                                </nav>
-                            )}
+                            <nav className="hidden md:flex items-center gap-6">
+                                {pages.map((page) => (
+                                    <Link key={page.id} href={`/${storeName}/${page.slug}`} className="text-sm font-bold uppercase hover:opacity-70 transition-opacity px-3 py-1" style={{ backgroundColor: `${global.colors.primary}30`, color: global.colors.text }}>{page.title}</Link>
+                                ))}
+                                {config.aboutPageContent?.visible && (
+                                    <Link href={`/${storeName}/a-propos`} className="text-sm font-bold uppercase hover:opacity-70 transition-opacity px-3 py-1" style={{ backgroundColor: `${global.colors.primary}30`, color: global.colors.text }}>À propos</Link>
+                                )}
+                                {config.contactPageContent?.visible && (
+                                    <Link href={`/${storeName}/contact`} className="text-sm font-bold uppercase hover:opacity-70 transition-opacity px-3 py-1" style={{ backgroundColor: `${global.colors.primary}30`, color: global.colors.text }}>Contact</Link>
+                                )}
+                                {config.faqPageContent?.visible && (
+                                    <Link href={`/${storeName}/faq`} className="text-sm font-bold uppercase hover:opacity-70 transition-opacity px-3 py-1" style={{ backgroundColor: `${global.colors.primary}30`, color: global.colors.text }}>FAQ</Link>
+                                )}
+                            </nav>
 
                             <div className="flex items-center gap-3">
                                 {header.showProductCount && <span data-editable="button" data-editable-id="header-product-count" data-editable-label="Compteur drops" className="text-sm font-bold uppercase px-3 py-1 hidden sm:inline cursor-pointer hover:opacity-80 transition-opacity" style={{ backgroundColor: global.colors.text, color: global.colors.background }}>{products.length} drops</span>}
-                                {pages.length > 0 && (
+                                {(pages.length > 0 || config.aboutPageContent?.visible || config.contactPageContent?.visible || config.faqPageContent?.visible) && (
                                     <button className="md:hidden p-2" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} style={{ backgroundColor: global.colors.primary, color: global.colors.background }}>
                                         {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                                     </button>
@@ -93,12 +100,21 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
                         </div>
 
                         {/* Mobile Navigation */}
-                        {mobileMenuOpen && pages.length > 0 && (
+                        {mobileMenuOpen && (
                             <nav className="md:hidden pt-4 mt-4 border-t-2" style={{ borderColor: global.colors.text }}>
                                 <div className="flex flex-col gap-2">
                                     {pages.map((page) => (
                                         <Link key={page.id} href={`/${storeName}/${page.slug}`} className="text-sm font-bold uppercase py-3 px-2 hover:opacity-70 transition-opacity" style={{ backgroundColor: `${global.colors.primary}30`, color: global.colors.text }} onClick={() => setMobileMenuOpen(false)}>{page.title}</Link>
                                     ))}
+                                    {config.aboutPageContent?.visible && (
+                                        <Link href={`/${storeName}/a-propos`} className="text-sm font-bold uppercase py-3 px-2 hover:opacity-70 transition-opacity" style={{ backgroundColor: `${global.colors.primary}30`, color: global.colors.text }} onClick={() => setMobileMenuOpen(false)}>À propos</Link>
+                                    )}
+                                    {config.contactPageContent?.visible && (
+                                        <Link href={`/${storeName}/contact`} className="text-sm font-bold uppercase py-3 px-2 hover:opacity-70 transition-opacity" style={{ backgroundColor: `${global.colors.primary}30`, color: global.colors.text }} onClick={() => setMobileMenuOpen(false)}>Contact</Link>
+                                    )}
+                                    {config.faqPageContent?.visible && (
+                                        <Link href={`/${storeName}/faq`} className="text-sm font-bold uppercase py-3 px-2 hover:opacity-70 transition-opacity" style={{ backgroundColor: `${global.colors.primary}30`, color: global.colors.text }} onClick={() => setMobileMenuOpen(false)}>FAQ</Link>
+                                    )}
                                 </div>
                             </nav>
                         )}

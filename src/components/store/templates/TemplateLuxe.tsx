@@ -72,17 +72,24 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
                             </div>
 
                             {/* Navigation - Desktop */}
-                            {pages.length > 0 && (
-                                <nav className="hidden md:flex items-center gap-8">
-                                    {pages.map((page) => (
-                                        <Link key={page.id} href={`/${storeName}/${page.slug}`} className="text-sm uppercase tracking-[0.15em] hover:opacity-70 transition-opacity" style={{ color: global.colors.text }}>{page.title}</Link>
-                                    ))}
-                                </nav>
-                            )}
+                            <nav className="hidden md:flex items-center gap-8">
+                                {pages.map((page) => (
+                                    <Link key={page.id} href={`/${storeName}/${page.slug}`} className="text-sm uppercase tracking-[0.15em] hover:opacity-70 transition-opacity" style={{ color: global.colors.text }}>{page.title}</Link>
+                                ))}
+                                {config.aboutPageContent?.visible && (
+                                    <Link href={`/${storeName}/a-propos`} className="text-sm uppercase tracking-[0.15em] hover:opacity-70 transition-opacity" style={{ color: global.colors.text }}>À propos</Link>
+                                )}
+                                {config.contactPageContent?.visible && (
+                                    <Link href={`/${storeName}/contact`} className="text-sm uppercase tracking-[0.15em] hover:opacity-70 transition-opacity" style={{ color: global.colors.text }}>Contact</Link>
+                                )}
+                                {config.faqPageContent?.visible && (
+                                    <Link href={`/${storeName}/faq`} className="text-sm uppercase tracking-[0.15em] hover:opacity-70 transition-opacity" style={{ color: global.colors.text }}>FAQ</Link>
+                                )}
+                            </nav>
 
                             <div className="flex items-center gap-4">
                                 {header.showProductCount && <span data-editable="title" data-editable-id="header-product-count" data-editable-label="Compteur produits" className="text-xs uppercase tracking-[0.2em] hidden sm:inline cursor-pointer hover:opacity-80 transition-opacity" style={{ color: global.colors.primary }}>{products.length} pièces</span>}
-                                {pages.length > 0 && (
+                                {(pages.length > 0 || config.aboutPageContent?.visible || config.contactPageContent?.visible || config.faqPageContent?.visible) && (
                                     <button className="md:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} style={{ color: global.colors.primary }}>
                                         {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                                     </button>
@@ -91,12 +98,21 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
                         </div>
 
                         {/* Mobile Navigation */}
-                        {mobileMenuOpen && pages.length > 0 && (
+                        {mobileMenuOpen && (
                             <nav className="md:hidden pt-6 pb-2 border-t mt-6" style={{ borderColor: `${global.colors.primary}20` }}>
                                 <div className="flex flex-col gap-4 text-center">
                                     {pages.map((page) => (
                                         <Link key={page.id} href={`/${storeName}/${page.slug}`} className="text-sm uppercase tracking-[0.15em] py-2 hover:opacity-70 transition-opacity" style={{ color: global.colors.text }} onClick={() => setMobileMenuOpen(false)}>{page.title}</Link>
                                     ))}
+                                    {config.aboutPageContent?.visible && (
+                                        <Link href={`/${storeName}/a-propos`} className="text-sm uppercase tracking-[0.15em] py-2 hover:opacity-70 transition-opacity" style={{ color: global.colors.text }} onClick={() => setMobileMenuOpen(false)}>À propos</Link>
+                                    )}
+                                    {config.contactPageContent?.visible && (
+                                        <Link href={`/${storeName}/contact`} className="text-sm uppercase tracking-[0.15em] py-2 hover:opacity-70 transition-opacity" style={{ color: global.colors.text }} onClick={() => setMobileMenuOpen(false)}>Contact</Link>
+                                    )}
+                                    {config.faqPageContent?.visible && (
+                                        <Link href={`/${storeName}/faq`} className="text-sm uppercase tracking-[0.15em] py-2 hover:opacity-70 transition-opacity" style={{ color: global.colors.text }} onClick={() => setMobileMenuOpen(false)}>FAQ</Link>
+                                    )}
                                 </div>
                             </nav>
                         )}
