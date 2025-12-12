@@ -65,16 +65,23 @@ export default async function StorePage({ params }: StorePageProps) {
     const { store_name } = await params;
     const supabase = await createClient();
 
-    // Fetch the seller profile
+    // Get current user session to check if owner
+    const { data: { user } } = await supabase.auth.getUser();
+
+    // Fetch the seller profile - use ilike for case-insensitive match
     const { data: profile, error: profileError } = await supabase
         .from("profiles")
         .select("*")
-        .eq("store_name", store_name)
+        .ilike("store_name", store_name)
         .single();
 
+    // If profile not found, return 404
     if (profileError || !profile) {
         notFound();
     }
+
+    // Allow owners to view their own store always (even if there were access issues)
+    const isOwner = user?.id === profile.id;
 
     const seller = profile as Profile;
 

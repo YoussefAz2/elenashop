@@ -101,7 +101,7 @@ export function ContactPage({ config, storeName, sellerId, pages = [] }: Contact
                         data-editable-id="contact-hero-title"
                         data-editable-label="Titre Principal"
                         className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6"
-                        style={{ fontFamily: `"${global.headingFont}", serif`, textTransform: typography.headingTransform === "none" ? undefined : typography.headingTransform }}
+                        style={{ fontFamily: `"${global.headingFont}", serif`, textTransform: typography.headingTransform === "none" ? undefined : typography.headingTransform as React.CSSProperties["textTransform"] }}
                     >
                         {content.title}
                     </h1>
