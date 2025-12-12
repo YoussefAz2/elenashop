@@ -76,13 +76,21 @@ export function useEditorState(
     }, [onOverridesChange]);
 
     // Sync editor state when initialOverrides changes externally (e.g., theme preset clears it)
+    // Use JSON.stringify to compare content, not object reference
+    const initialOverridesKey = JSON.stringify(initialOverrides);
     useEffect(() => {
-        setState(s => ({
-            ...s,
-            overrides: initialOverrides,
-            selectedElement: null, // Clear selection to avoid stale state
-        }));
-    }, [initialOverrides]);
+        setState(s => {
+            // Only update if actually different to prevent unnecessary re-renders
+            const currentKey = JSON.stringify(s.overrides);
+            if (currentKey === initialOverridesKey) return s;
+            return {
+                ...s,
+                overrides: initialOverrides,
+                selectedElement: null,
+            };
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [initialOverridesKey]);
 
     // ---------- MODE ACTIONS ----------
 
