@@ -197,7 +197,7 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
             {(spacing.showSectionDividers || editor?.isEditing || config.elementOverrides?.["divider-products"]) && testimonials.visible && <div data-editable="divider" data-editable-id="divider-products" data-editable-label="Séparateur Produits" className="h-1" style={{ backgroundColor: global.colors.primary }} />}
 
             {/* Testimonials Section */}
-            <Testimonials content={testimonials} styles={global} />
+            <Testimonials content={testimonials} styles={global} isEditing={editor?.isEditing} />
 
             {(spacing.showSectionDividers || editor?.isEditing || config.elementOverrides?.["divider-testimonials"]) && about.visible && <div data-editable="divider" data-editable-id="divider-testimonials" data-editable-label="Séparateur Témoignages" className="h-1" style={{ backgroundColor: global.colors.primary }} />}
 

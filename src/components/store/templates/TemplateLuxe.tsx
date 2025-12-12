@@ -191,7 +191,7 @@ export function TemplateLuxe({ config, products, categories = [], sellerId, stor
             {(spacing.showSectionDividers || editor?.isEditing || config.elementOverrides?.["divider-products"]) && testimonials.visible && <div data-editable="divider" data-editable-id="divider-products" data-editable-label="Séparateur Produits" className="h-px" style={{ backgroundColor: `${global.colors.primary}30` }} />}
 
             {/* Testimonials Section */}
-            <Testimonials content={testimonials} styles={global} />
+            <Testimonials content={testimonials} styles={global} isEditing={editor?.isEditing} />
 
             {(spacing.showSectionDividers || editor?.isEditing || config.elementOverrides?.["divider-testimonials"]) && about.visible && <div data-editable="divider" data-editable-id="divider-testimonials" data-editable-label="Séparateur Témoignages" className="h-px" style={{ backgroundColor: `${global.colors.primary}30` }} />}
 

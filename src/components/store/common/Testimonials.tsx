@@ -8,9 +8,10 @@ import type { TestimonialsContent, GlobalStyles, TypographySettings, SpacingSett
 interface TestimonialsProps {
     content: TestimonialsContent;
     styles: GlobalStyles;
+    isEditing?: boolean;
 }
 
-export function Testimonials({ content, styles }: TestimonialsProps) {
+export function Testimonials({ content, styles, isEditing = false }: TestimonialsProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const { colors, typography, spacing } = styles;
 
@@ -88,6 +89,9 @@ export function Testimonials({ content, styles }: TestimonialsProps) {
     const TestimonialCard = ({ testimonial, index }: { testimonial: typeof content.items[0]; index: number }) => (
         <div
             key={testimonial.id}
+            data-editable="container"
+            data-editable-id={`testimonial-card-${index}`}
+            data-editable-label={`Carte Avis ${index + 1}`}
             className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 md:p-8 transition-all duration-300 hover:scale-[1.02]"
             style={{
                 backgroundColor: `${colors.text}08`,
@@ -135,6 +139,9 @@ export function Testimonials({ content, styles }: TestimonialsProps) {
 
     return (
         <section
+            data-editable="container"
+            data-editable-id="testimonials-section"
+            data-editable-label="Section Témoignages"
             className={sectionPaddingClass}
             style={{ backgroundColor: colors.background }}
         >
@@ -142,6 +149,9 @@ export function Testimonials({ content, styles }: TestimonialsProps) {
                 {/* Header */}
                 <div className="text-center mb-12">
                     <h2
+                        data-editable="title"
+                        data-editable-id="testimonials-title"
+                        data-editable-label="Titre Témoignages"
                         className={`font-bold mb-3 ${headingSizeClass} ${transformClass}`}
                         style={{ color: colors.text }}
                     >
@@ -149,6 +159,9 @@ export function Testimonials({ content, styles }: TestimonialsProps) {
                     </h2>
                     {content.subtitle && (
                         <p
+                            data-editable="paragraph"
+                            data-editable-id="testimonials-subtitle"
+                            data-editable-label="Sous-titre Témoignages"
                             className="text-lg opacity-70 max-w-2xl mx-auto"
                             style={{ color: colors.text }}
                         >

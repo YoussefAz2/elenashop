@@ -505,6 +505,14 @@ export function EditorClient({
                 <SheetContent side="bottom" className="h-[85vh] rounded-t-3xl p-0">
                     <SheetHeader className="px-4 py-3 border-b border-slate-200 dark:border-slate-800">
                         <SheetTitle className="text-lg font-semibold">Personnaliser</SheetTitle>
+                        {/* Mobile PresetManager */}
+                        <PresetManager
+                            customPresets={config.customPresets || []}
+                            currentOverrides={editor.overrides}
+                            onSavePreset={handleSavePreset}
+                            onLoadPreset={handleLoadPreset}
+                            onDeletePreset={handleDeletePreset}
+                        />
                     </SheetHeader>
 
                     {/* Tabs */}
