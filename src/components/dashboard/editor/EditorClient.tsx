@@ -40,6 +40,7 @@ import { isTemplatePremium, getTemplateConfig } from "@/lib/templates";
 import { useEditorState } from "@/hooks/useEditorState";
 import { VisualEditorLayer, EditorWrapper } from "@/components/editor";
 import { PresetManager } from "@/components/editor/PresetManager";
+import { ColorPicker } from "./ColorPicker";
 
 interface EditorClientProps {
     seller: Profile;
@@ -474,6 +475,9 @@ export function EditorClient({
                             <Monitor className="h-4 w-4" />
                         </button>
                     </div>
+
+                    {/* Color Picker Tool */}
+                    <ColorPicker />
 
                     <Button
                         onClick={handleSave}
