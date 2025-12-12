@@ -45,24 +45,25 @@ export function FAQPage({ config, storeName, pages = [] }: FAQPageProps) {
         >
             {/* Header */}
             <header
+                data-editable="container"
+                data-editable-id="faq-header"
+                data-editable-label="Header FAQ"
                 className="sticky top-0 z-50 py-4 px-6 border-b backdrop-blur-md"
                 style={{ backgroundColor: `${colors.background}ee`, borderColor: `${colors.text}15` }}
             >
                 <div className="max-w-5xl mx-auto flex items-center justify-between">
                     <Link href={`/${storeName}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-                        <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: `${colors.primary}15` }}>
+                        <div data-editable="icon" data-editable-id="faq-header-logo" data-editable-label="Logo Header" className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: `${colors.primary}15` }}>
                             <Store className="w-4 h-4" style={{ color: colors.primary }} />
                         </div>
-                        <span className="font-medium" style={{ color: colors.text }}>{storeName}</span>
+                        <span data-editable="title" data-editable-id="faq-header-store-name" data-editable-label="Nom Boutique" className="font-medium" style={{ color: colors.text }}>{storeName}</span>
                     </Link>
 
-                    {pages.length > 0 && (
-                        <nav className="hidden md:flex items-center gap-6">
-                            {pages.map((page) => (
-                                <Link key={page.id} href={`/${storeName}/${page.slug}`} className="text-sm hover:opacity-70 transition-opacity" style={{ color: colors.text }}>{page.title}</Link>
-                            ))}
-                        </nav>
-                    )}
+                    <nav className="hidden md:flex items-center gap-6">
+                        {pages.map((page) => (
+                            <Link key={page.id} href={`/${storeName}/${page.slug}`} data-editable="button" data-editable-id={`faq-nav-${page.slug}`} data-editable-label={`Lien ${page.title}`} className="text-sm hover:opacity-70 transition-opacity" style={{ color: colors.text }}>{page.title}</Link>
+                        ))}
+                    </nav>
 
                     {pages.length > 0 && (
                         <button className="md:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} style={{ color: colors.text }}>
@@ -83,25 +84,31 @@ export function FAQPage({ config, storeName, pages = [] }: FAQPageProps) {
             </header>
 
             {/* Hero Section */}
-            <section className={`${sectionPaddingClass} px-6`}>
+            <section data-editable="container" data-editable-id="faq-hero" data-editable-label="Hero FAQ" className={`${sectionPaddingClass} px-6`}>
                 <div className="max-w-3xl mx-auto text-center">
                     <h1
+                        data-editable="title"
+                        data-editable-id="faq-hero-title"
+                        data-editable-label="Titre Principal"
                         className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6"
                         style={{ fontFamily: `"${global.headingFont}", serif`, textTransform: typography.headingTransform === "none" ? undefined : typography.headingTransform }}
                     >
                         {content.title}
                     </h1>
-                    <p className="text-lg opacity-70">{content.subtitle}</p>
+                    <p data-editable="paragraph" data-editable-id="faq-hero-subtitle" data-editable-label="Sous-titre" className="text-lg opacity-70">{content.subtitle}</p>
                 </div>
             </section>
 
             {/* FAQ Accordion */}
-            <section className={`${sectionPaddingClass} px-6`} style={{ backgroundColor: `${colors.text}05` }}>
+            <section data-editable="container" data-editable-id="faq-accordion-section" data-editable-label="Section Questions" className={`${sectionPaddingClass} px-6`} style={{ backgroundColor: `${colors.text}05` }}>
                 <div className="max-w-3xl mx-auto">
                     <div className="space-y-4">
-                        {content.items.map((item) => (
+                        {content.items.map((item, index) => (
                             <div
                                 key={item.id}
+                                data-editable="container"
+                                data-editable-id={`faq-item-${index}`}
+                                data-editable-label={`Question ${index + 1}`}
                                 className="rounded-xl overflow-hidden transition-all"
                                 style={{ backgroundColor: colors.background, boxShadow: `0 2px 10px ${colors.text}08` }}
                             >
@@ -109,7 +116,7 @@ export function FAQPage({ config, storeName, pages = [] }: FAQPageProps) {
                                     onClick={() => toggleItem(item.id)}
                                     className="w-full flex items-center justify-between p-5 text-left hover:opacity-80 transition-opacity"
                                 >
-                                    <span className="font-medium pr-4">{item.question}</span>
+                                    <span data-editable="title" data-editable-id={`faq-question-${index}`} data-editable-label={`Question ${index + 1}`} className="font-medium pr-4">{item.question}</span>
                                     <ChevronDown
                                         className={`w-5 h-5 flex-shrink-0 transition-transform duration-300 ${openItems.has(item.id) ? "rotate-180" : ""}`}
                                         style={{ color: colors.primary }}
@@ -120,7 +127,7 @@ export function FAQPage({ config, storeName, pages = [] }: FAQPageProps) {
                                 >
                                     <div className="px-5 pb-5 pt-0">
                                         <div className="pt-4 border-t" style={{ borderColor: `${colors.text}10` }}>
-                                            <p className="opacity-70 leading-relaxed whitespace-pre-line">{item.answer}</p>
+                                            <p data-editable="paragraph" data-editable-id={`faq-answer-${index}`} data-editable-label={`Réponse ${index + 1}`} className="opacity-70 leading-relaxed whitespace-pre-line">{item.answer}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -137,14 +144,17 @@ export function FAQPage({ config, storeName, pages = [] }: FAQPageProps) {
             </section>
 
             {/* CTA Section */}
-            <section className={`${sectionPaddingClass} px-6 text-center`}>
+            <section data-editable="container" data-editable-id="faq-cta-section" data-editable-label="Section Contact" className={`${sectionPaddingClass} px-6 text-center`}>
                 <div className="max-w-xl mx-auto">
-                    <h2 className="text-2xl font-bold mb-4" style={{ fontFamily: `"${global.headingFont}", serif` }}>
+                    <h2 data-editable="title" data-editable-id="faq-cta-title" data-editable-label="Titre CTA" className="text-2xl font-bold mb-4" style={{ fontFamily: `"${global.headingFont}", serif` }}>
                         Vous n'avez pas trouvé votre réponse ?
                     </h2>
-                    <p className="opacity-70 mb-6">N'hésitez pas à nous contacter directement</p>
+                    <p data-editable="paragraph" data-editable-id="faq-cta-text" data-editable-label="Texte CTA" className="opacity-70 mb-6">N'hésitez pas à nous contacter directement</p>
                     <Link
                         href={`/${storeName}/contact`}
+                        data-editable="button"
+                        data-editable-id="faq-cta-button"
+                        data-editable-label="Bouton Contact"
                         className="inline-block py-3 px-8 rounded-lg font-medium transition-all hover:opacity-90"
                         style={{
                             backgroundColor: global.buttons.backgroundColor,
@@ -158,9 +168,9 @@ export function FAQPage({ config, storeName, pages = [] }: FAQPageProps) {
             </section>
 
             {/* Footer */}
-            <footer className="py-8 px-6 border-t" style={{ borderColor: `${colors.text}10` }}>
+            <footer data-editable="container" data-editable-id="faq-footer" data-editable-label="Footer FAQ" className="py-8 px-6 border-t" style={{ borderColor: `${colors.text}10` }}>
                 <div className="max-w-5xl mx-auto text-center">
-                    <Link href={`/${storeName}`} className="text-sm opacity-60 hover:opacity-100 transition-opacity">
+                    <Link href={`/${storeName}`} data-editable="button" data-editable-id="faq-footer-link" data-editable-label="Lien Retour" className="text-sm opacity-60 hover:opacity-100 transition-opacity">
                         ← Retour à la boutique
                     </Link>
                 </div>

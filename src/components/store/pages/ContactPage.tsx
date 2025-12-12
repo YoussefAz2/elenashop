@@ -32,11 +32,7 @@ export function ContactPage({ config, storeName, sellerId, pages = [] }: Contact
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
-
-        // TODO: Implement actual form submission (save to leads table or send email)
-        // For now, simulate a delay
         await new Promise((resolve) => setTimeout(resolve, 1000));
-
         setSubmitted(true);
         setIsSubmitting(false);
     };
@@ -59,24 +55,25 @@ export function ContactPage({ config, storeName, sellerId, pages = [] }: Contact
         >
             {/* Header */}
             <header
+                data-editable="container"
+                data-editable-id="contact-header"
+                data-editable-label="Header Contact"
                 className="sticky top-0 z-50 py-4 px-6 border-b backdrop-blur-md"
                 style={{ backgroundColor: `${colors.background}ee`, borderColor: `${colors.text}15` }}
             >
                 <div className="max-w-5xl mx-auto flex items-center justify-between">
                     <Link href={`/${storeName}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-                        <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: `${colors.primary}15` }}>
+                        <div data-editable="icon" data-editable-id="contact-header-logo" data-editable-label="Logo Header" className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: `${colors.primary}15` }}>
                             <Store className="w-4 h-4" style={{ color: colors.primary }} />
                         </div>
-                        <span className="font-medium" style={{ color: colors.text }}>{storeName}</span>
+                        <span data-editable="title" data-editable-id="contact-header-store-name" data-editable-label="Nom Boutique" className="font-medium" style={{ color: colors.text }}>{storeName}</span>
                     </Link>
 
-                    {pages.length > 0 && (
-                        <nav className="hidden md:flex items-center gap-6">
-                            {pages.map((page) => (
-                                <Link key={page.id} href={`/${storeName}/${page.slug}`} className="text-sm hover:opacity-70 transition-opacity" style={{ color: colors.text }}>{page.title}</Link>
-                            ))}
-                        </nav>
-                    )}
+                    <nav className="hidden md:flex items-center gap-6">
+                        {pages.map((page) => (
+                            <Link key={page.id} href={`/${storeName}/${page.slug}`} data-editable="button" data-editable-id={`contact-nav-${page.slug}`} data-editable-label={`Lien ${page.title}`} className="text-sm hover:opacity-70 transition-opacity" style={{ color: colors.text }}>{page.title}</Link>
+                        ))}
+                    </nav>
 
                     {pages.length > 0 && (
                         <button className="md:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} style={{ color: colors.text }}>
@@ -97,72 +94,75 @@ export function ContactPage({ config, storeName, sellerId, pages = [] }: Contact
             </header>
 
             {/* Hero Section */}
-            <section className={`${sectionPaddingClass} px-6`}>
+            <section data-editable="container" data-editable-id="contact-hero" data-editable-label="Hero Contact" className={`${sectionPaddingClass} px-6`}>
                 <div className="max-w-3xl mx-auto text-center">
                     <h1
+                        data-editable="title"
+                        data-editable-id="contact-hero-title"
+                        data-editable-label="Titre Principal"
                         className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6"
                         style={{ fontFamily: `"${global.headingFont}", serif`, textTransform: typography.headingTransform === "none" ? undefined : typography.headingTransform }}
                     >
                         {content.title}
                     </h1>
-                    <p className="text-lg opacity-70">{content.subtitle}</p>
+                    <p data-editable="paragraph" data-editable-id="contact-hero-subtitle" data-editable-label="Sous-titre" className="text-lg opacity-70">{content.subtitle}</p>
                 </div>
             </section>
 
             {/* Contact Info + Form Grid */}
-            <section className={`${sectionPaddingClass} px-6`} style={{ backgroundColor: `${colors.text}05` }}>
+            <section data-editable="container" data-editable-id="contact-main-section" data-editable-label="Section Principale" className={`${sectionPaddingClass} px-6`} style={{ backgroundColor: `${colors.text}05` }}>
                 <div className="max-w-5xl mx-auto">
                     <div className="grid md:grid-cols-2 gap-12">
                         {/* Contact Info */}
                         <div className="space-y-6">
-                            <h2 className="text-2xl font-bold mb-8" style={{ fontFamily: `"${global.headingFont}", serif` }}>
+                            <h2 data-editable="title" data-editable-id="contact-info-title" data-editable-label="Titre Coordonnées" className="text-2xl font-bold mb-8" style={{ fontFamily: `"${global.headingFont}", serif` }}>
                                 Nos coordonnées
                             </h2>
 
                             {content.email && (
-                                <a href={`mailto:${content.email}`} className="flex items-center gap-4 p-4 rounded-lg hover:opacity-80 transition-opacity" style={{ backgroundColor: `${colors.primary}08` }}>
-                                    <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ backgroundColor: `${colors.primary}15`, color: colors.primary }}>
+                                <a href={`mailto:${content.email}`} data-editable="container" data-editable-id="contact-email-card" data-editable-label="Carte Email" className="flex items-center gap-4 p-4 rounded-lg hover:opacity-80 transition-opacity" style={{ backgroundColor: `${colors.primary}08` }}>
+                                    <div data-editable="icon" data-editable-id="contact-email-icon" data-editable-label="Icône Email" className="w-12 h-12 rounded-full flex items-center justify-center" style={{ backgroundColor: `${colors.primary}15`, color: colors.primary }}>
                                         <Mail className="w-5 h-5" />
                                     </div>
                                     <div>
                                         <p className="text-sm opacity-60">Email</p>
-                                        <p className="font-medium">{content.email}</p>
+                                        <p data-editable="paragraph" data-editable-id="contact-email-text" data-editable-label="Email" className="font-medium">{content.email}</p>
                                     </div>
                                 </a>
                             )}
 
                             {content.phone && (
-                                <a href={`tel:${content.phone}`} className="flex items-center gap-4 p-4 rounded-lg hover:opacity-80 transition-opacity" style={{ backgroundColor: `${colors.primary}08` }}>
-                                    <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ backgroundColor: `${colors.primary}15`, color: colors.primary }}>
+                                <a href={`tel:${content.phone}`} data-editable="container" data-editable-id="contact-phone-card" data-editable-label="Carte Téléphone" className="flex items-center gap-4 p-4 rounded-lg hover:opacity-80 transition-opacity" style={{ backgroundColor: `${colors.primary}08` }}>
+                                    <div data-editable="icon" data-editable-id="contact-phone-icon" data-editable-label="Icône Téléphone" className="w-12 h-12 rounded-full flex items-center justify-center" style={{ backgroundColor: `${colors.primary}15`, color: colors.primary }}>
                                         <Phone className="w-5 h-5" />
                                     </div>
                                     <div>
                                         <p className="text-sm opacity-60">Téléphone</p>
-                                        <p className="font-medium">{content.phone}</p>
+                                        <p data-editable="paragraph" data-editable-id="contact-phone-text" data-editable-label="Téléphone" className="font-medium">{content.phone}</p>
                                     </div>
                                 </a>
                             )}
 
                             {content.whatsapp && (
-                                <button onClick={openWhatsApp} className="w-full flex items-center gap-4 p-4 rounded-lg hover:opacity-80 transition-opacity text-left" style={{ backgroundColor: "#25D36608" }}>
-                                    <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ backgroundColor: "#25D36620", color: "#25D366" }}>
+                                <button onClick={openWhatsApp} data-editable="container" data-editable-id="contact-whatsapp-card" data-editable-label="Carte WhatsApp" className="w-full flex items-center gap-4 p-4 rounded-lg hover:opacity-80 transition-opacity text-left" style={{ backgroundColor: "#25D36608" }}>
+                                    <div data-editable="icon" data-editable-id="contact-whatsapp-icon" data-editable-label="Icône WhatsApp" className="w-12 h-12 rounded-full flex items-center justify-center" style={{ backgroundColor: "#25D36620", color: "#25D366" }}>
                                         <MessageCircle className="w-5 h-5" />
                                     </div>
                                     <div>
                                         <p className="text-sm opacity-60">WhatsApp</p>
-                                        <p className="font-medium">{content.whatsapp}</p>
+                                        <p data-editable="paragraph" data-editable-id="contact-whatsapp-text" data-editable-label="WhatsApp" className="font-medium">{content.whatsapp}</p>
                                     </div>
                                 </button>
                             )}
 
                             {content.address && (
-                                <div className="flex items-start gap-4 p-4 rounded-lg" style={{ backgroundColor: `${colors.primary}08` }}>
-                                    <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${colors.primary}15`, color: colors.primary }}>
+                                <div data-editable="container" data-editable-id="contact-address-card" data-editable-label="Carte Adresse" className="flex items-start gap-4 p-4 rounded-lg" style={{ backgroundColor: `${colors.primary}08` }}>
+                                    <div data-editable="icon" data-editable-id="contact-address-icon" data-editable-label="Icône Adresse" className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${colors.primary}15`, color: colors.primary }}>
                                         <MapPin className="w-5 h-5" />
                                     </div>
                                     <div>
                                         <p className="text-sm opacity-60">Adresse</p>
-                                        <p className="font-medium whitespace-pre-line">{content.address}</p>
+                                        <p data-editable="paragraph" data-editable-id="contact-address-text" data-editable-label="Adresse" className="font-medium whitespace-pre-line">{content.address}</p>
                                     </div>
                                 </div>
                             )}
@@ -170,8 +170,8 @@ export function ContactPage({ config, storeName, sellerId, pages = [] }: Contact
 
                         {/* Contact Form */}
                         {content.formEnabled && (
-                            <div className="p-6 md:p-8 rounded-xl" style={{ backgroundColor: colors.background, boxShadow: `0 4px 20px ${colors.text}10` }}>
-                                <h2 className="text-xl font-bold mb-6" style={{ fontFamily: `"${global.headingFont}", serif` }}>
+                            <div data-editable="container" data-editable-id="contact-form-container" data-editable-label="Formulaire Contact" className="p-6 md:p-8 rounded-xl" style={{ backgroundColor: colors.background, boxShadow: `0 4px 20px ${colors.text}10` }}>
+                                <h2 data-editable="title" data-editable-id="contact-form-title" data-editable-label="Titre Formulaire" className="text-xl font-bold mb-6" style={{ fontFamily: `"${global.headingFont}", serif` }}>
                                     {content.formTitle}
                                 </h2>
 
@@ -235,6 +235,9 @@ export function ContactPage({ config, storeName, sellerId, pages = [] }: Contact
                                         <button
                                             type="submit"
                                             disabled={isSubmitting}
+                                            data-editable="button"
+                                            data-editable-id="contact-submit-button"
+                                            data-editable-label="Bouton Envoyer"
                                             className="w-full py-3 px-6 rounded-lg font-medium transition-all flex items-center justify-center gap-2"
                                             style={{
                                                 backgroundColor: buttons.backgroundColor,
@@ -254,7 +257,7 @@ export function ContactPage({ config, storeName, sellerId, pages = [] }: Contact
 
             {/* Map Section */}
             {content.showMap && content.mapUrl && (
-                <section className="h-80 relative">
+                <section data-editable="container" data-editable-id="contact-map-section" data-editable-label="Section Carte" className="h-80 relative">
                     <iframe
                         src={content.mapUrl}
                         width="100%"
@@ -268,9 +271,9 @@ export function ContactPage({ config, storeName, sellerId, pages = [] }: Contact
             )}
 
             {/* Footer */}
-            <footer className="py-8 px-6 border-t" style={{ borderColor: `${colors.text}10` }}>
+            <footer data-editable="container" data-editable-id="contact-footer" data-editable-label="Footer Contact" className="py-8 px-6 border-t" style={{ borderColor: `${colors.text}10` }}>
                 <div className="max-w-5xl mx-auto text-center">
-                    <Link href={`/${storeName}`} className="text-sm opacity-60 hover:opacity-100 transition-opacity">
+                    <Link href={`/${storeName}`} data-editable="button" data-editable-id="contact-footer-link" data-editable-label="Lien Retour" className="text-sm opacity-60 hover:opacity-100 transition-opacity">
                         ← Retour à la boutique
                     </Link>
                 </div>
