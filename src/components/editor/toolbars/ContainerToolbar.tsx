@@ -85,6 +85,28 @@ export function ContainerToolbar({
                 </div>
             </div>
 
+            {/* Text Color */}
+            <div className="space-y-2">
+                <Label className="flex items-center gap-2 text-xs">
+                    🎨 Couleur du texte
+                </Label>
+                <div className="flex gap-2">
+                    <input
+                        type="color"
+                        value={styles.color || "#18181b"}
+                        onChange={(e) => updateStyle("color", e.target.value)}
+                        className="w-10 h-10 rounded-lg cursor-pointer border-2 border-slate-200"
+                    />
+                    <input
+                        type="text"
+                        value={styles.color || ""}
+                        onChange={(e) => updateStyle("color", e.target.value)}
+                        placeholder="#18181b"
+                        className="flex-1 border rounded-lg px-3 text-sm"
+                    />
+                </div>
+            </div>
+
             {/* Padding */}
             <div className="space-y-2">
                 <Label className="text-xs">📏 Espacement interne</Label>

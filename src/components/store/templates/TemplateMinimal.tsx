@@ -403,7 +403,7 @@ export function TemplateMinimal({
             {(spacing.showSectionDividers || editor?.isEditing || config.elementOverrides?.["divider-testimonials"]) && about.visible && <div data-editable="divider" data-editable-id="divider-testimonials" data-editable-label="Séparateur Témoignages" className="h-px" style={{ backgroundColor: `${global.colors.text}15` }} />}
 
             {/* About Section */}
-            {(about.visible || editor?.isEditing) && (
+            {about.visible && (
                 <section data-editable="container" data-editable-id="about-section" data-editable-label="Section À Propos" className={`${sectionPaddingClass} px-4`} style={{ backgroundColor: `${global.colors.text}05` }}>
                     <div className="mx-auto max-w-6xl">
                         <div className={`grid md:grid-cols-2 gap-12 items-center`}>
