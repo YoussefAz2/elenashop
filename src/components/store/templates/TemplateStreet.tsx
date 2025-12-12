@@ -76,16 +76,16 @@ export function TemplateStreet({ config, products, categories = [], sellerId, st
                             {/* Navigation - Desktop */}
                             <nav className="hidden md:flex items-center gap-6">
                                 {pages.map((page) => (
-                                    <Link key={page.id} href={`/${storeName}/${page.slug}`} className="text-sm font-bold uppercase hover:opacity-70 transition-opacity px-3 py-1" style={{ backgroundColor: `${global.colors.primary}30`, color: global.colors.text }}>{page.title}</Link>
+                                    <Link key={page.id} href={`/${storeName}/${page.slug}`} data-editable="button" data-editable-id={`nav-link-${page.slug}`} data-editable-label={`Lien ${page.title}`} className="text-sm font-bold uppercase hover:opacity-70 transition-opacity px-3 py-1" style={{ backgroundColor: `${global.colors.primary}30`, color: global.colors.text }}>{page.title}</Link>
                                 ))}
                                 {config.aboutPageContent?.visible && (
-                                    <Link href={`/${storeName}/a-propos`} className="text-sm font-bold uppercase hover:opacity-70 transition-opacity px-3 py-1" style={{ backgroundColor: `${global.colors.primary}30`, color: global.colors.text }}>À propos</Link>
+                                    <Link href={`/${storeName}/a-propos`} data-editable="button" data-editable-id="nav-link-about" data-editable-label="Lien À propos" className="text-sm font-bold uppercase hover:opacity-70 transition-opacity px-3 py-1" style={{ backgroundColor: `${global.colors.primary}30`, color: global.colors.text }}>À propos</Link>
                                 )}
                                 {config.contactPageContent?.visible && (
-                                    <Link href={`/${storeName}/contact`} className="text-sm font-bold uppercase hover:opacity-70 transition-opacity px-3 py-1" style={{ backgroundColor: `${global.colors.primary}30`, color: global.colors.text }}>Contact</Link>
+                                    <Link href={`/${storeName}/contact`} data-editable="button" data-editable-id="nav-link-contact" data-editable-label="Lien Contact" className="text-sm font-bold uppercase hover:opacity-70 transition-opacity px-3 py-1" style={{ backgroundColor: `${global.colors.primary}30`, color: global.colors.text }}>Contact</Link>
                                 )}
                                 {config.faqPageContent?.visible && (
-                                    <Link href={`/${storeName}/faq`} className="text-sm font-bold uppercase hover:opacity-70 transition-opacity px-3 py-1" style={{ backgroundColor: `${global.colors.primary}30`, color: global.colors.text }}>FAQ</Link>
+                                    <Link href={`/${storeName}/faq`} data-editable="button" data-editable-id="nav-link-faq" data-editable-label="Lien FAQ" className="text-sm font-bold uppercase hover:opacity-70 transition-opacity px-3 py-1" style={{ backgroundColor: `${global.colors.primary}30`, color: global.colors.text }}>FAQ</Link>
                                 )}
                             </nav>
 

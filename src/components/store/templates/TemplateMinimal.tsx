@@ -155,6 +155,9 @@ export function TemplateMinimal({
                                     <Link
                                         key={page.id}
                                         href={`/${storeName}/${page.slug}`}
+                                        data-editable="button"
+                                        data-editable-id={`nav-link-${page.slug}`}
+                                        data-editable-label={`Lien ${page.title}`}
                                         className="text-sm hover:opacity-70 transition-opacity"
                                         style={{ color: global.colors.text }}
                                     >
@@ -163,17 +166,17 @@ export function TemplateMinimal({
                                 ))}
                                 {/* Built-in pages */}
                                 {config.aboutPageContent?.visible && (
-                                    <Link href={`/${storeName}/a-propos`} className="text-sm hover:opacity-70 transition-opacity" style={{ color: global.colors.text }}>
+                                    <Link href={`/${storeName}/a-propos`} data-editable="button" data-editable-id="nav-link-about" data-editable-label="Lien À propos" className="text-sm hover:opacity-70 transition-opacity" style={{ color: global.colors.text }}>
                                         À propos
                                     </Link>
                                 )}
                                 {config.contactPageContent?.visible && (
-                                    <Link href={`/${storeName}/contact`} className="text-sm hover:opacity-70 transition-opacity" style={{ color: global.colors.text }}>
+                                    <Link href={`/${storeName}/contact`} data-editable="button" data-editable-id="nav-link-contact" data-editable-label="Lien Contact" className="text-sm hover:opacity-70 transition-opacity" style={{ color: global.colors.text }}>
                                         Contact
                                     </Link>
                                 )}
                                 {config.faqPageContent?.visible && (
-                                    <Link href={`/${storeName}/faq`} className="text-sm hover:opacity-70 transition-opacity" style={{ color: global.colors.text }}>
+                                    <Link href={`/${storeName}/faq`} data-editable="button" data-editable-id="nav-link-faq" data-editable-label="Lien FAQ" className="text-sm hover:opacity-70 transition-opacity" style={{ color: global.colors.text }}>
                                         FAQ
                                     </Link>
                                 )}
