@@ -526,7 +526,7 @@ export function EditorClient({
                     {/* Panel Content */}
                     <div className="flex-1 overflow-y-auto h-[calc(85vh-110px)]">
                         {activeTab === "design" && (
-                            <DesignPanel config={config} onUpdateConfig={setConfig} />
+                            <DesignPanel config={config} onUpdateConfig={setConfig} advancedMode={advancedMode} onAdvancedModeChange={setAdvancedMode} />
                         )}
                         {activeTab === "content" && (
                             <ContentPanel config={config} onUpdateConfig={setConfig} />
