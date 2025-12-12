@@ -29,6 +29,11 @@ import type {
     FooterContent,
     HeaderContent,
     AnnouncementContent,
+    AboutPageContent,
+    ContactPageContent,
+    FAQPageContent,
+    FloatingWhatsAppConfig,
+    SEOConfig,
 } from "@/types";
 import { SectionId, SECTIONS } from "./SidebarSectionList";
 
@@ -147,6 +152,44 @@ export function SidebarSectionEditor({
                 ...config.homeContent,
                 footer: { ...config.homeContent.footer, ...updates },
             },
+        });
+    };
+
+    // Page content updaters
+    const updateAboutPage = (updates: Partial<AboutPageContent>) => {
+        onUpdateConfig({
+            ...config,
+            aboutPageContent: { ...config.aboutPageContent, ...updates },
+        });
+    };
+
+    const updateContactPage = (updates: Partial<ContactPageContent>) => {
+        onUpdateConfig({
+            ...config,
+            contactPageContent: { ...config.contactPageContent, ...updates },
+        });
+    };
+
+    const updateFAQPage = (updates: Partial<FAQPageContent>) => {
+        onUpdateConfig({
+            ...config,
+            faqPageContent: { ...config.faqPageContent, ...updates },
+        });
+    };
+
+    // Marketing updaters
+    const updateFloatingWhatsApp = (updates: Partial<FloatingWhatsAppConfig>) => {
+        onUpdateConfig({
+            ...config,
+            floatingWhatsApp: { ...config.floatingWhatsApp, ...updates },
+        });
+    };
+
+    // SEO updater
+    const updateSEO = (updates: Partial<SEOConfig>) => {
+        onUpdateConfig({
+            ...config,
+            seo: { ...config.seo, ...updates },
         });
     };
 
@@ -489,11 +532,274 @@ export function SidebarSectionEditor({
                     </Tabs>
                 )}
 
-                {/* ======================== PLACEHOLDER FOR OTHER SECTIONS ======================== */}
-                {!["header", "announcement", "hero", "products", "testimonials", "footer"].includes(activeSection) && (
+                {/* ======================== ABOUT PAGE ======================== */}
+                {activeSection === "about-page" && (
+                    <Tabs defaultValue="content" className="flex-1">
+                        <TabsList className="grid w-full grid-cols-2 mb-4">
+                            <TabsTrigger value="content" className="text-xs">✏️ Contenu</TabsTrigger>
+                            <TabsTrigger value="settings" className="text-xs">⚙️ Réglages</TabsTrigger>
+                        </TabsList>
+
+                        <TabsContent value="content" className="space-y-4 mt-0">
+                            <div className="space-y-2">
+                                <Label className="text-sm">Titre de la page</Label>
+                                <Input
+                                    value={config.aboutPageContent.title}
+                                    onChange={(e) => updateAboutPage({ title: e.target.value })}
+                                    placeholder="Notre Histoire"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-sm">Sous-titre</Label>
+                                <Input
+                                    value={config.aboutPageContent.subtitle}
+                                    onChange={(e) => updateAboutPage({ subtitle: e.target.value })}
+                                    placeholder="Découvrez qui nous sommes"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-sm">Texte de présentation</Label>
+                                <Textarea
+                                    value={config.aboutPageContent.story?.text || ""}
+                                    onChange={(e) => updateAboutPage({ story: { ...config.aboutPageContent.story, text: e.target.value } })}
+                                    placeholder="Racontez votre histoire..."
+                                    className="min-h-[120px] resize-none"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-sm">Image</Label>
+                                <ImageUpload
+                                    value={config.aboutPageContent.story?.imageUrl || ""}
+                                    onChange={(url) => updateAboutPage({ story: { ...config.aboutPageContent.story, imageUrl: url } })}
+                                    folder="about"
+                                />
+                            </div>
+                        </TabsContent>
+
+                        <TabsContent value="settings" className="space-y-4 mt-0">
+                            <div className="flex items-center justify-between">
+                                <Label className="text-sm">Afficher la page</Label>
+                                <Switch
+                                    checked={config.aboutPageContent.visible}
+                                    onCheckedChange={(v) => updateAboutPage({ visible: v })}
+                                />
+                            </div>
+                        </TabsContent>
+                    </Tabs>
+                )}
+
+                {/* ======================== CONTACT PAGE ======================== */}
+                {activeSection === "contact-page" && (
+                    <Tabs defaultValue="content" className="flex-1">
+                        <TabsList className="grid w-full grid-cols-2 mb-4">
+                            <TabsTrigger value="content" className="text-xs">✏️ Contenu</TabsTrigger>
+                            <TabsTrigger value="settings" className="text-xs">⚙️ Réglages</TabsTrigger>
+                        </TabsList>
+
+                        <TabsContent value="content" className="space-y-4 mt-0">
+                            <div className="space-y-2">
+                                <Label className="text-sm">Titre</Label>
+                                <Input
+                                    value={config.contactPageContent.title}
+                                    onChange={(e) => updateContactPage({ title: e.target.value })}
+                                    placeholder="Contactez-nous"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-sm">Email</Label>
+                                <Input
+                                    type="email"
+                                    value={config.contactPageContent.email}
+                                    onChange={(e) => updateContactPage({ email: e.target.value })}
+                                    placeholder="contact@boutique.tn"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-sm">Téléphone</Label>
+                                <Input
+                                    value={config.contactPageContent.phone}
+                                    onChange={(e) => updateContactPage({ phone: e.target.value })}
+                                    placeholder="+216 XX XXX XXX"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-sm">WhatsApp</Label>
+                                <Input
+                                    value={config.contactPageContent.whatsapp}
+                                    onChange={(e) => updateContactPage({ whatsapp: e.target.value })}
+                                    placeholder="+216 XX XXX XXX"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-sm">Adresse</Label>
+                                <Textarea
+                                    value={config.contactPageContent.address}
+                                    onChange={(e) => updateContactPage({ address: e.target.value })}
+                                    placeholder="123 Rue Example, Tunis"
+                                    className="min-h-[60px] resize-none"
+                                />
+                            </div>
+                        </TabsContent>
+
+                        <TabsContent value="settings" className="space-y-4 mt-0">
+                            <div className="flex items-center justify-between">
+                                <Label className="text-sm">Afficher la page</Label>
+                                <Switch
+                                    checked={config.contactPageContent.visible}
+                                    onCheckedChange={(v) => updateContactPage({ visible: v })}
+                                />
+                            </div>
+                            <div className="flex items-center justify-between">
+                                <Label className="text-sm">Formulaire de contact</Label>
+                                <Switch
+                                    checked={config.contactPageContent.formEnabled}
+                                    onCheckedChange={(v) => updateContactPage({ formEnabled: v })}
+                                />
+                            </div>
+                            <div className="flex items-center justify-between">
+                                <Label className="text-sm">Afficher la carte</Label>
+                                <Switch
+                                    checked={config.contactPageContent.showMap}
+                                    onCheckedChange={(v) => updateContactPage({ showMap: v })}
+                                />
+                            </div>
+                        </TabsContent>
+                    </Tabs>
+                )}
+
+                {/* ======================== FAQ PAGE ======================== */}
+                {activeSection === "faq-page" && (
+                    <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                            <Label className="text-sm">Afficher la page FAQ</Label>
+                            <Switch
+                                checked={config.faqPageContent.visible}
+                                onCheckedChange={(v) => updateFAQPage({ visible: v })}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-sm">Titre</Label>
+                            <Input
+                                value={config.faqPageContent.title}
+                                onChange={(e) => updateFAQPage({ title: e.target.value })}
+                                placeholder="Questions Fréquentes"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-sm">Sous-titre</Label>
+                            <Input
+                                value={config.faqPageContent.subtitle}
+                                onChange={(e) => updateFAQPage({ subtitle: e.target.value })}
+                                placeholder="Trouvez les réponses à vos questions"
+                            />
+                        </div>
+                        <p className="text-xs text-slate-400">
+                            💡 Les questions/réponses peuvent être gérées depuis un panneau dédié.
+                        </p>
+                    </div>
+                )}
+
+                {/* ======================== WHATSAPP (Marketing) ======================== */}
+                {activeSection === "whatsapp" && (
+                    <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                            <Label className="text-sm">Activer le bouton WhatsApp</Label>
+                            <Switch
+                                checked={config.floatingWhatsApp.enabled}
+                                onCheckedChange={(v) => updateFloatingWhatsApp({ enabled: v })}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-sm">Numéro WhatsApp</Label>
+                            <Input
+                                value={config.floatingWhatsApp.phoneNumber}
+                                onChange={(e) => updateFloatingWhatsApp({ phoneNumber: e.target.value })}
+                                placeholder="+216 XX XXX XXX"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-sm">Message pré-rempli</Label>
+                            <Textarea
+                                value={config.floatingWhatsApp.message}
+                                onChange={(e) => updateFloatingWhatsApp({ message: e.target.value })}
+                                placeholder="Bonjour ! J'ai une question..."
+                                className="min-h-[80px] resize-none"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-sm">Position du bouton</Label>
+                            <Select
+                                value={config.floatingWhatsApp.position}
+                                onValueChange={(v) => updateFloatingWhatsApp({ position: v as "left" | "right" })}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="left">← Gauche</SelectItem>
+                                    <SelectItem value="right">Droite →</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </div>
+                )}
+
+                {/* ======================== SEO ======================== */}
+                {activeSection === "seo" && (
+                    <div className="space-y-4">
+                        <div className="space-y-2">
+                            <Label className="text-sm">Méta Titre</Label>
+                            <Input
+                                value={config.seo?.title || ""}
+                                onChange={(e) => updateSEO({ title: e.target.value })}
+                                placeholder="Ma Boutique - Vente en ligne"
+                            />
+                            <p className="text-xs text-slate-400">Apparaît dans l'onglet du navigateur</p>
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-sm">Méta Description</Label>
+                            <Textarea
+                                value={config.seo?.description || ""}
+                                onChange={(e) => updateSEO({ description: e.target.value })}
+                                placeholder="Découvrez notre collection de produits..."
+                                className="min-h-[80px] resize-none"
+                            />
+                            <p className="text-xs text-slate-400">Apparaît dans les résultats Google</p>
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-sm">Mots-clés</Label>
+                            <Input
+                                value={config.seo?.keywords || ""}
+                                onChange={(e) => updateSEO({ keywords: e.target.value })}
+                                placeholder="boutique, tunisie, vêtements"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-sm">Image de partage (OG Image)</Label>
+                            <ImageUpload
+                                value={config.seo?.ogImage || ""}
+                                onChange={(url) => updateSEO({ ogImage: url })}
+                                folder="seo"
+                            />
+                            <p className="text-xs text-slate-400">Image affichée lors du partage sur les réseaux sociaux</p>
+                        </div>
+                    </div>
+                )}
+
+                {/* ======================== PROMOS (placeholder) ======================== */}
+                {activeSection === "promos" && (
                     <div className="flex-1 flex items-center justify-center py-12">
                         <p className="text-sm text-slate-400 text-center">
-                            Éditeur pour "{currentSection?.label}" à venir...
+                            Les promotions sont gérées depuis le tableau de bord Promos.
+                        </p>
+                    </div>
+                )}
+
+                {/* ======================== ABOUT SECTION (home) ======================== */}
+                {activeSection === "about" && (
+                    <div className="flex-1 flex items-center justify-center py-12">
+                        <p className="text-sm text-slate-400 text-center">
+                            Section "À propos" de l'accueil - à implémenter.
                         </p>
                     </div>
                 )}
