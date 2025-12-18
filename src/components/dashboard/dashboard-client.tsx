@@ -9,7 +9,6 @@ import {
     ShoppingBag,
     Package,
     Settings,
-    Store,
     TrendingUp,
     Calendar,
     ChevronRight,
@@ -19,8 +18,12 @@ import {
     Gift,
     BarChart3,
     LogOut,
+    ChevronDown,
+    Store,
+    Check,
+    Plus,
 } from "lucide-react";
-import type { Profile, Order } from "@/types";
+import type { Order, Store as StoreType, StoreWithRole } from "@/types";
 import { OrderList } from "./orders";
 
 interface DashboardStats {
@@ -31,7 +34,9 @@ interface DashboardStats {
 }
 
 interface DashboardClientProps {
-    seller: Profile;
+    currentStore: StoreType;
+    currentRole: string;
+    stores: StoreWithRole[];
     orders: Order[];
     stats: DashboardStats;
 }
@@ -39,11 +44,13 @@ interface DashboardClientProps {
 type Tab = "orders" | "stats" | "products" | "categories" | "promos" | "leads" | "editor" | "settings";
 
 export function DashboardClient({
-    seller,
+    currentStore,
+    stores,
     orders,
     stats,
 }: DashboardClientProps) {
     const [activeTab, setActiveTab] = useState<Tab>("orders");
+    const [isStoreMenuOpen, setIsStoreMenuOpen] = useState(false);
     const router = useRouter();
     const supabase = createClient();
 
@@ -53,33 +60,100 @@ export function DashboardClient({
         router.refresh();
     };
 
+    const handleStoreChange = (storeId: string) => {
+        // Set cookie and refresh
+        document.cookie = `current_store_id=${storeId}; path=/; max-age=31536000`;
+        setIsStoreMenuOpen(false);
+        router.refresh();
+    };
+
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
             {/* Header */}
             <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur-md dark:border-slate-800 dark:bg-slate-900/80">
                 <div className="mx-auto flex h-16 max-w-4xl items-center justify-between px-4">
-                    <div className="flex items-center gap-3">
-                        {seller.avatar_url ? (
-                            <img
-                                src={seller.avatar_url}
-                                alt={seller.store_name}
-                                className="h-10 w-10 rounded-full object-cover"
-                            />
-                        ) : (
-                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/30">
+                    {/* Store Selector */}
+                    <div className="relative">
+                        <button
+                            onClick={() => setIsStoreMenuOpen(!isStoreMenuOpen)}
+                            className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-100 transition-colors"
+                        >
+                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-100 dark:bg-emerald-900/30">
                                 <Store className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
                             </div>
+                            <div className="text-left">
+                                <h1 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                                    {currentStore.name}
+                                </h1>
+                                <p className="text-xs text-slate-500">/{currentStore.slug}</p>
+                            </div>
+                            {stores.length > 1 && (
+                                <ChevronDown className={`h-4 w-4 text-slate-400 transition-transform ${isStoreMenuOpen ? "rotate-180" : ""}`} />
+                            )}
+                        </button>
+
+                        {/* Store Dropdown */}
+                        {isStoreMenuOpen && (
+                            <>
+                                <div
+                                    className="fixed inset-0 z-40"
+                                    onClick={() => setIsStoreMenuOpen(false)}
+                                />
+                                <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-xl shadow-xl border border-slate-200 z-50 overflow-hidden">
+                                    <div className="p-2">
+                                        <p className="text-xs font-medium text-slate-400 uppercase px-2 py-1.5">
+                                            Mes boutiques
+                                        </p>
+
+                                        {stores.map((store) => (
+                                            <button
+                                                key={store.id}
+                                                onClick={() => handleStoreChange(store.id)}
+                                                className={`w-full flex items-center gap-3 p-2.5 rounded-lg transition-colors ${store.id === currentStore.id
+                                                        ? "bg-emerald-50 text-emerald-700"
+                                                        : "hover:bg-slate-50 text-slate-700"
+                                                    }`}
+                                            >
+                                                <div className={`flex items-center justify-center h-8 w-8 rounded-lg ${store.id === currentStore.id
+                                                        ? "bg-emerald-100"
+                                                        : "bg-slate-100"
+                                                    }`}>
+                                                    <Store className="h-4 w-4" />
+                                                </div>
+                                                <div className="flex-1 text-left">
+                                                    <p className="text-sm font-medium">{store.name}</p>
+                                                    <p className="text-xs text-slate-500">/{store.slug}</p>
+                                                </div>
+                                                {store.id === currentStore.id && (
+                                                    <Check className="h-4 w-4 text-emerald-600" />
+                                                )}
+                                            </button>
+                                        ))}
+                                    </div>
+
+                                    {/* Create New Store */}
+                                    <div className="border-t border-slate-100 p-2">
+                                        <a
+                                            href="/onboarding"
+                                            className="flex items-center gap-3 p-2.5 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors"
+                                        >
+                                            <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-slate-100 border-2 border-dashed border-slate-300">
+                                                <Plus className="h-4 w-4" />
+                                            </div>
+                                            <span className="text-sm font-medium">
+                                                Nouvelle boutique
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </>
                         )}
-                        <div>
-                            <h1 className="text-base font-bold text-slate-900 dark:text-slate-100">
-                                {seller.store_name}
-                            </h1>
-                            <p className="text-xs text-slate-500">Dashboard</p>
-                        </div>
                     </div>
+
+                    {/* Right Actions */}
                     <div className="flex items-center gap-2">
                         <a
-                            href={`/${seller.store_name}`}
+                            href={`/${currentStore.slug}`}
                             className="text-sm text-emerald-600 hover:text-emerald-700 flex items-center gap-1"
                         >
                             Voir ma boutique
@@ -184,7 +258,7 @@ export function DashboardClient({
             {/* Content */}
             <div className="mx-auto max-w-4xl px-4 py-6">
                 {activeTab === "orders" && (
-                    <OrderList orders={orders} storeName={seller.store_name} />
+                    <OrderList orders={orders} storeName={currentStore.slug} />
                 )}
                 {activeTab === "stats" && (
                     <TabContent
