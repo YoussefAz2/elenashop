@@ -94,14 +94,14 @@ export function LoginForm() {
                 }
 
                 if (user) {
-                    // Check if user has completed onboarding
-                    const { data: profile } = await supabase
-                        .from("profiles")
-                        .select("store_name")
-                        .eq("id", user.id)
-                        .single();
+                    // Check if user has completed onboarding (has at least one store)
+                    const { data: storeMemberships } = await supabase
+                        .from("store_members")
+                        .select("store_id")
+                        .eq("user_id", user.id)
+                        .limit(1);
 
-                    const hasCompletedOnboarding = profile?.store_name && profile.store_name.trim() !== "";
+                    const hasCompletedOnboarding = storeMemberships && storeMemberships.length > 0;
 
                     // Redirect based on onboarding status
                     router.push(hasCompletedOnboarding ? "/dashboard" : "/onboarding");
