@@ -19,6 +19,7 @@ import {
     Sparkles,
 } from "lucide-react";
 import { TemplateCard } from "./TemplateCard";
+import { StoreBuildingAnimation } from "./StoreBuildingAnimation";
 import {
     STORE_CATEGORIES,
     VISUAL_STYLES,
@@ -204,70 +205,20 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
         }
     };
 
-    // Confetti celebration screen
+    // Store building animation screen
     if (showConfetti) {
-        return (
-            <div className="fixed inset-0 bg-gradient-to-br from-emerald-50 to-white flex flex-col items-center justify-center z-50">
-                <motion.div
-                    initial={{ scale: 0.5, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ type: "spring", duration: 0.5 }}
-                    className="text-center"
-                >
-                    <motion.div
-                        animate={{ rotate: [0, 10, -10, 0] }}
-                        transition={{ repeat: Infinity, duration: 2 }}
-                        className="inline-flex items-center justify-center h-28 w-28 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full mb-8 shadow-2xl shadow-emerald-600/30"
-                    >
-                        <PartyPopper className="h-14 w-14 text-white" />
-                    </motion.div>
-                    <h1 className="text-4xl font-bold text-slate-900 mb-3">
-                        🎉 C'est parti !
-                    </h1>
-                    <p className="text-xl text-slate-600 mb-2">
-                        Votre boutique <span className="font-bold text-emerald-600">{storeName}</span> est prête
-                    </p>
-                    <p className="text-slate-500 mb-6">
-                        Template {selectedTemplate} • Catégorie {STORE_CATEGORIES.find(c => c.id === category)?.label}
-                    </p>
-                    <div className="flex items-center justify-center gap-2 text-emerald-600">
-                        <Loader2 className="h-5 w-5 animate-spin" />
-                        <span className="font-medium">Lancement de l'éditeur...</span>
-                    </div>
-                </motion.div>
+        const categoryLabel = STORE_CATEGORIES.find(c => c.id === category)?.label || category;
 
-                {/* Confetti particles */}
-                <div className="fixed inset-0 pointer-events-none overflow-hidden">
-                    {[...Array(60)].map((_, i) => (
-                        <motion.div
-                            key={i}
-                            initial={{
-                                x: "50vw",
-                                y: "50vh",
-                                scale: 0,
-                            }}
-                            animate={{
-                                x: `${Math.random() * 100}vw`,
-                                y: `${Math.random() * 100}vh`,
-                                scale: 1,
-                                rotate: Math.random() * 720,
-                            }}
-                            transition={{
-                                duration: 1.5 + Math.random(),
-                                ease: "easeOut",
-                            }}
-                            className="absolute"
-                        >
-                            <div
-                                className="w-3 h-3 rounded-sm"
-                                style={{
-                                    backgroundColor: ["#10b981", "#f59e0b", "#ef4444", "#3b82f6", "#8b5cf6", "#ec4899"][Math.floor(Math.random() * 6)],
-                                }}
-                            />
-                        </motion.div>
-                    ))}
-                </div>
-            </div>
+        return (
+            <StoreBuildingAnimation
+                storeName={storeName}
+                templateId={selectedTemplate}
+                category={categoryLabel}
+                onComplete={() => {
+                    router.push("/dashboard?tab=editor");
+                    router.refresh();
+                }}
+            />
         );
     }
 
