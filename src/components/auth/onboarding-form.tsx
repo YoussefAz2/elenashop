@@ -3,43 +3,71 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { motion, AnimatePresence } from "framer-motion";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
     Store,
     Loader2,
-    Phone,
-    Sparkles,
     Check,
     X,
     ArrowRight,
+    ArrowLeft,
     PartyPopper,
-    ShoppingBag,
-    Palette,
-    Laptop,
-    Heart,
-    Shirt,
+    Sparkles,
 } from "lucide-react";
+import { TemplateCard } from "./TemplateCard";
+import {
+    STORE_CATEGORIES,
+    VISUAL_STYLES,
+    TEMPLATE_OPTIONS,
+    getRecommendedTemplate,
+    generatePreConfiguredTheme,
+    type StoreCategory,
+    type VisualStyle,
+} from "@/lib/onboarding-data";
+import type { TemplateId } from "@/types";
 
 interface OnboardingFormProps {
     userId: string;
     userEmail: string;
 }
 
-const STORE_CATEGORIES = [
-    { id: "mode", label: "Mode & Vêtements", icon: <Shirt className="h-5 w-5" /> },
-    { id: "beaute", label: "Beauté & Cosmétiques", icon: <Heart className="h-5 w-5" /> },
-    { id: "tech", label: "Tech & Électronique", icon: <Laptop className="h-5 w-5" /> },
-    { id: "maison", label: "Maison & Déco", icon: <Palette className="h-5 w-5" /> },
-    { id: "autre", label: "Autre", icon: <ShoppingBag className="h-5 w-5" /> },
+const STEPS = [
+    { id: 1, title: "Nom", emoji: "🏪" },
+    { id: 2, title: "Catégorie", emoji: "📦" },
+    { id: 3, title: "Style", emoji: "🎨" },
+    { id: 4, title: "Template", emoji: "✨" },
 ];
 
-export function OnboardingForm({ userId, userEmail }: OnboardingFormProps) {
+const slideVariants = {
+    enter: (direction: number) => ({
+        x: direction > 0 ? 300 : -300,
+        opacity: 0,
+    }),
+    center: {
+        x: 0,
+        opacity: 1,
+    },
+    exit: (direction: number) => ({
+        x: direction < 0 ? 300 : -300,
+        opacity: 0,
+    }),
+};
+
+export function OnboardingForm({ userId }: OnboardingFormProps) {
+    const [currentStep, setCurrentStep] = useState(1);
+    const [direction, setDirection] = useState(0);
+
+    // Form data
     const [storeName, setStoreName] = useState("");
-    const [phoneNumber, setPhoneNumber] = useState("");
-    const [category, setCategory] = useState("");
+    const [category, setCategory] = useState<StoreCategory | "">("");
+    const [style, setStyle] = useState<VisualStyle | "">("");
+    const [selectedTemplate, setSelectedTemplate] = useState<TemplateId | "">("");
+
+    // UI states
     const [isLoading, setIsLoading] = useState(false);
     const [isChecking, setIsChecking] = useState(false);
     const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
@@ -48,6 +76,18 @@ export function OnboardingForm({ userId, userEmail }: OnboardingFormProps) {
 
     const router = useRouter();
     const supabase = createClient();
+
+    // Get recommended template based on selections
+    const recommendedTemplate = category && style
+        ? getRecommendedTemplate(category as StoreCategory, style as VisualStyle)
+        : "minimal";
+
+    // Auto-select recommended template when entering step 4
+    useEffect(() => {
+        if (currentStep === 4 && !selectedTemplate && recommendedTemplate) {
+            setSelectedTemplate(recommendedTemplate);
+        }
+    }, [currentStep, selectedTemplate, recommendedTemplate]);
 
     // Debounced store name availability check
     const checkAvailability = useCallback(async (name: string) => {
@@ -66,14 +106,12 @@ export function OnboardingForm({ userId, userEmail }: OnboardingFormProps) {
 
             setIsAvailable(!data);
         } catch {
-            // No match found means available
             setIsAvailable(true);
         } finally {
             setIsChecking(false);
         }
     }, [supabase]);
 
-    // Check availability when store name changes
     useEffect(() => {
         const timeoutId = setTimeout(() => {
             if (storeName.length >= 3) {
@@ -85,7 +123,6 @@ export function OnboardingForm({ userId, userEmail }: OnboardingFormProps) {
     }, [storeName, checkAvailability]);
 
     const handleStoreNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        // Only allow lowercase letters, numbers, no spaces or special chars
         const value = e.target.value
             .toLowerCase()
             .replace(/[^a-z0-9]/g, "")
@@ -94,14 +131,33 @@ export function OnboardingForm({ userId, userEmail }: OnboardingFormProps) {
         setIsAvailable(null);
     };
 
-    const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        // Only allow numbers
-        const value = e.target.value.replace(/\D/g, "").slice(0, 8);
-        setPhoneNumber(value);
+    const nextStep = () => {
+        if (currentStep < 4) {
+            setDirection(1);
+            setCurrentStep(currentStep + 1);
+        }
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const prevStep = () => {
+        if (currentStep > 1) {
+            setDirection(-1);
+            setCurrentStep(currentStep - 1);
+        }
+    };
+
+    const canProceed = () => {
+        switch (currentStep) {
+            case 1: return storeName.length >= 3 && isAvailable === true;
+            case 2: return category !== "";
+            case 3: return style !== "";
+            case 4: return selectedTemplate !== "";
+            default: return false;
+        }
+    };
+
+    const handleSubmit = async () => {
+        if (!selectedTemplate || !category) return;
+
         setIsLoading(true);
         setError(null);
 
@@ -114,12 +170,19 @@ export function OnboardingForm({ userId, userEmail }: OnboardingFormProps) {
                 .single();
 
             if (existingStore) {
-                setError("Ce nom de boutique vient d'être pris. Veuillez en choisir un autre.");
+                setError("Ce nom de boutique vient d'être pris.");
                 setIsLoading(false);
                 return;
             }
 
-            // Check if profile exists (user might have signed up but profile wasn't created)
+            // Generate pre-configured theme
+            const themeConfig = generatePreConfiguredTheme(
+                selectedTemplate as TemplateId,
+                category as StoreCategory,
+                storeName
+            );
+
+            // Check if profile exists
             const { data: existingProfile } = await supabase
                 .from("profiles")
                 .select("id")
@@ -127,37 +190,35 @@ export function OnboardingForm({ userId, userEmail }: OnboardingFormProps) {
                 .single();
 
             if (existingProfile) {
-                // Update existing profile
                 const { error: updateError } = await supabase
                     .from("profiles")
                     .update({
                         store_name: storeName.toLowerCase(),
-                        phone_number: phoneNumber ? `+216${phoneNumber}` : null,
+                        theme_config: themeConfig,
                     })
                     .eq("id", userId);
 
                 if (updateError) throw updateError;
             } else {
-                // Create new profile
                 const { error: insertError } = await supabase
                     .from("profiles")
                     .insert({
                         id: userId,
                         store_name: storeName.toLowerCase(),
-                        phone_number: phoneNumber ? `+216${phoneNumber}` : null,
+                        theme_config: themeConfig,
                     });
 
                 if (insertError) throw insertError;
             }
 
-            // Show confetti animation
+            // Show celebration
             setShowConfetti(true);
 
-            // Wait for animation then redirect
+            // Redirect to editor
             setTimeout(() => {
-                router.push("/dashboard");
+                router.push("/dashboard?tab=editor");
                 router.refresh();
-            }, 2000);
+            }, 2500);
 
         } catch (err) {
             console.error("Onboarding error:", err);
@@ -166,213 +227,365 @@ export function OnboardingForm({ userId, userEmail }: OnboardingFormProps) {
         }
     };
 
-    const isFormValid = storeName.length >= 3 && isAvailable === true;
-
     // Confetti celebration screen
     if (showConfetti) {
         return (
-            <div className="fixed inset-0 bg-white flex flex-col items-center justify-center z-50">
-                <div className="text-center animate-bounce">
-                    <div className="inline-flex items-center justify-center h-24 w-24 bg-emerald-100 rounded-full mb-6">
-                        <PartyPopper className="h-12 w-12 text-emerald-600" />
-                    </div>
-                    <h1 className="text-3xl font-bold text-slate-900 mb-2">
-                        🎉 Félicitations !
+            <div className="fixed inset-0 bg-gradient-to-br from-emerald-50 to-white flex flex-col items-center justify-center z-50">
+                <motion.div
+                    initial={{ scale: 0.5, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ type: "spring", duration: 0.5 }}
+                    className="text-center"
+                >
+                    <motion.div
+                        animate={{ rotate: [0, 10, -10, 0] }}
+                        transition={{ repeat: Infinity, duration: 2 }}
+                        className="inline-flex items-center justify-center h-28 w-28 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full mb-8 shadow-2xl shadow-emerald-600/30"
+                    >
+                        <PartyPopper className="h-14 w-14 text-white" />
+                    </motion.div>
+                    <h1 className="text-4xl font-bold text-slate-900 mb-3">
+                        🎉 C'est parti !
                     </h1>
-                    <p className="text-lg text-slate-600 mb-4">
-                        Votre boutique <span className="font-semibold text-emerald-600">{storeName}</span> est créée !
+                    <p className="text-xl text-slate-600 mb-2">
+                        Votre boutique <span className="font-bold text-emerald-600">{storeName}</span> est prête
                     </p>
-                    <div className="flex items-center justify-center gap-2 text-slate-500">
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        <span>Redirection vers votre dashboard...</span>
+                    <p className="text-slate-500 mb-6">
+                        Template {selectedTemplate} • Catégorie {STORE_CATEGORIES.find(c => c.id === category)?.label}
+                    </p>
+                    <div className="flex items-center justify-center gap-2 text-emerald-600">
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                        <span className="font-medium">Lancement de l'éditeur...</span>
                     </div>
-                </div>
-                {/* Simple confetti effect */}
+                </motion.div>
+
+                {/* Confetti particles */}
                 <div className="fixed inset-0 pointer-events-none overflow-hidden">
-                    {[...Array(50)].map((_, i) => (
-                        <div
+                    {[...Array(60)].map((_, i) => (
+                        <motion.div
                             key={i}
-                            className="absolute animate-fall"
-                            style={{
-                                left: `${Math.random() * 100}%`,
-                                top: "-20px",
-                                animationDelay: `${Math.random() * 2}s`,
-                                animationDuration: `${2 + Math.random() * 2}s`,
+                            initial={{
+                                x: "50vw",
+                                y: "50vh",
+                                scale: 0,
                             }}
+                            animate={{
+                                x: `${Math.random() * 100}vw`,
+                                y: `${Math.random() * 100}vh`,
+                                scale: 1,
+                                rotate: Math.random() * 720,
+                            }}
+                            transition={{
+                                duration: 1.5 + Math.random(),
+                                ease: "easeOut",
+                            }}
+                            className="absolute"
                         >
                             <div
                                 className="w-3 h-3 rounded-sm"
                                 style={{
-                                    backgroundColor: ["#10b981", "#f59e0b", "#ef4444", "#3b82f6", "#8b5cf6"][Math.floor(Math.random() * 5)],
-                                    transform: `rotate(${Math.random() * 360}deg)`,
+                                    backgroundColor: ["#10b981", "#f59e0b", "#ef4444", "#3b82f6", "#8b5cf6", "#ec4899"][Math.floor(Math.random() * 6)],
                                 }}
                             />
-                        </div>
+                        </motion.div>
                     ))}
                 </div>
-                <style jsx>{`
-                    @keyframes fall {
-                        to {
-                            transform: translateY(100vh) rotate(720deg);
-                            opacity: 0;
-                        }
-                    }
-                    .animate-fall {
-                        animation: fall 3s ease-in forwards;
-                    }
-                `}</style>
             </div>
         );
     }
 
     return (
-        <Card className="w-full max-w-lg border-slate-200/50 shadow-2xl">
-            <CardHeader className="text-center pb-2">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-lg shadow-emerald-600/25">
-                    <Store className="h-8 w-8 text-white" />
-                </div>
-                <CardTitle className="text-2xl font-bold text-slate-900">
-                    Créons votre boutique ! ✨
-                </CardTitle>
-                <CardDescription className="text-slate-600">
-                    Plus que quelques infos et vous êtes prêt à vendre.
-                </CardDescription>
-            </CardHeader>
-            <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    {error && (
-                        <div className="rounded-xl bg-red-50 p-4 text-sm text-red-600 border border-red-100">
-                            {error}
+        <div className="w-full max-w-2xl mx-auto">
+            {/* Progress Steps */}
+            <div className="mb-8">
+                <div className="flex items-center justify-between relative">
+                    {/* Progress Line */}
+                    <div className="absolute top-5 left-0 right-0 h-0.5 bg-slate-200">
+                        <motion.div
+                            className="h-full bg-emerald-500"
+                            initial={{ width: "0%" }}
+                            animate={{ width: `${((currentStep - 1) / (STEPS.length - 1)) * 100}%` }}
+                            transition={{ duration: 0.3 }}
+                        />
+                    </div>
+
+                    {STEPS.map((step) => (
+                        <div key={step.id} className="relative z-10 flex flex-col items-center">
+                            <motion.div
+                                animate={{
+                                    scale: currentStep === step.id ? 1.1 : 1,
+                                    backgroundColor: currentStep >= step.id ? "#10b981" : "#e2e8f0",
+                                }}
+                                className={`h-10 w-10 rounded-full flex items-center justify-center text-lg shadow-md ${currentStep >= step.id ? "text-white" : "text-slate-400"
+                                    }`}
+                            >
+                                {currentStep > step.id ? (
+                                    <Check className="h-5 w-5" />
+                                ) : (
+                                    step.emoji
+                                )}
+                            </motion.div>
+                            <span className={`text-xs mt-2 font-medium ${currentStep >= step.id ? "text-emerald-600" : "text-slate-400"
+                                }`}>
+                                {step.title}
+                            </span>
                         </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Main Card */}
+            <Card className="border-slate-200/50 shadow-2xl overflow-hidden">
+                <CardContent className="p-8">
+                    <AnimatePresence mode="wait" custom={direction}>
+                        <motion.div
+                            key={currentStep}
+                            custom={direction}
+                            variants={slideVariants}
+                            initial="enter"
+                            animate="center"
+                            exit="exit"
+                            transition={{ type: "tween", duration: 0.3 }}
+                        >
+                            {/* Step 1: Store Name */}
+                            {currentStep === 1 && (
+                                <div className="space-y-6">
+                                    <div className="text-center mb-8">
+                                        <div className="inline-flex items-center justify-center h-16 w-16 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-2xl mb-4 shadow-lg">
+                                            <Store className="h-8 w-8 text-white" />
+                                        </div>
+                                        <h2 className="text-2xl font-bold text-slate-900">
+                                            Comment s'appelle votre boutique ?
+                                        </h2>
+                                        <p className="text-slate-500 mt-2">
+                                            Ce nom sera votre adresse unique sur Elena
+                                        </p>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <Label className="text-sm font-semibold text-slate-700">
+                                            Nom de boutique
+                                        </Label>
+                                        <div className="relative">
+                                            <div className="absolute left-0 top-0 bottom-0 flex items-center pl-4 pointer-events-none">
+                                                <span className="text-slate-400 text-sm">elenashop.tn/</span>
+                                            </div>
+                                            <Input
+                                                type="text"
+                                                placeholder="maboutique"
+                                                value={storeName}
+                                                onChange={handleStoreNameChange}
+                                                className={`h-14 pl-28 pr-12 rounded-xl text-lg font-medium border-2 transition-colors ${isAvailable === true
+                                                        ? "border-emerald-500 bg-emerald-50/50"
+                                                        : isAvailable === false
+                                                            ? "border-red-500 bg-red-50/50"
+                                                            : "border-slate-200"
+                                                    }`}
+                                            />
+                                            <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                                                {isChecking && <Loader2 className="h-5 w-5 text-slate-400 animate-spin" />}
+                                                {!isChecking && isAvailable === true && <Check className="h-5 w-5 text-emerald-500" />}
+                                                {!isChecking && isAvailable === false && <X className="h-5 w-5 text-red-500" />}
+                                            </div>
+                                        </div>
+                                        <p className={`text-sm ${isAvailable === true ? "text-emerald-600" :
+                                                isAvailable === false ? "text-red-600" : "text-slate-500"
+                                            }`}>
+                                            {storeName.length < 3
+                                                ? "Minimum 3 caractères (lettres et chiffres uniquement)"
+                                                : isChecking
+                                                    ? "Vérification..."
+                                                    : isAvailable === true
+                                                        ? "✓ Ce nom est disponible !"
+                                                        : isAvailable === false
+                                                            ? "✗ Ce nom est déjà pris"
+                                                            : ""
+                                            }
+                                        </p>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Step 2: Category */}
+                            {currentStep === 2 && (
+                                <div className="space-y-6">
+                                    <div className="text-center mb-8">
+                                        <h2 className="text-2xl font-bold text-slate-900">
+                                            Que vendez-vous ?
+                                        </h2>
+                                        <p className="text-slate-500 mt-2">
+                                            Cela nous aide à personnaliser votre boutique
+                                        </p>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                        {STORE_CATEGORIES.map((cat) => (
+                                            <motion.button
+                                                key={cat.id}
+                                                type="button"
+                                                whileHover={{ scale: 1.02 }}
+                                                whileTap={{ scale: 0.98 }}
+                                                onClick={() => setCategory(cat.id)}
+                                                className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all ${category === cat.id
+                                                        ? "border-emerald-500 bg-emerald-50 shadow-lg shadow-emerald-500/10"
+                                                        : "border-slate-200 hover:border-slate-300"
+                                                    }`}
+                                            >
+                                                <span className="text-3xl">{cat.emoji}</span>
+                                                <span className="text-sm font-semibold text-slate-700">{cat.label}</span>
+                                                <span className="text-xs text-slate-400">{cat.description}</span>
+                                            </motion.button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Step 3: Visual Style */}
+                            {currentStep === 3 && (
+                                <div className="space-y-6">
+                                    <div className="text-center mb-8">
+                                        <h2 className="text-2xl font-bold text-slate-900">
+                                            Quel style vous représente ?
+                                        </h2>
+                                        <p className="text-slate-500 mt-2">
+                                            Définissez l'ambiance de votre boutique
+                                        </p>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-4">
+                                        {VISUAL_STYLES.map((s) => (
+                                            <motion.button
+                                                key={s.id}
+                                                type="button"
+                                                whileHover={{ scale: 1.02 }}
+                                                whileTap={{ scale: 0.98 }}
+                                                onClick={() => setStyle(s.id)}
+                                                className={`relative flex flex-col items-center gap-3 p-5 rounded-2xl border-2 transition-all overflow-hidden ${style === s.id
+                                                        ? "border-emerald-500 shadow-lg"
+                                                        : "border-slate-200 hover:border-slate-300"
+                                                    }`}
+                                            >
+                                                {/* Color Preview */}
+                                                <div className="flex gap-1">
+                                                    {s.colors.map((color, i) => (
+                                                        <div
+                                                            key={i}
+                                                            className="h-8 w-8 rounded-full border-2 border-white shadow-md"
+                                                            style={{ backgroundColor: color }}
+                                                        />
+                                                    ))}
+                                                </div>
+                                                <div className="text-center">
+                                                    <span className="text-2xl mb-1 block">{s.emoji}</span>
+                                                    <span className="text-sm font-bold text-slate-800">{s.label}</span>
+                                                    <span className="text-xs text-slate-400 block mt-1">{s.description}</span>
+                                                </div>
+                                                {style === s.id && (
+                                                    <div className="absolute top-2 right-2">
+                                                        <Check className="h-5 w-5 text-emerald-500" />
+                                                    </div>
+                                                )}
+                                            </motion.button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Step 4: Template Selection */}
+                            {currentStep === 4 && (
+                                <div className="space-y-6">
+                                    <div className="text-center mb-6">
+                                        <h2 className="text-2xl font-bold text-slate-900">
+                                            Choisissez votre template
+                                        </h2>
+                                        <p className="text-slate-500 mt-2">
+                                            Basé sur vos choix, nous vous recommandons le template idéal
+                                        </p>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                        {TEMPLATE_OPTIONS.map((template) => (
+                                            <TemplateCard
+                                                key={template.id}
+                                                {...template}
+                                                isSelected={selectedTemplate === template.id}
+                                                isRecommended={template.id === recommendedTemplate}
+                                                onSelect={() => setSelectedTemplate(template.id)}
+                                            />
+                                        ))}
+                                    </div>
+
+                                    {/* Smart Matching Info */}
+                                    <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
+                                        <Sparkles className="h-5 w-5 text-amber-500 flex-shrink-0 mt-0.5" />
+                                        <div>
+                                            <p className="text-sm font-medium text-amber-800">
+                                                Recommandation intelligente
+                                            </p>
+                                            <p className="text-xs text-amber-600 mt-1">
+                                                Le template <strong>{TEMPLATE_OPTIONS.find(t => t.id === recommendedTemplate)?.name}</strong> est parfait pour une boutique <strong>{STORE_CATEGORIES.find(c => c.id === category)?.label}</strong> avec un style <strong>{VISUAL_STYLES.find(s => s.id === style)?.label}</strong>.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </motion.div>
+                    </AnimatePresence>
+
+                    {/* Error Message */}
+                    {error && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="mt-6 rounded-xl bg-red-50 p-4 text-sm text-red-600 border border-red-100"
+                        >
+                            {error}
+                        </motion.div>
                     )}
 
-                    {/* Store Name */}
-                    <div className="space-y-2">
-                        <Label htmlFor="storeName" className="text-sm font-semibold text-slate-700">
-                            Nom de votre boutique *
-                        </Label>
-                        <div className="relative">
-                            <div className="absolute left-0 top-0 bottom-0 flex items-center pl-4 pointer-events-none">
-                                <span className="text-slate-400 text-sm">elenashop.tn/</span>
-                            </div>
-                            <Input
-                                id="storeName"
-                                type="text"
-                                placeholder="mamari"
-                                value={storeName}
-                                onChange={handleStoreNameChange}
-                                className={`h-14 pl-28 pr-12 rounded-xl text-lg font-medium border-2 transition-colors ${isAvailable === true
-                                        ? "border-emerald-500 bg-emerald-50/50"
-                                        : isAvailable === false
-                                            ? "border-red-500 bg-red-50/50"
-                                            : "border-slate-200 bg-slate-50/50"
-                                    }`}
-                                required
-                                minLength={3}
-                                maxLength={20}
-                            />
-                            <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                                {isChecking && <Loader2 className="h-5 w-5 text-slate-400 animate-spin" />}
-                                {!isChecking && isAvailable === true && (
-                                    <Check className="h-5 w-5 text-emerald-500" />
-                                )}
-                                {!isChecking && isAvailable === false && (
-                                    <X className="h-5 w-5 text-red-500" />
-                                )}
-                            </div>
-                        </div>
-                        <p className={`text-xs ${isAvailable === true
-                                ? "text-emerald-600"
-                                : isAvailable === false
-                                    ? "text-red-600"
-                                    : "text-slate-500"
-                            }`}>
-                            {storeName.length < 3
-                                ? "Minimum 3 caractères"
-                                : isChecking
-                                    ? "Vérification..."
-                                    : isAvailable === true
-                                        ? "✓ Ce nom est disponible !"
-                                        : isAvailable === false
-                                            ? "✗ Ce nom est déjà pris"
-                                            : ""
-                            }
-                        </p>
-                    </div>
+                    {/* Navigation Buttons */}
+                    <div className="flex justify-between mt-8 pt-6 border-t border-slate-100">
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            onClick={prevStep}
+                            disabled={currentStep === 1}
+                            className="gap-2"
+                        >
+                            <ArrowLeft className="h-4 w-4" />
+                            Retour
+                        </Button>
 
-                    {/* Phone Number */}
-                    <div className="space-y-2">
-                        <Label htmlFor="phone" className="text-sm font-semibold text-slate-700">
-                            Votre numéro WhatsApp
-                            <span className="text-slate-400 font-normal ml-1">(optionnel)</span>
-                        </Label>
-                        <div className="relative">
-                            <div className="absolute left-0 top-0 bottom-0 flex items-center pl-4 pointer-events-none">
-                                <span className="text-slate-400 text-sm">+216</span>
-                            </div>
-                            <Phone className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-                            <Input
-                                id="phone"
-                                type="tel"
-                                placeholder="XX XXX XXX"
-                                value={phoneNumber}
-                                onChange={handlePhoneChange}
-                                className="h-14 pl-16 pr-12 rounded-xl text-lg border-2 border-slate-200 bg-slate-50/50"
-                                maxLength={8}
-                            />
-                        </div>
-                        <p className="text-xs text-slate-500">
-                            Pour recevoir les notifications de commande
-                        </p>
-                    </div>
-
-                    {/* Category */}
-                    <div className="space-y-3">
-                        <Label className="text-sm font-semibold text-slate-700">
-                            Que vendez-vous ?
-                            <span className="text-slate-400 font-normal ml-1">(optionnel)</span>
-                        </Label>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                            {STORE_CATEGORIES.map((cat) => (
-                                <button
-                                    key={cat.id}
-                                    type="button"
-                                    onClick={() => setCategory(category === cat.id ? "" : cat.id)}
-                                    className={`flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition-all ${category === cat.id
-                                            ? "border-emerald-500 bg-emerald-50 text-emerald-700"
-                                            : "border-slate-200 hover:border-slate-300 text-slate-600"
-                                        }`}
-                                >
-                                    {cat.icon}
-                                    <span className="text-xs font-medium">{cat.label}</span>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Submit Button */}
-                    <Button
-                        type="submit"
-                        className="w-full h-14 rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 font-semibold text-lg shadow-lg shadow-emerald-600/25 transition-all disabled:opacity-50"
-                        disabled={isLoading || !isFormValid}
-                    >
-                        {isLoading ? (
-                            <Loader2 className="h-5 w-5 animate-spin" />
+                        {currentStep < 4 ? (
+                            <Button
+                                type="button"
+                                onClick={nextStep}
+                                disabled={!canProceed()}
+                                className="gap-2 bg-emerald-600 hover:bg-emerald-700"
+                            >
+                                Continuer
+                                <ArrowRight className="h-4 w-4" />
+                            </Button>
                         ) : (
-                            <>
-                                <Sparkles className="h-5 w-5 mr-2" />
-                                Créer ma boutique
-                                <ArrowRight className="h-5 w-5 ml-2" />
-                            </>
+                            <Button
+                                type="button"
+                                onClick={handleSubmit}
+                                disabled={!canProceed() || isLoading}
+                                className="gap-2 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 shadow-lg shadow-emerald-500/25"
+                            >
+                                {isLoading ? (
+                                    <Loader2 className="h-5 w-5 animate-spin" />
+                                ) : (
+                                    <>
+                                        <Sparkles className="h-5 w-5" />
+                                        Créer ma boutique
+                                    </>
+                                )}
+                            </Button>
                         )}
-                    </Button>
-
-                    {/* Terms */}
-                    <p className="text-xs text-center text-slate-500">
-                        En créant votre boutique, vous acceptez nos conditions d&apos;utilisation
-                    </p>
-                </form>
-            </CardContent>
-        </Card>
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
     );
 }
