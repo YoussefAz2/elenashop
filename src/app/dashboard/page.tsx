@@ -39,6 +39,16 @@ export default async function DashboardPage() {
         redirect("/onboarding");
     }
 
+    // Filter out any memberships where stores is null
+    const validMemberships = storeMemberships.filter(
+        (m) => m.stores !== null && m.stores !== undefined
+    );
+
+    if (validMemberships.length === 0) {
+        // No valid stores, redirect to onboarding
+        redirect("/onboarding");
+    }
+
     // Get current store from cookie or use first store
     const cookieStore = await cookies();
     const currentStoreId = cookieStore.get("current_store_id")?.value;
@@ -47,9 +57,9 @@ export default async function DashboardPage() {
     let currentStore: Store | null = null;
     let currentRole = "owner";
 
-    for (const membership of storeMemberships) {
+    for (const membership of validMemberships) {
         const store = membership.stores as unknown as Store;
-        if (currentStoreId && store.id === currentStoreId) {
+        if (store && currentStoreId && store.id === currentStoreId) {
             currentStore = store;
             currentRole = membership.role;
             break;
@@ -58,13 +68,18 @@ export default async function DashboardPage() {
 
     // Default to first store if no matching store found
     if (!currentStore) {
-        const firstMembership = storeMemberships[0];
+        const firstMembership = validMemberships[0];
         currentStore = firstMembership.stores as unknown as Store;
         currentRole = firstMembership.role;
     }
 
+    // Final safety check
+    if (!currentStore || !currentStore.id) {
+        redirect("/onboarding");
+    }
+
     // Build list of all user stores with roles
-    const userStores = storeMemberships.map((m) => ({
+    const userStores = validMemberships.map((m) => ({
         ...(m.stores as unknown as Store),
         role: m.role,
     }));
