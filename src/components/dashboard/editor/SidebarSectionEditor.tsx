@@ -34,6 +34,7 @@ import type {
     FAQPageContent,
     FloatingWhatsAppConfig,
     SEOConfig,
+    AboutContent,
 } from "@/types";
 import { SectionId, SECTIONS } from "./SidebarSectionList";
 
@@ -190,6 +191,17 @@ export function SidebarSectionEditor({
         onUpdateConfig({
             ...config,
             seo: { ...config.seo, ...updates },
+        });
+    };
+
+    // About section (homepage) updater
+    const updateAbout = (updates: Partial<AboutContent>) => {
+        onUpdateConfig({
+            ...config,
+            homeContent: {
+                ...config.homeContent,
+                about: { ...config.homeContent.about, ...updates },
+            },
         });
     };
 
@@ -374,6 +386,44 @@ export function SidebarSectionEditor({
                                             onCheckedChange={(v) => updateHero({ gradientEnabled: v })}
                                         />
                                     </div>
+                                    {config.homeContent.hero.gradientEnabled && (
+                                        <>
+                                            <div className="space-y-2">
+                                                <Label className="text-sm">Direction du dégradé</Label>
+                                                <Select
+                                                    value={config.homeContent.hero.gradientDirection || "left"}
+                                                    onValueChange={(v) => updateHero({ gradientDirection: v as "left" | "right" | "top" | "bottom" })}
+                                                >
+                                                    <SelectTrigger>
+                                                        <SelectValue />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="left">← Gauche</SelectItem>
+                                                        <SelectItem value="right">Droite →</SelectItem>
+                                                        <SelectItem value="top">↑ Haut</SelectItem>
+                                                        <SelectItem value="bottom">↓ Bas</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                            <div className="space-y-2">
+                                                <Label className="text-sm">Couleur du dégradé</Label>
+                                                <div className="flex gap-2">
+                                                    <Input
+                                                        type="color"
+                                                        value={config.homeContent.hero.gradientColor || config.global.colors.primary}
+                                                        onChange={(e) => updateHero({ gradientColor: e.target.value })}
+                                                        className="w-12 h-10 p-1 cursor-pointer"
+                                                    />
+                                                    <Input
+                                                        value={config.homeContent.hero.gradientColor || config.global.colors.primary}
+                                                        onChange={(e) => updateHero({ gradientColor: e.target.value })}
+                                                        placeholder="#000000"
+                                                        className="flex-1 font-mono"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </>
+                                    )}
                                 </>
                             )}
                             {!config.homeContent.hero.imageUrl && (
@@ -476,16 +526,110 @@ export function SidebarSectionEditor({
                         <TabsContent value="content" className="space-y-4 mt-0">
                             <div className="space-y-2">
                                 <Label className="text-sm">Titre de la section</Label>
-                                <Textarea
+                                <Input
                                     value={config.homeContent.testimonials?.title || "Ce que nos clients disent"}
                                     onChange={(e) => updateTestimonials({ title: e.target.value })}
                                     placeholder="Ce que nos clients disent"
-                                    className="min-h-[60px] resize-none"
                                 />
                             </div>
-                            <p className="text-xs text-slate-400">
-                                💡 Les témoignages peuvent être ajoutés depuis le panneau dédié.
-                            </p>
+                            <div className="space-y-2">
+                                <Label className="text-sm">Sous-titre</Label>
+                                <Input
+                                    value={config.homeContent.testimonials?.subtitle || ""}
+                                    onChange={(e) => updateTestimonials({ subtitle: e.target.value })}
+                                    placeholder="Découvrez les avis de nos clients"
+                                />
+                            </div>
+
+                            {/* Testimonials List */}
+                            <div className="space-y-3 pt-2 border-t">
+                                <div className="flex items-center justify-between">
+                                    <Label className="text-sm font-medium">Témoignages ({config.homeContent.testimonials?.items?.length || 0})</Label>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => {
+                                            const newItem = {
+                                                id: Date.now().toString(),
+                                                name: "Nouveau client",
+                                                text: "Excellent service !",
+                                                rating: 5,
+                                            };
+                                            updateTestimonials({
+                                                items: [...(config.homeContent.testimonials?.items || []), newItem],
+                                            });
+                                        }}
+                                    >
+                                        + Ajouter
+                                    </Button>
+                                </div>
+
+                                {(config.homeContent.testimonials?.items || []).map((item, index) => (
+                                    <div key={item.id} className="p-3 bg-slate-50 dark:bg-slate-800 rounded-lg space-y-2">
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-xs text-slate-400">#{index + 1}</span>
+                                            <button
+                                                onClick={() => {
+                                                    const items = [...(config.homeContent.testimonials?.items || [])];
+                                                    items.splice(index, 1);
+                                                    updateTestimonials({ items });
+                                                }}
+                                                className="text-xs text-red-500 hover:text-red-700"
+                                            >
+                                                Supprimer
+                                            </button>
+                                        </div>
+                                        <Input
+                                            value={item.name}
+                                            onChange={(e) => {
+                                                const items = [...(config.homeContent.testimonials?.items || [])];
+                                                items[index] = { ...items[index], name: e.target.value };
+                                                updateTestimonials({ items });
+                                            }}
+                                            placeholder="Nom du client"
+                                            className="text-sm"
+                                        />
+                                        <Textarea
+                                            value={item.text}
+                                            onChange={(e) => {
+                                                const items = [...(config.homeContent.testimonials?.items || [])];
+                                                items[index] = { ...items[index], text: e.target.value };
+                                                updateTestimonials({ items });
+                                            }}
+                                            placeholder="Témoignage..."
+                                            className="text-sm min-h-[60px] resize-none"
+                                        />
+                                        <div className="flex items-center gap-2">
+                                            <Label className="text-xs">Note:</Label>
+                                            <Select
+                                                value={item.rating?.toString() || "5"}
+                                                onValueChange={(v) => {
+                                                    const items = [...(config.homeContent.testimonials?.items || [])];
+                                                    items[index] = { ...items[index], rating: parseInt(v) };
+                                                    updateTestimonials({ items });
+                                                }}
+                                            >
+                                                <SelectTrigger className="w-20 h-8">
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="5">⭐⭐⭐⭐⭐</SelectItem>
+                                                    <SelectItem value="4">⭐⭐⭐⭐</SelectItem>
+                                                    <SelectItem value="3">⭐⭐⭐</SelectItem>
+                                                    <SelectItem value="2">⭐⭐</SelectItem>
+                                                    <SelectItem value="1">⭐</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                    </div>
+                                ))}
+
+                                {(!config.homeContent.testimonials?.items || config.homeContent.testimonials.items.length === 0) && (
+                                    <p className="text-xs text-slate-400 text-center py-4">
+                                        Aucun témoignage. Cliquez sur "+ Ajouter" pour en créer.
+                                    </p>
+                                )}
+                            </div>
                         </TabsContent>
 
                         <TabsContent value="settings" className="space-y-4 mt-0">
@@ -797,11 +941,70 @@ export function SidebarSectionEditor({
 
                 {/* ======================== ABOUT SECTION (home) ======================== */}
                 {activeSection === "about" && (
-                    <div className="flex-1 flex items-center justify-center py-12">
-                        <p className="text-sm text-slate-400 text-center">
-                            Section "À propos" de l'accueil - à implémenter.
-                        </p>
-                    </div>
+                    <Tabs defaultValue="content" className="flex-1">
+                        <TabsList className="grid w-full grid-cols-2 mb-4">
+                            <TabsTrigger value="content" className="text-xs">✏️ Contenu</TabsTrigger>
+                            <TabsTrigger value="settings" className="text-xs">⚙️ Réglages</TabsTrigger>
+                        </TabsList>
+
+                        <TabsContent value="content" className="space-y-4 mt-0">
+                            <div className="space-y-2">
+                                <Label className="text-sm">Titre de la section</Label>
+                                <Input
+                                    value={config.homeContent.about?.title || "Notre Histoire"}
+                                    onChange={(e) => updateAbout({ title: e.target.value })}
+                                    placeholder="Notre Histoire"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-sm">Texte de présentation</Label>
+                                <Textarea
+                                    value={config.homeContent.about?.text || ""}
+                                    onChange={(e) => updateAbout({ text: e.target.value })}
+                                    placeholder="Racontez l'histoire de votre boutique..."
+                                    className="min-h-[120px] resize-none"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-sm">Image</Label>
+                                <ImageUpload
+                                    value={config.homeContent.about?.imageUrl || ""}
+                                    onChange={(url) => updateAbout({ imageUrl: url })}
+                                    folder="about"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-sm">Position de l'image</Label>
+                                <Select
+                                    value={config.homeContent.about?.imagePosition || "right"}
+                                    onValueChange={(v) => updateAbout({ imagePosition: v as "left" | "right" })}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="left">← Gauche</SelectItem>
+                                        <SelectItem value="right">Droite →</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        </TabsContent>
+
+                        <TabsContent value="settings" className="space-y-4 mt-0">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <Label className="text-sm">Afficher la section</Label>
+                                    <p className="text-xs text-slate-400 mt-0.5">
+                                        Affiche une section "À propos" sur l'accueil
+                                    </p>
+                                </div>
+                                <Switch
+                                    checked={config.homeContent.about?.visible ?? false}
+                                    onCheckedChange={(v) => updateAbout({ visible: v })}
+                                />
+                            </div>
+                        </TabsContent>
+                    </Tabs>
                 )}
             </div>
         </div>

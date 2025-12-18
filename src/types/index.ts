@@ -193,6 +193,7 @@ export interface HeroContent {
     overlayOpacity: number;
     gradientEnabled: boolean;
     gradientDirection: "left" | "right" | "top" | "bottom";
+    gradientColor?: string;
 }
 
 // Product grid section
