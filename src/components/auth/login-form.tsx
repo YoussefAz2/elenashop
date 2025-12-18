@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Store, Loader2, Mail, Lock, Sparkles, ArrowRight } from "lucide-react";
+import { Store, Loader2, Mail, Lock, Sparkles, ArrowRight, User } from "lucide-react";
 
 type Mode = "login" | "signup";
 
@@ -37,6 +37,8 @@ function GoogleIcon({ className }: { className?: string }) {
 
 export function LoginForm() {
     const [mode, setMode] = useState<Mode>("login");
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -106,10 +108,18 @@ export function LoginForm() {
                     router.refresh();
                 }
             } else {
-                // Signup - Just create auth user, onboarding will handle profile
+                // Signup with name metadata
                 const { data: authData, error: signUpError } = await supabase.auth.signUp({
                     email,
                     password,
+                    options: {
+                        data: {
+                            first_name: firstName,
+                            last_name: lastName,
+                            full_name: `${firstName} ${lastName}`.trim(),
+                        },
+                        emailRedirectTo: `${window.location.origin}/auth/callback`,
+                    },
                 });
 
                 if (signUpError) {
@@ -128,9 +138,13 @@ export function LoginForm() {
                         router.push("/onboarding");
                         router.refresh();
                     } else {
-                        // Email confirmation required
-                        setSuccess("Compte créé ! Vérifiez votre email pour confirmer, puis connectez-vous.");
-                        setMode("login");
+                        // Email confirmation required - show success message
+                        setSuccess("✅ Compte créé ! Vérifiez votre boîte mail pour confirmer votre inscription.");
+                        // Clear form
+                        setFirstName("");
+                        setLastName("");
+                        setEmail("");
+                        setPassword("");
                     }
                 }
             }
@@ -207,6 +221,42 @@ export function LoginForm() {
 
                     {/* Email Form */}
                     <form onSubmit={handleSubmit} className="space-y-4">
+                        {/* Name fields - only show in signup mode */}
+                        {mode === "signup" && (
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="space-y-2">
+                                    <Label htmlFor="firstName" className="text-sm font-medium">Prénom</Label>
+                                    <div className="relative">
+                                        <User className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+                                        <Input
+                                            id="firstName"
+                                            type="text"
+                                            placeholder="Jean"
+                                            value={firstName}
+                                            onChange={(e) => setFirstName(e.target.value)}
+                                            className="h-14 pl-12 rounded-xl border-2 border-slate-200 bg-slate-50/50 focus:border-emerald-500"
+                                            required
+                                        />
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="lastName" className="text-sm font-medium">Nom</Label>
+                                    <div className="relative">
+                                        <User className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+                                        <Input
+                                            id="lastName"
+                                            type="text"
+                                            placeholder="Dupont"
+                                            value={lastName}
+                                            onChange={(e) => setLastName(e.target.value)}
+                                            className="h-14 pl-12 rounded-xl border-2 border-slate-200 bg-slate-50/50 focus:border-emerald-500"
+                                            required
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
                         <div className="space-y-2">
                             <Label htmlFor="email" className="text-sm font-medium">Email</Label>
                             <div className="relative">
