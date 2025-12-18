@@ -814,6 +814,34 @@ export interface Promo {
 }
 
 // ============================================
+// MULTI-STORE TYPES
+// ============================================
+
+export type StoreRole = "owner" | "admin" | "editor";
+
+export interface Store {
+    id: string;
+    slug: string;
+    name: string;
+    theme_config: ThemeConfig;
+    subscription_status: "free" | "pro";
+    created_at: string;
+    updated_at: string;
+}
+
+export interface StoreMember {
+    id: string;
+    user_id: string;
+    store_id: string;
+    role: StoreRole;
+    created_at: string;
+}
+
+export interface StoreWithRole extends Store {
+    role: StoreRole;
+}
+
+// ============================================
 // CONSTANTS
 // ============================================
 

@@ -12,15 +12,15 @@ export default async function OnboardingPage() {
         redirect("/login");
     }
 
-    // Check if user already has a store_name (already onboarded)
-    const { data: profile } = await supabase
-        .from("profiles")
-        .select("store_name")
-        .eq("id", user.id)
-        .single();
+    // Check if user already has any stores (already onboarded)
+    const { data: storeMemberships } = await supabase
+        .from("store_members")
+        .select("store_id")
+        .eq("user_id", user.id)
+        .limit(1);
 
-    // If already has store_name, redirect to dashboard
-    if (profile?.store_name) {
+    // If user has at least one store, redirect to dashboard
+    if (storeMemberships && storeMemberships.length > 0) {
         redirect("/dashboard");
     }
 

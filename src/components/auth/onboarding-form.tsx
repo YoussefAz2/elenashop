@@ -28,6 +28,7 @@ import {
     type StoreCategory,
     type VisualStyle,
 } from "@/lib/onboarding-data";
+import { createStore, isSlugAvailable, setCurrentStoreId } from "@/lib/stores";
 import type { TemplateId } from "@/types";
 
 interface OnboardingFormProps {
@@ -98,13 +99,8 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
 
         setIsChecking(true);
         try {
-            const { data } = await supabase
-                .from("profiles")
-                .select("store_name")
-                .eq("store_name", name.toLowerCase())
-                .single();
-
-            setIsAvailable(!data);
+            const available = await isSlugAvailable(name.toLowerCase());
+            setIsAvailable(available);
         } catch {
             setIsAvailable(true);
         } finally {
@@ -163,13 +159,9 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
 
         try {
             // Final availability check
-            const { data: existingStore } = await supabase
-                .from("profiles")
-                .select("store_name")
-                .eq("store_name", storeName.toLowerCase())
-                .single();
+            const available = await isSlugAvailable(storeName.toLowerCase());
 
-            if (existingStore) {
+            if (!available) {
                 setError("Ce nom de boutique vient d'être pris.");
                 setIsLoading(false);
                 return;
@@ -182,34 +174,19 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
                 storeName
             );
 
-            // Check if profile exists
-            const { data: existingProfile } = await supabase
-                .from("profiles")
-                .select("id")
-                .eq("id", userId)
-                .single();
+            // Create store (this also creates store_member with owner role)
+            const store = await createStore({
+                slug: storeName.toLowerCase(),
+                name: storeName,
+                themeConfig,
+            });
 
-            if (existingProfile) {
-                const { error: updateError } = await supabase
-                    .from("profiles")
-                    .update({
-                        store_name: storeName.toLowerCase(),
-                        theme_config: themeConfig,
-                    })
-                    .eq("id", userId);
-
-                if (updateError) throw updateError;
-            } else {
-                const { error: insertError } = await supabase
-                    .from("profiles")
-                    .insert({
-                        id: userId,
-                        store_name: storeName.toLowerCase(),
-                        theme_config: themeConfig,
-                    });
-
-                if (insertError) throw insertError;
+            if (!store) {
+                throw new Error("Failed to create store");
             }
+
+            // Set as current store in localStorage
+            setCurrentStoreId(store.id);
 
             // Show celebration
             setShowConfetti(true);
@@ -376,10 +353,10 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
                                                 value={storeName}
                                                 onChange={handleStoreNameChange}
                                                 className={`h-14 pl-28 pr-12 rounded-xl text-lg font-medium border-2 transition-colors ${isAvailable === true
-                                                        ? "border-emerald-500 bg-emerald-50/50"
-                                                        : isAvailable === false
-                                                            ? "border-red-500 bg-red-50/50"
-                                                            : "border-slate-200"
+                                                    ? "border-emerald-500 bg-emerald-50/50"
+                                                    : isAvailable === false
+                                                        ? "border-red-500 bg-red-50/50"
+                                                        : "border-slate-200"
                                                     }`}
                                             />
                                             <div className="absolute right-4 top-1/2 -translate-y-1/2">
@@ -389,7 +366,7 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
                                             </div>
                                         </div>
                                         <p className={`text-sm ${isAvailable === true ? "text-emerald-600" :
-                                                isAvailable === false ? "text-red-600" : "text-slate-500"
+                                            isAvailable === false ? "text-red-600" : "text-slate-500"
                                             }`}>
                                             {storeName.length < 3
                                                 ? "Minimum 3 caractères (lettres et chiffres uniquement)"
@@ -427,8 +404,8 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
                                                 whileTap={{ scale: 0.98 }}
                                                 onClick={() => setCategory(cat.id)}
                                                 className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all ${category === cat.id
-                                                        ? "border-emerald-500 bg-emerald-50 shadow-lg shadow-emerald-500/10"
-                                                        : "border-slate-200 hover:border-slate-300"
+                                                    ? "border-emerald-500 bg-emerald-50 shadow-lg shadow-emerald-500/10"
+                                                    : "border-slate-200 hover:border-slate-300"
                                                     }`}
                                             >
                                                 <span className="text-3xl">{cat.emoji}</span>
@@ -461,8 +438,8 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
                                                 whileTap={{ scale: 0.98 }}
                                                 onClick={() => setStyle(s.id)}
                                                 className={`relative flex flex-col items-center gap-3 p-5 rounded-2xl border-2 transition-all overflow-hidden ${style === s.id
-                                                        ? "border-emerald-500 shadow-lg"
-                                                        : "border-slate-200 hover:border-slate-300"
+                                                    ? "border-emerald-500 shadow-lg"
+                                                    : "border-slate-200 hover:border-slate-300"
                                                     }`}
                                             >
                                                 {/* Color Preview */}

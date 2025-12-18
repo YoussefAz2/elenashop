@@ -1,192 +1,172 @@
-Version : 1.0 (MVP) Type : Web App / SaaS Target : Marché Tunisien (Mobile First, Cash-Economy)
+Version : 2.0 (Multi-Store Architecture)
+Type : Web App / SaaS
+Target : Marché Tunisien (Mobile First, Cash-Economy)
 
-1. VISION DU PROJET (Le "Pourquoi")
-   Nous construisons une plateforme SaaS B2B2C qui permet aux vendeurs Instagram/TikTok en Tunisie de générer une boutique en ligne ultra-simplifiée en quelques secondes. Problème résolu : Shopify est trop cher et inadapté (devises, cartes bancaires). Les vendeurs locaux ont besoin d'une solution optimisée pour le Paiement à la Livraison (COD) et la gestion via WhatsApp.
+# 1. VISION DU PROJET
 
-Philosophie UX :
+Plateforme SaaS B2B2C permettant aux vendeurs Instagram/TikTok en Tunisie de créer des boutiques en ligne ultra-simplifiées. 
+Optimisée pour le Paiement à la Livraison (COD) et la gestion via WhatsApp.
 
-Mobile First Absolu : 95% du trafic sera mobile.
+## Philosophie UX
+- **Mobile First Absolu** : 95% du trafic sera mobile
+- **Zéro Friction** : Pas de création de compte pour l'acheteur
+- **Vitesse** : Interface instantanée
 
-Zéro Friction : Pas de création de compte pour l'acheteur. Pas de panier complexe.
+---
 
-Vitesse : L'interface doit être instantanée.
+# 2. STACK TECHNIQUE
 
-2. STACK TECHNIQUE (Architecture)
-   Tu agiras en tant qu'Expert Senior Full-Stack. Voici les technologies imposées :
+| Catégorie | Technologie |
+|-----------|-------------|
+| Frontend | Next.js 16+ (App Router) |
+| Langage | TypeScript (Strict mode) |
+| Styling | Tailwind CSS + Shadcn UI |
+| Animations | Framer Motion |
+| Icônes | Lucide React |
+| Backend/Auth/DB | Supabase (PostgreSQL) |
+| Déploiement | Vercel |
 
-Frontend : Next.js 14+ (App Router).
+---
 
-Langage : TypeScript (Strict mode).
+# 3. ARCHITECTURE BASE DE DONNÉES (v2.0 - Multi-Store)
 
-Styling : Tailwind CSS + Shadcn UI (pour les composants réutilisables).
+## Tables principales
 
-Icônes : Lucide React.
-
-Backend / Auth / DB : Supabase (PostgreSQL).
-
-Déploiement cible : Vercel.
-
-3. RÈGLES MÉTIER CRITIQUES (Business Logic)
-   A. Paiement \& Checkout
-   Strictement Cash on Delivery (COD) : Aucune intégration Stripe/PayPal. Le bouton final est toujours "Commander (Paiement à la livraison)".
-
-Tunnel de commande "Anti-Abandon" (2 Steps) :
-
-Step 1 (Lead Capture) : Nom + Téléphone (+216). Si l'utilisateur valide cette étape, les données sont sauvegardées dans la table leads (même s'il quitte après).
-
-Step 2 (Livraison) : Gouvernorat (Liste déroulante des 24 gouvernorats tunisiens), Ville, Adresse.
-
-B. Gestion Vendeur (Dashboard)
-WhatsApp Automation : Chaque commande doit avoir un bouton "Confirmer sur WhatsApp" qui génère un lien wa.me avec un message pré-rempli (détails dans la section UI).
-
-Étiquettes : Possibilité de générer un PDF simple (format A6) pour le colis avec les infos destinataire et le montant à encaisser.
-
-4. SCHÉMA DE BASE DE DONNÉES (Supabase SQL)
-   L'IA doit utiliser cette structure exacte.
-
-SQL
-
--- 1. Table des vendeurs (étend la table auth.users de Supabase)
-create table public.profiles (
-id uuid references auth.users on delete cascade primary key,
-store\_name text unique not null, -- ex: "mamari" pour elenashop.tn/mamari
-phone\_number text,
-avatar\_url text,
-subscription\_status text default 'free', -- 'free', 'pro'
-created\_at timestamp with time zone default timezone('utc'::text, now())
+### `stores` (nouveau)
+```sql
+CREATE TABLE stores (
+    id UUID PRIMARY KEY,
+    slug TEXT UNIQUE NOT NULL,        -- URL de la boutique
+    name TEXT NOT NULL,
+    theme_config JSONB DEFAULT '{}',
+    subscription_status TEXT DEFAULT 'free',
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+```
 
--- 2. Table des produits
-create table public.products (
-id uuid default gen\_random\_uuid() primary key,
-user\_id uuid references public.profiles(id) on delete cascade not null,
-title text not null,
-price numeric not null, -- En TND
-image\_url text,
-description text,
-stock integer default 0,
-is\_active boolean default true,
-created\_at timestamp with time zone default timezone('utc'::text, now())
+### `store_members` (nouveau - relation users ↔ stores)
+```sql
+CREATE TABLE store_members (
+    id UUID PRIMARY KEY,
+    user_id UUID REFERENCES auth.users(id),
+    store_id UUID REFERENCES stores(id),
+    role TEXT DEFAULT 'owner',  -- owner | admin | editor
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE(user_id, store_id)
 );
+```
 
--- 3. Table des commandes
-create table public.orders (
-id uuid default gen\_random\_uuid() primary key,
-user\_id uuid references public.profiles(id) not null, -- Le vendeur
-customer\_name text not null,
-customer\_phone text not null,
-customer\_governorate text not null, -- ex: "Tunis", "Sfax"
-customer\_city text,
-customer\_address text,
-product\_details jsonb, -- Snapshot du produit au moment de l'achat (Titre, Prix)
-total\_price numeric not null,
-status text default 'new', -- 'new', 'confirmed', 'shipped', 'delivered', 'cancelled'
-created\_at timestamp with time zone default timezone('utc'::text, now())
+### `profiles` (simplifié)
+```sql
+CREATE TABLE profiles (
+    id UUID PRIMARY KEY REFERENCES auth.users(id),
+    first_name TEXT,
+    last_name TEXT,
+    phone_number TEXT,
+    avatar_url TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW()
 );
+```
 
--- 4. Table des Leads (Paniers abandonnés - Step 1 validé mais pas Step 2)
-create table public.leads (
-id uuid default gen\_random\_uuid() primary key,
-user\_id uuid references public.profiles(id) not null,
-customer\_phone text not null,
-customer\_name text,
-created\_at timestamp with time zone default timezone('utc'::text, now())
+### `products`
+```sql
+CREATE TABLE products (
+    id UUID PRIMARY KEY,
+    store_id UUID REFERENCES stores(id),  -- Lié à store, pas user
+    title TEXT NOT NULL,
+    price NUMERIC NOT NULL,
+    image_url TEXT,
+    description TEXT,
+    stock INTEGER DEFAULT 0,
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMPTZ DEFAULT NOW()
 );
-5. DESIGN SYSTEM \& UI GUIDELINES
-Ambiance (Vibe)
-Minimaliste \& Pro : Inspiré de Shopify Checkout. Fond blanc, texte gris foncé (slate-900), bordures subtiles.
+```
 
-Couleur d'accent (Action) : Un Vert Émeraude rassurant (ex: bg-emerald-600) pour les boutons "Commander" et "WhatsApp".
+### `orders`
+```sql
+CREATE TABLE orders (
+    id UUID PRIMARY KEY,
+    store_id UUID REFERENCES stores(id),  -- Lié à store
+    customer_name TEXT NOT NULL,
+    customer_phone TEXT NOT NULL,
+    customer_governorate TEXT NOT NULL,
+    customer_city TEXT,
+    customer_address TEXT,
+    product_details JSONB,
+    total_price NUMERIC NOT NULL,
+    status TEXT DEFAULT 'new',
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+```
 
-Pages Clés à développer
+## Avantages de cette architecture
+- ✅ 1 utilisateur = N boutiques
+- ✅ N utilisateurs = 1 boutique (équipes)
+- ✅ Rôles : Owner > Admin > Editor
+- ✅ Données bien séparées
 
-1. Page Boutique Publique (/\[store\_name])
-   Header sticky avec le nom de la marque.
+---
 
-Grille de produits simple (Photo carrée + Titre + Prix en gras).
+# 4. RÈGLES MÉTIER
 
-Bouton "Acheter" sur chaque produit qui ouvre un Drawer (volet glissant du bas) sur mobile, plutôt qu'une nouvelle page.
+## Paiement & Checkout
+- **Strictement COD** : Pas de Stripe/PayPal
+- **Tunnel 2 étapes** :
+  - Step 1 (Lead Capture) : Nom + Téléphone (+216)
+  - Step 2 (Livraison) : Gouvernorat + Ville + Adresse
 
-2. Page Dashboard Vendeur (/dashboard)
-   Vue "Commandes" : Une liste type "Inbox". Chaque ligne montre : Nom du client, Montant, Statut (badge couleur).
+## Gestion Vendeur
+- **WhatsApp Automation** : Bouton avec message pré-rempli
+- **Étiquettes PDF** : Format A6 pour colis
 
-Action Rapide : Un bouton icône WhatsApp à côté de chaque commande.
+---
 
-Template Message : "Bonjour \[Nom], merci pour votre commande sur \[Store]. Le total est de \[Prix] TND. On vous livre demain ?"
+# 5. DESIGN SYSTEM
 
-3. Formulaire de Commande (Drawer)
-   Input Téléphone avec préfixe fixe +216 visible.
+## Ambiance
+- Minimaliste & Pro (inspiré Shopify Checkout)
+- Couleur d'accent : Vert Émeraude (`emerald-600`)
 
-Liste déroulante des Gouvernorats (Tunis, Ariana, Ben Arous, Manouba, Nabeul, Zaghouan, Bizerte, Beja, Jendouba, Kef, Siliana, Kairouan, Kasserine, Sidi Bouzid, Sousse, Monastir, Mahdia, Sfax, Gafsa, Tozeur, Kebili, Gabes, Medenine, Tataouine).
+## Pages Clés
+1. **Boutique Publique** (`/[store_slug]`)
+2. **Dashboard Vendeur** (`/dashboard`)
+3. **Onboarding Wizard** (`/onboarding`) - 4 étapes animées
 
-6. INSTRUCTIONS D'IMPLÉMENTATION (Roadmap IA)
-   Ordre d'exécution pour l'IA :
+---
 
-Setup : Initialiser le projet Next.js avec Tailwind et Shadcn. Configurer le client Supabase.
+# 6. STRUCTURE DES DOSSIERS
 
-Database : Générer les migrations SQL pour créer les tables ci-dessus.
+```
+src/
+├── app/
+│   ├── [store_name]/     # Pages boutique publique
+│   ├── dashboard/        # Admin vendeur
+│   ├── login/           # Authentification
+│   └── onboarding/      # Wizard création boutique
+├── components/
+│   ├── ui/              # Composants atomiques
+│   ├── dashboard/       # Composants admin
+│   ├── store/           # Composants boutique
+│   └── auth/            # Composants auth
+├── lib/
+│   ├── stores.ts        # Helpers multi-boutique
+│   └── onboarding-data.ts # Smart matching templates
+└── types/
+    └── index.ts         # Interfaces TypeScript
+```
 
-Feature 1 (Public Store) : Créer la page dynamique \[store\_name] qui fetch les produits d'un utilisateur via son slug.
+---
 
-Feature 2 (Checkout) : Créer le composant Formulaire en 2 étapes et la logique d'insertion en DB (Table orders et leads).
+# 7. RÈGLES DE CODE (STRICT)
 
-Feature 3 (Admin) : Créer le Dashboard vendeur (Login, Liste des commandes, Ajout produit).
+1. **Modularité** : Max 150 lignes par composant
+2. **Séparation** : Logique métier dans `/hooks` ou `/lib`
+3. **Types** : Toutes les interfaces dans `/types`
+4. **Nommage** : Explicite (`recentOrders`, pas `data`)
+5. **Pas de code mort**
 
-Feature 4 (Magie) : Coder la logique du lien WhatsApp dynamique et la génération PDF de l'étiquette.
-
-
-
-
-
-\# RÈGLES D'ARCHITECTURE \& CODING STYLE (STRICT)
-
-
-
-TU DOIS APPLIQUER CES RÈGLES AUTOMATIQUEMENT SANS QU'ON TE LE DEMANDE :
-
-
-
-1\.  \*\*MODULARITÉ PAR DÉFAUT (Règle d'Or) :\*\*
-
-&nbsp;   \* Interdiction formelle de créer des composants de plus de 150 lignes.
-
-&nbsp;   \* Si un fichier dépasse cette taille, tu DOIS le découper immédiatement en sous-composants.
-
-&nbsp;   \* Ne mets jamais la logique métier (fetch, calculs) mélangée au UI. Utilise des Custom Hooks (`useCart`, `useOrders`) dans `/hooks`.
-
-
-
-2\.  \*\*STRUCTURE DES DOSSIERS OBLIGATOIRE :\*\*
-
-&nbsp;   \* `src/components/ui/` : Uniquement les composants atomiques (Boutons, Inputs) réutilisables.
-
-&nbsp;   \* `src/components/dashboard/\[feature]/` : Composants spécifiques à l'admin (ex: `ProductList.tsx`, `StatsChart.tsx`).
-
-&nbsp;   \* `src/components/store/\[feature]/` : Composants spécifiques à la boutique publique (ex: `CartDrawer.tsx`, `ProductGrid.tsx`).
-
-&nbsp;   \* `src/lib/types.ts` : Toutes les interfaces TypeScript doivent être ici. Pas de `interface X {}` qui traîne dans les fichiers `.tsx`.
-
-
-
-3\.  \*\*CLEAN CODE :\*\*
-
-&nbsp;   \* Utilise toujours des noms explicites. Pas de `const data`, mais `const recentOrders`.
-
-&nbsp;   \* Supprime toujours le code mort ou commenté.
-
-&nbsp;   \* Si tu modifies un fichier, vérifie que tu ne casses pas les imports ailleurs.
-
-
-
-4\.  \*\*COMPORTEMENT "AGENTIQUE" :\*\*
-
-&nbsp;   \* Avant de coder une feature complexe, analyse d'abord quels petits composants tu vas devoir créer.
-
-&nbsp;   \* Ne me donne pas tout le code d'un coup dans un seul bloc. Crée fichier par fichier.
-
-
-
-SI TU NE RESPECTES PAS CES RÈGLES, LE CODE SERA REJETÉ.
+---
 
 FIN DU DOCUMENT
-
