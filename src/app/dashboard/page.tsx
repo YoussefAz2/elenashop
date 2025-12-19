@@ -1,8 +1,8 @@
-import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
 import type { Order, Store } from "@/types";
 import { DashboardClient } from "@/components/dashboard/dashboard-client";
+import Link from "next/link";
 
 export default async function DashboardPage() {
     const supabase = await createClient();
@@ -13,8 +13,26 @@ export default async function DashboardPage() {
         error: authError,
     } = await supabase.auth.getUser();
 
+    // Not logged in - show login page (NO redirect)
     if (authError || !user) {
-        redirect("/login");
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
+                <div className="text-center p-8 bg-white rounded-2xl shadow-xl max-w-md">
+                    <h1 className="text-2xl font-bold text-slate-900 mb-4">
+                        Connexion requise
+                    </h1>
+                    <p className="text-slate-600 mb-6">
+                        Vous devez être connecté pour accéder au dashboard.
+                    </p>
+                    <Link
+                        href="/login"
+                        className="inline-block px-6 py-3 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 transition-colors"
+                    >
+                        Se connecter
+                    </Link>
+                </div>
+            </div>
+        );
     }
 
     // Get user's store memberships first
@@ -23,9 +41,29 @@ export default async function DashboardPage() {
         .select("store_id, role")
         .eq("user_id", user.id);
 
-    // If no memberships at all, redirect to onboarding
+    // If no memberships at all - show create store page (NO redirect)
     if (membershipError || !storeMemberships || storeMemberships.length === 0) {
-        redirect("/onboarding");
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
+                <div className="text-center p-8 bg-white rounded-2xl shadow-xl max-w-md">
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-emerald-100 rounded-full mb-6">
+                        <span className="text-3xl">🏪</span>
+                    </div>
+                    <h1 className="text-2xl font-bold text-slate-900 mb-4">
+                        Créez votre première boutique
+                    </h1>
+                    <p className="text-slate-600 mb-6">
+                        Vous n'avez pas encore de boutique. Créez-en une pour commencer !
+                    </p>
+                    <Link
+                        href="/onboarding"
+                        className="inline-block px-6 py-3 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 transition-colors"
+                    >
+                        Créer ma boutique
+                    </Link>
+                </div>
+            </div>
+        );
     }
 
     // Get all store IDs
