@@ -189,14 +189,8 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
             // Set as current store in localStorage
             setCurrentStoreId(store.id);
 
-            // Show celebration
+            // Show celebration animation (no auto-redirect here, animation handles it)
             setShowConfetti(true);
-
-            // Redirect to editor
-            setTimeout(() => {
-                router.push("/dashboard?tab=editor");
-                router.refresh();
-            }, 2500);
 
         } catch (err) {
             console.error("Onboarding error:", err);
@@ -215,8 +209,8 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
                 templateId={selectedTemplate}
                 category={categoryLabel}
                 onComplete={() => {
-                    router.push("/dashboard?tab=editor");
-                    router.refresh();
+                    // Use window.location to avoid Next.js prefetch issues
+                    window.location.href = "/dashboard";
                 }}
             />
         );
