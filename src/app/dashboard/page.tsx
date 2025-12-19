@@ -253,8 +253,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
                             </div>
                         </div>
                         <div className="flex items-center gap-2 text-sm font-medium">
-                            <span className="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100/50">+12.5%</span>
-                            <span className="text-slate-400">vs mois dernier</span>
+                            <span className="text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">Ce mois</span>
                         </div>
                     </div>
                 </div>
@@ -275,8 +274,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
                             </div>
                         </div>
                         <div className="flex items-center gap-2 text-sm font-medium">
-                            <span className="text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100/50">+5</span>
-                            <span className="text-slate-400">nouvelles</span>
+                            <span className="text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">Ce mois</span>
                         </div>
                     </div>
                 </div>

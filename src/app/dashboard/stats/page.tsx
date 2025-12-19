@@ -67,10 +67,24 @@ export default async function StatsPage() {
         .eq("store_id", currentStore.id);
 
     return (
-        <StatsClient
-            seller={currentStore as any}
-            orders={(orders as Order[]) || []}
-            products={(products as Pick<Product, "id" | "title" | "price" | "image_url">[]) || []}
-        />
+        <div className="max-w-7xl mx-auto space-y-8">
+            {/* Header - Clean & Bold */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-6">
+                <div>
+                    <h1 className="text-4xl font-bold tracking-tight text-slate-900 leading-tight font-display">
+                        Statistiques
+                    </h1>
+                    <p className="text-slate-500 mt-2 text-lg font-medium">
+                        Analysez les performances de votre boutique.
+                    </p>
+                </div>
+            </div>
+
+            <StatsClient
+                seller={currentStore as any}
+                orders={(orders as Order[]) || []}
+                products={(products as Pick<Product, "id" | "title" | "price" | "image_url">[]) || []}
+            />
+        </div>
     );
 }

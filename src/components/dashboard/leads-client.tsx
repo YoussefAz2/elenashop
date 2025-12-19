@@ -24,78 +24,63 @@ export function LeadsClient({ seller, leads, totalLeads }: LeadsClientProps) {
     const conversionRate = totalLeads > 0 ? Math.round((convertedCount / totalLeads) * 100) : 0;
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
-            <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur-md dark:border-slate-800 dark:bg-slate-900/80">
-                <div className="mx-auto flex h-16 max-w-4xl items-center justify-between px-4">
-                    <div className="flex items-center gap-3">
-                        <a href="/dashboard" className="text-slate-500 hover:text-slate-700">
-                            <ArrowLeft className="h-5 w-5" />
-                        </a>
-                        <div className="flex items-center gap-2">
-                            <Users className="h-5 w-5 text-amber-600" />
-                            <h1 className="text-lg font-bold text-slate-900 dark:text-slate-100">
-                                Paniers Abandonnés
-                            </h1>
-                        </div>
-                    </div>
-                    <span className="text-sm text-slate-500">{leads.length} à relancer</span>
-                </div>
-            </header>
-
-            <div className="mx-auto max-w-4xl px-4 py-6">
-                <div className="grid grid-cols-2 gap-3">
-                    <Card className="border-0 shadow-sm bg-gradient-to-br from-amber-500 to-orange-500">
-                        <CardContent className="p-4">
-                            <div className="flex items-center gap-2 text-amber-100">
-                                <TrendingDown className="h-4 w-4" />
-                                <span className="text-xs font-medium">Abandons</span>
-                            </div>
-                            <p className="mt-2 text-2xl font-bold text-white">{leads.length}</p>
-                            <p className="text-xs text-amber-100">paniers non finalisés</p>
-                        </CardContent>
-                    </Card>
-                    <Card className="border-0 shadow-sm bg-gradient-to-br from-emerald-500 to-emerald-600">
-                        <CardContent className="p-4">
-                            <div className="flex items-center gap-2 text-emerald-100">
-                                <Users className="h-4 w-4" />
-                                <span className="text-xs font-medium">Conversion</span>
-                            </div>
-                            <p className="mt-2 text-2xl font-bold text-white">{conversionRate}%</p>
-                            <p className="text-xs text-emerald-100">{convertedCount} convertis</p>
-                        </CardContent>
-                    </Card>
-                </div>
-
-                {leads.length > 0 && (
-                    <div className="mt-4 flex items-start gap-3 rounded-xl bg-amber-50 border border-amber-200 p-4">
-                        <AlertTriangle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+        <div className="space-y-6">
+            {/* Metric Cards - Solid Premium Look */}
+            <div className="grid grid-cols-2 gap-4">
+                <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+                    <div className="flex items-start justify-between">
                         <div>
-                            <p className="text-sm font-medium text-amber-800">💰 Opportunité de récupération</p>
-                            <p className="text-xs text-amber-700 mt-1">
-                                Ces clients ont montré de l&apos;intérêt mais n&apos;ont pas finalisé. Un simple message WhatsApp peut les convertir !
-                            </p>
+                            <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1">Abandons</p>
+                            <p className="text-3xl font-bold text-slate-900">{leads.length}</p>
+                            <p className="text-sm text-slate-400 mt-1">paniers non finalisés</p>
+                        </div>
+                        <div className="p-3 rounded-xl bg-slate-50 text-slate-900 border border-slate-100">
+                            <TrendingDown className="h-5 w-5" />
                         </div>
                     </div>
-                )}
+                </div>
+                <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+                    <div className="flex items-start justify-between">
+                        <div>
+                            <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1">Conversion</p>
+                            <p className="text-3xl font-bold text-slate-900">{conversionRate}%</p>
+                            <p className="text-sm text-slate-400 mt-1">{convertedCount} convertis</p>
+                        </div>
+                        <div className="p-3 rounded-xl bg-slate-50 text-slate-900 border border-slate-100">
+                            <Users className="h-5 w-5" />
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <main className="mx-auto max-w-4xl px-4 pb-6">
-                {leads.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-16 text-center">
-                        <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100">
-                            <Users className="h-10 w-10 text-emerald-500" />
-                        </div>
-                        <h2 className="text-lg font-semibold text-slate-900">Aucun panier abandonné</h2>
-                        <p className="mt-1 text-sm text-slate-500">Tous vos leads ont finalisé leur commande 🎉</p>
+            {leads.length > 0 && (
+                <div className="flex items-start gap-3 rounded-xl bg-amber-50 border border-amber-200 p-4">
+                    <AlertTriangle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                        <p className="text-sm font-medium text-amber-800">💰 Opportunité de récupération</p>
+                        <p className="text-xs text-amber-700 mt-1">
+                            Ces clients ont montré de l&apos;intérêt mais n&apos;ont pas finalisé. Un simple message WhatsApp peut les convertir !
+                        </p>
                     </div>
-                ) : (
-                    <div className="space-y-3">
-                        {leads.map((lead) => (
-                            <LeadCard key={lead.id} lead={lead} storeName={seller.store_name} />
-                        ))}
+                </div>
+            )}
+
+            {/* Leads List */}
+            {leads.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-16 text-center bg-white rounded-2xl border border-slate-200">
+                    <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-50 border border-emerald-100">
+                        <Users className="h-10 w-10 text-emerald-500" />
                     </div>
-                )}
-            </main>
+                    <h2 className="text-lg font-semibold text-slate-900">Aucun panier abandonné</h2>
+                    <p className="mt-1 text-sm text-slate-500">Tous vos leads ont finalisé leur commande 🎉</p>
+                </div>
+            ) : (
+                <div className="bg-white rounded-2xl border border-slate-200 divide-y divide-slate-50 overflow-hidden">
+                    {leads.map((lead) => (
+                        <LeadCard key={lead.id} lead={lead} storeName={seller.store_name} />
+                    ))}
+                </div>
+            )}
         </div>
     );
 }
