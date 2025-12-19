@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
-import type { Order, Store } from "@/types";
+import type { Order, Store, StoreWithRole } from "@/types";
 import { DashboardClient } from "@/components/dashboard/dashboard-client";
 import Link from "next/link";
 
@@ -20,7 +20,7 @@ export default async function DashboardPage() {
     const cookieStoreId = cookieStore.get("current_store_id")?.value;
 
     let currentStore: Store | null = null;
-    let allStores: (Store & { role: string })[] = [];
+    let allStores: StoreWithRole[] = [];
 
     // Try direct store load if we have a cookie
     if (cookieStoreId) {
@@ -33,7 +33,7 @@ export default async function DashboardPage() {
 
             if (data) {
                 currentStore = data as Store;
-                allStores = [{ ...currentStore, role: "owner" }];
+                allStores = [{ ...currentStore, role: "owner" as const }];
             }
         } catch (e) {
             console.error("Direct store load failed:", e);
@@ -59,8 +59,9 @@ export default async function DashboardPage() {
                 if (stores && stores.length > 0) {
                     allStores = stores.map(store => {
                         const membership = memberships.find(m => m.store_id === store.id);
-                        return { ...store, role: membership?.role || "owner" };
-                    }) as (Store & { role: string })[];
+                        const role = (membership?.role || "owner") as "owner" | "admin" | "editor";
+                        return { ...store, role };
+                    }) as StoreWithRole[];
 
                     currentStore = allStores[0] as Store;
                 }
