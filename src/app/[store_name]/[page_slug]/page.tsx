@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
-import type { Profile, Page, ThemeConfig } from "@/types";
+import type { Store, Page, ThemeConfig } from "@/types";
 import { DEFAULT_THEME_CONFIG } from "@/types";
 import { AboutPage, ContactPage, FAQPage } from "@/components/store/pages";
 import { ArrowLeft } from "lucide-react";
@@ -16,21 +16,21 @@ export default async function StorePage({ params }: PageProps) {
     const { store_name, page_slug } = await params;
     const supabase = await createClient();
 
-    // Fetch seller profile
-    const { data: profile } = await supabase
-        .from("profiles")
+    // Fetch store by slug (multi-store architecture)
+    const { data: store } = await supabase
+        .from("stores")
         .select("*")
-        .eq("store_name", store_name)
+        .ilike("slug", store_name)
         .single();
 
-    if (!profile) {
+    if (!store) {
         notFound();
     }
 
-    const seller = profile as Profile;
+    const currentStore = store as Store;
 
     // Deep merge theme_config with defaults
-    const rawConfig: Partial<ThemeConfig> = seller.theme_config || {};
+    const rawConfig: Partial<ThemeConfig> = currentStore.theme_config || {};
     const config: ThemeConfig = {
         ...DEFAULT_THEME_CONFIG,
         ...rawConfig,
@@ -73,11 +73,11 @@ export default async function StorePage({ params }: PageProps) {
         },
     };
 
-    // Fetch published pages for navigation
+    // Fetch published pages by store_id
     const { data: pages } = await supabase
         .from("pages")
         .select("*")
-        .eq("user_id", seller.id)
+        .eq("store_id", currentStore.id)
         .eq("is_published", true)
         .order("created_at", { ascending: true });
 
@@ -85,9 +85,9 @@ export default async function StorePage({ params }: PageProps) {
 
     // Build navigation (preconfigured + custom pages)
     const navPages: Page[] = [
-        ...(config.aboutPageContent.visible ? [{ id: "about", user_id: seller.id, slug: "a-propos", title: "À propos", content: null, is_published: true, created_at: "" }] : []),
-        ...(config.contactPageContent.visible ? [{ id: "contact", user_id: seller.id, slug: "contact", title: "Contact", content: null, is_published: true, created_at: "" }] : []),
-        ...(config.faqPageContent.visible ? [{ id: "faq", user_id: seller.id, slug: "faq", title: "FAQ", content: null, is_published: true, created_at: "" }] : []),
+        ...(config.aboutPageContent.visible ? [{ id: "about", user_id: currentStore.id, slug: "a-propos", title: "À propos", content: null, is_published: true, created_at: "" }] : []),
+        ...(config.contactPageContent.visible ? [{ id: "contact", user_id: currentStore.id, slug: "contact", title: "Contact", content: null, is_published: true, created_at: "" }] : []),
+        ...(config.faqPageContent.visible ? [{ id: "faq", user_id: currentStore.id, slug: "faq", title: "FAQ", content: null, is_published: true, created_at: "" }] : []),
         ...publishedPages,
     ];
 
@@ -104,13 +104,13 @@ export default async function StorePage({ params }: PageProps) {
                 <link href={googleFontUrl} rel="stylesheet" />
 
                 {page_slug === "a-propos" && config.aboutPageContent.visible && (
-                    <AboutPage config={config} storeName={store_name} pages={navPages} />
+                    <AboutPage config={config} storeName={currentStore.slug} pages={navPages} />
                 )}
                 {page_slug === "contact" && config.contactPageContent.visible && (
-                    <ContactPage config={config} storeName={store_name} sellerId={seller.id} pages={navPages} />
+                    <ContactPage config={config} storeName={currentStore.slug} sellerId={currentStore.id} pages={navPages} />
                 )}
                 {page_slug === "faq" && config.faqPageContent.visible && (
-                    <FAQPage config={config} storeName={store_name} pages={navPages} />
+                    <FAQPage config={config} storeName={currentStore.slug} pages={navPages} />
                 )}
             </>
         );
@@ -120,7 +120,7 @@ export default async function StorePage({ params }: PageProps) {
     const { data: page } = await supabase
         .from("pages")
         .select("*")
-        .eq("user_id", seller.id)
+        .eq("store_id", currentStore.id)
         .eq("slug", page_slug)
         .eq("is_published", true)
         .single();
@@ -156,7 +156,7 @@ export default async function StorePage({ params }: PageProps) {
                 >
                     <div className="mx-auto max-w-4xl flex items-center gap-4">
                         <a
-                            href={`/${store_name}`}
+                            href={`/${currentStore.slug}`}
                             className="flex items-center gap-2 text-sm opacity-70 hover:opacity-100 transition-opacity"
                         >
                             <ArrowLeft className="h-4 w-4" />
@@ -178,7 +178,7 @@ export default async function StorePage({ params }: PageProps) {
                 {/* Footer */}
                 <footer className="py-8 px-6 border-t" style={{ borderColor: `${config.global.colors.text}10` }}>
                     <div className="max-w-4xl mx-auto text-center">
-                        <a href={`/${store_name}`} className="text-sm opacity-60 hover:opacity-100 transition-opacity">
+                        <a href={`/${currentStore.slug}`} className="text-sm opacity-60 hover:opacity-100 transition-opacity">
                             ← Retour à la boutique
                         </a>
                     </div>
