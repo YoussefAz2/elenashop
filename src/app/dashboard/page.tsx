@@ -1,11 +1,17 @@
+import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
 import type { Order, Store } from "@/types";
 import { DashboardClient } from "@/components/dashboard/dashboard-client";
 import Link from "next/link";
 
-export default async function DashboardPage() {
+interface PageProps {
+    searchParams: Promise<{ from?: string; tab?: string }>;
+}
+
+export default async function DashboardPage({ searchParams }: PageProps) {
     const supabase = await createClient();
+    const params = await searchParams;
 
     // Check authentication
     const {
@@ -13,26 +19,8 @@ export default async function DashboardPage() {
         error: authError,
     } = await supabase.auth.getUser();
 
-    // Not logged in - show login page (NO redirect)
     if (authError || !user) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
-                <div className="text-center p-8 bg-white rounded-2xl shadow-xl max-w-md">
-                    <h1 className="text-2xl font-bold text-slate-900 mb-4">
-                        Connexion requise
-                    </h1>
-                    <p className="text-slate-600 mb-6">
-                        Vous devez être connecté pour accéder au dashboard.
-                    </p>
-                    <Link
-                        href="/login"
-                        className="inline-block px-6 py-3 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 transition-colors"
-                    >
-                        Se connecter
-                    </Link>
-                </div>
-            </div>
-        );
+        redirect("/login");
     }
 
     // Get user's store memberships first
@@ -41,29 +29,42 @@ export default async function DashboardPage() {
         .select("store_id, role")
         .eq("user_id", user.id);
 
-    // If no memberships at all - show create store page (NO redirect)
+    // If no memberships - redirect to onboarding with loop protection
     if (membershipError || !storeMemberships || storeMemberships.length === 0) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
-                <div className="text-center p-8 bg-white rounded-2xl shadow-xl max-w-md">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-emerald-100 rounded-full mb-6">
-                        <span className="text-3xl">🏪</span>
+        if (params.from === "onboarding") {
+            // We came from onboarding, don't redirect back - show a helpful page
+            return (
+                <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
+                    <div className="text-center p-8 bg-white rounded-2xl shadow-xl max-w-md">
+                        <div className="inline-flex items-center justify-center w-16 h-16 bg-amber-100 rounded-full mb-6">
+                            <span className="text-3xl">⚠️</span>
+                        </div>
+                        <h1 className="text-2xl font-bold text-slate-900 mb-4">
+                            Problème de chargement
+                        </h1>
+                        <p className="text-slate-600 mb-6">
+                            Impossible de charger vos boutiques. Cela peut être un problème temporaire.
+                        </p>
+                        <div className="flex flex-col gap-3">
+                            <Link
+                                href="/dashboard"
+                                className="inline-block px-6 py-3 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 transition-colors"
+                            >
+                                Réessayer
+                            </Link>
+                            <Link
+                                href="/onboarding"
+                                className="inline-block px-6 py-3 bg-slate-200 text-slate-700 font-medium rounded-lg hover:bg-slate-300 transition-colors"
+                            >
+                                Créer une boutique
+                            </Link>
+                        </div>
                     </div>
-                    <h1 className="text-2xl font-bold text-slate-900 mb-4">
-                        Créez votre première boutique
-                    </h1>
-                    <p className="text-slate-600 mb-6">
-                        Vous n'avez pas encore de boutique. Créez-en une pour commencer !
-                    </p>
-                    <Link
-                        href="/onboarding"
-                        className="inline-block px-6 py-3 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 transition-colors"
-                    >
-                        Créer ma boutique
-                    </Link>
                 </div>
-            </div>
-        );
+            );
+        }
+        // Normal redirect to onboarding with source tracking
+        redirect("/onboarding?from=dashboard");
     }
 
     // Get all store IDs
@@ -75,16 +76,18 @@ export default async function DashboardPage() {
         .select("*")
         .in("id", storeIds);
 
-    // If we have memberships but can't load stores, show error page instead of redirect loop
+    // If we have memberships but can't load stores, show error page
     if (storesError || !storesData || storesData.length === 0) {
-        // Don't redirect - this would cause a loop. Show an error state instead.
         return (
             <div className="min-h-screen flex items-center justify-center bg-slate-50">
-                <div className="text-center p-8">
+                <div className="text-center p-8 bg-white rounded-2xl shadow-xl max-w-md">
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-amber-100 rounded-full mb-6">
+                        <span className="text-3xl">⚠️</span>
+                    </div>
                     <h1 className="text-2xl font-bold text-slate-900 mb-4">
                         Erreur de chargement
                     </h1>
-                    <p className="text-slate-600 mb-4">
+                    <p className="text-slate-600 mb-6">
                         Impossible de charger vos boutiques. Veuillez réessayer.
                     </p>
                     <a
@@ -131,19 +134,22 @@ export default async function DashboardPage() {
     if (!currentStore || !currentStore.id) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-slate-50">
-                <div className="text-center p-8">
+                <div className="text-center p-8 bg-white rounded-2xl shadow-xl max-w-md">
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-emerald-100 rounded-full mb-6">
+                        <span className="text-3xl">🏪</span>
+                    </div>
                     <h1 className="text-2xl font-bold text-slate-900 mb-4">
                         Aucune boutique trouvée
                     </h1>
-                    <p className="text-slate-600 mb-4">
+                    <p className="text-slate-600 mb-6">
                         Créez votre première boutique pour commencer.
                     </p>
-                    <a
+                    <Link
                         href="/onboarding"
                         className="inline-block px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700"
                     >
                         Créer une boutique
-                    </a>
+                    </Link>
                 </div>
             </div>
         );
@@ -179,18 +185,20 @@ export default async function DashboardPage() {
         0
     );
 
+    const stats = {
+        totalOrders: allOrders.length,
+        todayOrders: todayOrders.length,
+        totalRevenue,
+        todayRevenue,
+    };
+
     return (
         <DashboardClient
             currentStore={currentStore}
             currentRole={currentRole}
             stores={userStores}
             orders={allOrders}
-            stats={{
-                totalOrders: allOrders.length,
-                todayOrders: todayOrders.length,
-                totalRevenue,
-                todayRevenue,
-            }}
+            stats={stats}
         />
     );
 }
