@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Store, ShoppingBag, Star, Check, ArrowRight } from "lucide-react";
+import { Store, ShoppingBag, Check, Rocket, Sparkles } from "lucide-react";
 
 interface StoreBuildingAnimationProps {
     storeName: string;
@@ -12,14 +12,17 @@ interface StoreBuildingAnimationProps {
 }
 
 const STEPS = [
-    { id: "init", label: "Initialisation...", duration: 800 },
-    { id: "header", label: "Construction du header...", duration: 600 },
-    { id: "hero", label: "Ajout de la bannière...", duration: 800 },
-    { id: "name", label: "Écriture du nom...", duration: 1000 },
-    { id: "products", label: "Ajout des produits...", duration: 1200 },
-    { id: "style", label: "Application du style...", duration: 600 },
-    { id: "done", label: "Finalisation...", duration: 500 },
+    { id: "init", label: "Préparation de votre espace...", duration: 800 },
+    { id: "header", label: "Design du header...", duration: 600 },
+    { id: "hero", label: "Création de la bannière...", duration: 800 },
+    { id: "name", label: "Personnalisation...", duration: 1000 },
+    { id: "products", label: "Mise en place des produits...", duration: 1200 },
+    { id: "style", label: "Touches finales...", duration: 600 },
+    { id: "done", label: "✨ Magie en cours...", duration: 500 },
 ];
+
+// Fun emojis for confetti
+const CONFETTI_ITEMS = ["🎉", "✨", "💫", "⭐", "🚀", "💎", "🎊", "🌟", "💜", "💚", "🔥", "💰"];
 
 export function StoreBuildingAnimation({
     storeName,
@@ -33,10 +36,10 @@ export function StoreBuildingAnimation({
 
     // Get template colors
     const templateColors = {
-        minimal: { primary: "#10b981", bg: "#ffffff", text: "#1e293b" },
-        luxe: { primary: "#d4af37", bg: "#1a1a1a", text: "#ffffff" },
-        street: { primary: "#a855f7", bg: "#0f0f0f", text: "#ffffff" },
-    }[templateId] || { primary: "#10b981", bg: "#ffffff", text: "#1e293b" };
+        minimal: { primary: "#10b981", secondary: "#34d399", bg: "#ffffff", text: "#1e293b" },
+        luxe: { primary: "#d4af37", secondary: "#f4d03f", bg: "#1a1a1a", text: "#ffffff" },
+        street: { primary: "#a855f7", secondary: "#c084fc", bg: "#0f0f0f", text: "#ffffff" },
+    }[templateId] || { primary: "#10b981", secondary: "#34d399", bg: "#ffffff", text: "#1e293b" };
 
     // Auto-advance steps
     useEffect(() => {
@@ -46,7 +49,6 @@ export function StoreBuildingAnimation({
             }, STEPS[currentStep]?.duration || 500);
             return () => clearTimeout(timer);
         } else {
-            // All steps complete - just show confetti, no auto-redirect
             setShowConfetti(true);
         }
     }, [currentStep]);
@@ -65,43 +67,104 @@ export function StoreBuildingAnimation({
     const isStepActive = (stepIndex: number) => currentStep === stepIndex;
 
     return (
-        <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex flex-col items-center justify-center z-50 overflow-hidden">
-            {/* Progress indicator */}
-            <div className="absolute top-8 left-1/2 -translate-x-1/2 flex items-center gap-2">
-                {STEPS.slice(0, -1).map((step, i) => (
+        <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 flex flex-col items-center justify-center z-50 overflow-hidden">
+            {/* Animated background particles */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                {[...Array(20)].map((_, i) => (
                     <motion.div
-                        key={step.id}
-                        initial={{ scale: 0.8, opacity: 0.5 }}
-                        animate={{
-                            scale: isStepActive(i) ? 1.2 : 1,
-                            opacity: isStepComplete(i) ? 1 : isStepActive(i) ? 1 : 0.4,
-                            backgroundColor: isStepComplete(i) ? "#10b981" : isStepActive(i) ? "#3b82f6" : "#475569",
+                        key={`bg-${i}`}
+                        initial={{
+                            x: Math.random() * window.innerWidth,
+                            y: Math.random() * window.innerHeight,
+                            opacity: 0.1
                         }}
-                        className="w-2 h-2 rounded-full"
+                        animate={{
+                            y: [null, Math.random() * -200],
+                            opacity: [0.1, 0.3, 0.1]
+                        }}
+                        transition={{
+                            duration: 5 + Math.random() * 5,
+                            repeat: Infinity,
+                            ease: "easeInOut"
+                        }}
+                        className="absolute w-1 h-1 rounded-full bg-white/20"
                     />
                 ))}
             </div>
 
-            {/* Current step label */}
-            <motion.p
+            {/* Progress indicator - Creative dots */}
+            <div className="absolute top-8 left-1/2 -translate-x-1/2">
+                <div className="flex items-center gap-3">
+                    {STEPS.slice(0, -1).map((step, i) => (
+                        <motion.div
+                            key={step.id}
+                            initial={{ scale: 0.5, opacity: 0.3 }}
+                            animate={{
+                                scale: isStepActive(i) ? 1.4 : isStepComplete(i) ? 1 : 0.8,
+                                opacity: isStepComplete(i) ? 1 : isStepActive(i) ? 1 : 0.3,
+                            }}
+                            className="relative"
+                        >
+                            <div
+                                className={`w-3 h-3 rounded-full transition-colors duration-300 ${isStepComplete(i)
+                                        ? "bg-emerald-400"
+                                        : isStepActive(i)
+                                            ? "bg-blue-400"
+                                            : "bg-slate-600"
+                                    }`}
+                            />
+                            {isStepActive(i) && (
+                                <motion.div
+                                    animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0, 0.5] }}
+                                    transition={{ repeat: Infinity, duration: 1 }}
+                                    className="absolute inset-0 rounded-full bg-blue-400"
+                                />
+                            )}
+                        </motion.div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Current step label with icon */}
+            <motion.div
                 key={currentStep}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="text-emerald-400 text-sm font-medium mb-6"
+                className="flex items-center gap-2 mb-6"
             >
-                {STEPS[currentStep]?.label || "✨ C'est prêt !"}
-            </motion.p>
+                <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
+                >
+                    <Sparkles className="w-4 h-4 text-amber-400" />
+                </motion.div>
+                <span className="text-amber-300 text-sm font-medium tracking-wide">
+                    {STEPS[currentStep]?.label || "C'est prêt !"}
+                </span>
+            </motion.div>
 
-            {/* Phone Mockup */}
+            {/* Phone Mockup with glow effect */}
             <div className="relative">
+                {/* Glow effect behind phone */}
+                <motion.div
+                    animate={{
+                        boxShadow: [
+                            `0 0 60px ${templateColors.primary}40`,
+                            `0 0 100px ${templateColors.primary}60`,
+                            `0 0 60px ${templateColors.primary}40`
+                        ]
+                    }}
+                    transition={{ repeat: Infinity, duration: 2 }}
+                    className="absolute inset-0 rounded-[3rem] blur-xl"
+                />
+
                 {/* Phone Frame */}
                 <motion.div
                     initial={{ scale: 0.8, opacity: 0, rotateY: -15 }}
                     animate={{ scale: 1, opacity: 1, rotateY: 0 }}
                     transition={{ type: "spring", duration: 0.8 }}
-                    className="relative w-[340px] h-[680px] bg-slate-800 rounded-[3rem] p-2 shadow-2xl shadow-black/50"
-                    style={{ perspective: "1000px" }}
+                    className="relative w-[320px] h-[640px] bg-gradient-to-b from-slate-700 to-slate-800 rounded-[3rem] p-2 shadow-2xl"
                 >
                     {/* Screen */}
                     <motion.div
@@ -110,10 +173,12 @@ export function StoreBuildingAnimation({
                         transition={{ delay: 2.5, duration: 0.5 }}
                     >
                         {/* Notch */}
-                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-6 bg-slate-800 rounded-b-2xl z-20" />
+                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-7 bg-slate-800 rounded-b-3xl z-20 flex items-center justify-center">
+                            <div className="w-16 h-1.5 bg-slate-700 rounded-full" />
+                        </div>
 
                         {/* Content that builds up */}
-                        <div className="w-full h-full pt-8 flex flex-col">
+                        <div className="w-full h-full pt-10 flex flex-col">
                             {/* Header - Step 1 */}
                             <AnimatePresence>
                                 {currentStep >= 1 && (
@@ -121,31 +186,35 @@ export function StoreBuildingAnimation({
                                         initial={{ y: -50, opacity: 0 }}
                                         animate={{ y: 0, opacity: 1 }}
                                         className="px-4 py-3 border-b flex items-center justify-between"
-                                        style={{ borderColor: `${templateColors.text}20` }}
+                                        style={{ borderColor: `${templateColors.text}15` }}
                                     >
                                         <div className="flex items-center gap-2">
                                             <motion.div
-                                                animate={{ backgroundColor: templateColors.primary }}
-                                                className="w-6 h-6 rounded-lg flex items-center justify-center"
+                                                animate={{
+                                                    backgroundColor: templateColors.primary,
+                                                    boxShadow: `0 0 20px ${templateColors.primary}50`
+                                                }}
+                                                className="w-8 h-8 rounded-xl flex items-center justify-center"
                                             >
-                                                <Store className="w-3 h-3 text-white" />
+                                                <Store className="w-4 h-4 text-white" />
                                             </motion.div>
                                             <motion.span
                                                 animate={{ color: templateColors.text }}
-                                                className="text-xs font-bold"
+                                                className="text-sm font-bold"
                                             >
                                                 {displayedName || "..."}
                                                 {currentStep === 3 && displayedName.length < storeName.length && (
                                                     <motion.span
                                                         animate={{ opacity: [1, 0] }}
                                                         transition={{ repeat: Infinity, duration: 0.5 }}
+                                                        className="text-emerald-400"
                                                     >
                                                         |
                                                     </motion.span>
                                                 )}
                                             </motion.span>
                                         </div>
-                                        <ShoppingBag className="w-4 h-4" style={{ color: templateColors.text }} />
+                                        <ShoppingBag className="w-5 h-5" style={{ color: templateColors.text }} />
                                     </motion.div>
                                 )}
                             </AnimatePresence>
@@ -156,22 +225,29 @@ export function StoreBuildingAnimation({
                                     <motion.div
                                         initial={{ scaleY: 0, opacity: 0 }}
                                         animate={{ scaleY: 1, opacity: 1 }}
-                                        style={{ originY: 0, backgroundColor: templateColors.primary }}
-                                        className="h-32 flex flex-col items-center justify-center px-4"
+                                        style={{
+                                            originY: 0,
+                                            background: `linear-gradient(135deg, ${templateColors.primary}, ${templateColors.secondary})`
+                                        }}
+                                        className="h-36 flex flex-col items-center justify-center px-4 relative overflow-hidden"
                                     >
+                                        {/* Decorative circles */}
+                                        <div className="absolute -right-10 -top-10 w-32 h-32 rounded-full bg-white/10" />
+                                        <div className="absolute -left-5 -bottom-5 w-20 h-20 rounded-full bg-white/10" />
+
                                         <motion.h1
                                             initial={{ opacity: 0, y: 20 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ delay: 0.3 }}
-                                            className="text-white text-lg font-bold text-center"
+                                            className="text-white text-xl font-bold text-center relative z-10"
                                         >
                                             Bienvenue
                                         </motion.h1>
                                         <motion.p
                                             initial={{ opacity: 0 }}
-                                            animate={{ opacity: 0.8 }}
+                                            animate={{ opacity: 0.9 }}
                                             transition={{ delay: 0.5 }}
-                                            className="text-white/80 text-xs text-center mt-1"
+                                            className="text-white/90 text-sm text-center mt-1 relative z-10"
                                         >
                                             Découvrez notre collection
                                         </motion.p>
@@ -185,29 +261,39 @@ export function StoreBuildingAnimation({
                                     <motion.div
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
-                                        className="flex-1 p-3 grid grid-cols-2 gap-2"
+                                        className="flex-1 p-3 grid grid-cols-2 gap-3"
                                     >
                                         {[0, 1, 2, 3].map((i) => (
                                             <motion.div
                                                 key={i}
-                                                initial={{ scale: 0, opacity: 0 }}
-                                                animate={{ scale: 1, opacity: 1 }}
-                                                transition={{ delay: i * 0.15, type: "spring" }}
-                                                className="rounded-lg overflow-hidden"
-                                                style={{ backgroundColor: `${templateColors.text}10` }}
+                                                initial={{ scale: 0, opacity: 0, rotate: -10 }}
+                                                animate={{ scale: 1, opacity: 1, rotate: 0 }}
+                                                transition={{ delay: i * 0.15, type: "spring", bounce: 0.4 }}
+                                                className="rounded-xl overflow-hidden shadow-lg"
+                                                style={{ backgroundColor: `${templateColors.text}08` }}
                                             >
                                                 <div
-                                                    className="aspect-square"
-                                                    style={{ backgroundColor: `${templateColors.primary}30` }}
-                                                />
+                                                    className="aspect-square relative"
+                                                    style={{
+                                                        background: `linear-gradient(135deg, ${templateColors.primary}20, ${templateColors.secondary}30)`
+                                                    }}
+                                                >
+                                                    {/* Product placeholder icon */}
+                                                    <div className="absolute inset-0 flex items-center justify-center">
+                                                        <div
+                                                            className="w-8 h-8 rounded-full"
+                                                            style={{ backgroundColor: `${templateColors.primary}40` }}
+                                                        />
+                                                    </div>
+                                                </div>
                                                 <div className="p-2">
                                                     <div
-                                                        className="h-2 rounded w-3/4 mb-1"
-                                                        style={{ backgroundColor: `${templateColors.text}30` }}
+                                                        className="h-2 rounded-full w-3/4 mb-1.5"
+                                                        style={{ backgroundColor: `${templateColors.text}20` }}
                                                     />
                                                     <motion.div
                                                         animate={{ backgroundColor: templateColors.primary }}
-                                                        className="h-2 rounded w-1/2"
+                                                        className="h-2 rounded-full w-1/2"
                                                     />
                                                 </div>
                                             </motion.div>
@@ -222,130 +308,153 @@ export function StoreBuildingAnimation({
                             {currentStep === 5 && (
                                 <motion.div
                                     initial={{ opacity: 0 }}
-                                    animate={{ opacity: [0, 0.8, 0] }}
-                                    transition={{ duration: 0.6 }}
-                                    className="absolute inset-0 bg-white z-30"
+                                    animate={{ opacity: [0, 1, 0] }}
+                                    transition={{ duration: 0.4 }}
+                                    className="absolute inset-0 z-30"
+                                    style={{
+                                        background: `radial-gradient(circle at center, ${templateColors.primary}80, transparent)`
+                                    }}
                                 />
                             )}
                         </AnimatePresence>
                     </motion.div>
                 </motion.div>
 
-                {/* Floating elements during build */}
+                {/* Floating emojis during build */}
                 <AnimatePresence>
                     {currentStep >= 1 && currentStep <= 5 && (
                         <>
-                            <motion.div
-                                initial={{ x: -100, opacity: 0 }}
-                                animate={{ x: [-100, -60, -100], opacity: [0, 1, 0] }}
-                                transition={{ duration: 2, repeat: Infinity }}
-                                className="absolute left-0 top-1/4 text-2xl"
-                            >
-                                🔧
-                            </motion.div>
-                            <motion.div
-                                initial={{ x: 100, opacity: 0 }}
-                                animate={{ x: [100, 60, 100], opacity: [0, 1, 0] }}
-                                transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
-                                className="absolute right-0 top-1/2 text-2xl"
-                            >
-                                ⚡
-                            </motion.div>
-                            <motion.div
-                                initial={{ y: 100, opacity: 0 }}
-                                animate={{ y: [100, 60, 100], opacity: [0, 1, 0] }}
-                                transition={{ duration: 2, repeat: Infinity, delay: 1 }}
-                                className="absolute bottom-0 left-1/2 text-2xl"
-                            >
-                                🎨
-                            </motion.div>
+                            {["🔨", "✨", "🎨", "⚡"].map((emoji, i) => (
+                                <motion.div
+                                    key={emoji}
+                                    initial={{ opacity: 0, scale: 0 }}
+                                    animate={{
+                                        opacity: [0, 1, 0],
+                                        scale: [0.5, 1.2, 0.5],
+                                        x: [0, (i % 2 === 0 ? -30 : 30), 0],
+                                        y: [0, -20, 0]
+                                    }}
+                                    transition={{
+                                        duration: 2,
+                                        repeat: Infinity,
+                                        delay: i * 0.5
+                                    }}
+                                    className="absolute text-2xl"
+                                    style={{
+                                        left: i % 2 === 0 ? "-40px" : "auto",
+                                        right: i % 2 === 1 ? "-40px" : "auto",
+                                        top: `${25 + i * 20}%`
+                                    }}
+                                >
+                                    {emoji}
+                                </motion.div>
+                            ))}
                         </>
                     )}
                 </AnimatePresence>
             </div>
 
-            {/* Completion state */}
+            {/* Completion state - More creative */}
             <AnimatePresence>
                 {showConfetti && (
                     <motion.div
-                        initial={{ opacity: 0, y: 30 }}
+                        initial={{ opacity: 0, y: 50 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="absolute bottom-12 text-center"
+                        transition={{ type: "spring", bounce: 0.4 }}
+                        className="absolute bottom-8 text-center"
                     >
-                        <motion.div
-                            initial={{ scale: 0 }}
-                            animate={{ scale: [0, 1.2, 1] }}
-                            transition={{ type: "spring", delay: 0.2, duration: 0.6 }}
-                            className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full mb-6 shadow-lg shadow-emerald-500/40"
-                        >
+                        {/* Success icon with multiple rings */}
+                        <div className="relative inline-block mb-6">
+                            <motion.div
+                                animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.1, 0.3] }}
+                                transition={{ repeat: Infinity, duration: 2 }}
+                                className="absolute inset-0 w-24 h-24 -m-2 rounded-full bg-emerald-400"
+                            />
                             <motion.div
                                 animate={{ scale: [1, 1.1, 1] }}
-                                transition={{ repeat: Infinity, duration: 1.5 }}
+                                transition={{ repeat: Infinity, duration: 1.5, delay: 0.2 }}
+                                className="absolute inset-0 w-20 h-20 rounded-full bg-emerald-500/50"
+                            />
+                            <motion.div
+                                initial={{ scale: 0, rotate: -180 }}
+                                animate={{ scale: 1, rotate: 0 }}
+                                transition={{ type: "spring", delay: 0.3, bounce: 0.5 }}
+                                className="relative w-20 h-20 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/40"
                             >
-                                <Check className="w-10 h-10 text-white" />
+                                <Check className="w-10 h-10 text-white" strokeWidth={3} />
                             </motion.div>
-                        </motion.div>
+                        </div>
+
+                        {/* Text */}
                         <motion.h2
-                            initial={{ opacity: 0, y: 10 }}
+                            initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.4 }}
-                            className="text-3xl font-bold text-white mb-3"
+                            transition={{ delay: 0.5 }}
+                            className="text-3xl font-bold text-white mb-2"
                         >
-                            🎉 Votre boutique est prête !
+                            <span className="text-4xl">🎉</span> Votre boutique est prête !
                         </motion.h2>
                         <motion.p
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            transition={{ delay: 0.6 }}
-                            className="text-slate-400 mb-6"
+                            transition={{ delay: 0.7 }}
+                            className="text-slate-400 mb-8"
                         >
-                            <span className="text-emerald-400 font-semibold">{storeName}</span> • {category}
+                            <span className="text-emerald-400 font-semibold">{storeName}</span>
+                            <span className="mx-2">•</span>
+                            {category}
                         </motion.p>
+
+                        {/* Creative button */}
                         <motion.button
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.8, type: "spring" }}
-                            whileHover={{ scale: 1.05 }}
+                            transition={{ delay: 0.9, type: "spring" }}
+                            whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(16, 185, 129, 0.4)" }}
                             whileTap={{ scale: 0.95 }}
                             onClick={onComplete}
-                            className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold rounded-full shadow-lg shadow-emerald-500/30 transition-all"
+                            className="group relative inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-600 text-white font-bold text-lg rounded-2xl shadow-xl shadow-emerald-500/30 overflow-hidden"
                         >
-                            <span>Configurez votre boutique</span>
-                            <ArrowRight className="w-5 h-5" />
+                            {/* Button shine effect */}
+                            <motion.div
+                                animate={{ x: [-200, 200] }}
+                                transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12"
+                            />
+
+                            <Rocket className="w-6 h-6 group-hover:rotate-12 transition-transform" />
+                            <span>Lancer ma boutique</span>
                         </motion.button>
                     </motion.div>
                 )}
             </AnimatePresence>
 
-            {/* Confetti */}
+            {/* Emoji confetti - more fun! */}
             {showConfetti && (
                 <div className="fixed inset-0 pointer-events-none overflow-hidden">
-                    {[...Array(50)].map((_, i) => (
+                    {[...Array(40)].map((_, i) => (
                         <motion.div
                             key={i}
                             initial={{
                                 x: "50vw",
-                                y: "100vh",
+                                y: "110vh",
                                 scale: 0,
+                                rotate: 0,
                             }}
                             animate={{
-                                x: `${Math.random() * 100}vw`,
-                                y: `${Math.random() * 50}vh`,
-                                scale: 1,
-                                rotate: Math.random() * 720,
+                                x: `${10 + Math.random() * 80}vw`,
+                                y: `${-10 + Math.random() * 60}vh`,
+                                scale: [0, 1.5, 1],
+                                rotate: Math.random() * 360,
                             }}
                             transition={{
-                                duration: 1 + Math.random(),
+                                duration: 1.5 + Math.random() * 1,
                                 ease: "easeOut",
+                                delay: Math.random() * 0.5,
                             }}
-                            className="absolute"
+                            className="absolute text-2xl"
                         >
-                            <div
-                                className="w-3 h-3 rounded-sm"
-                                style={{
-                                    backgroundColor: ["#10b981", "#f59e0b", "#ef4444", "#3b82f6", "#8b5cf6", "#ec4899"][Math.floor(Math.random() * 6)],
-                                }}
-                            />
+                            {CONFETTI_ITEMS[Math.floor(Math.random() * CONFETTI_ITEMS.length)]}
                         </motion.div>
                     ))}
                 </div>
