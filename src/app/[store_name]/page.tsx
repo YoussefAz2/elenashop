@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { createClient } from "@/utils/supabase/server";
-import type { Profile, Product, Page, ThemeConfig, Promo, Category } from "@/types";
+import type { Store, Product, Page, ThemeConfig, Promo, Category } from "@/types";
 import { DEFAULT_THEME_CONFIG } from "@/types";
 import { TemplateMinimal, TemplateLuxe, TemplateStreet } from "@/components/store/templates";
 import { ElenaShopWatermark } from "@/components/store/common/ElenaShopWatermark";
@@ -14,28 +14,27 @@ export async function generateMetadata({ params }: StorePageProps): Promise<Meta
     const { store_name } = await params;
     const supabase = await createClient();
 
-    const { data: profile } = await supabase
-        .from("profiles")
-        .select("store_name, bio, avatar_url, theme_config")
-        .eq("store_name", store_name)
+    // Fetch store by slug (new multi-store architecture)
+    const { data: store } = await supabase
+        .from("stores")
+        .select("slug, name, theme_config")
+        .ilike("slug", store_name)
         .single();
 
-    if (!profile) {
+    if (!store) {
         return { title: "Boutique non trouvée" };
     }
 
-    const config = profile.theme_config as ThemeConfig | null;
+    const config = store.theme_config as ThemeConfig | null;
     const seo = config?.seo;
-    const storeName = profile.store_name;
-    const bio = profile.bio;
-    const avatarUrl = profile.avatar_url;
+    const storeName = store.name;
 
     // Build title and description with fallbacks
     const title = seo?.title || `${storeName} - Boutique en ligne`;
-    const description = seo?.description || bio || `Découvrez les produits de ${storeName}. Livraison partout en Tunisie.`;
+    const description = seo?.description || `Découvrez les produits de ${storeName}. Livraison partout en Tunisie.`;
 
-    // Use OG image, avatar, or default
-    const ogImage = seo?.ogImage || avatarUrl || "/og-default.png";
+    // Use OG image or default
+    const ogImage = seo?.ogImage || "/og-default.png";
 
     return {
         title,
@@ -65,28 +64,22 @@ export default async function StorePage({ params }: StorePageProps) {
     const { store_name } = await params;
     const supabase = await createClient();
 
-    // Get current user session to check if owner
-    const { data: { user } } = await supabase.auth.getUser();
-
-    // Fetch the seller profile - use ilike for case-insensitive match
-    const { data: profile, error: profileError } = await supabase
-        .from("profiles")
+    // Fetch the store by slug (new multi-store architecture)
+    const { data: store, error: storeError } = await supabase
+        .from("stores")
         .select("*")
-        .ilike("store_name", store_name)
+        .ilike("slug", store_name)
         .single();
 
-    // If profile not found, return 404
-    if (profileError || !profile) {
+    // If store not found, return 404
+    if (storeError || !store) {
         notFound();
     }
 
-    // Allow owners to view their own store always (even if there were access issues)
-    const isOwner = user?.id === profile.id;
-
-    const seller = profile as Profile;
+    const currentStore = store as Store;
 
     // Deep merge theme_config with defaults to ensure all properties exist
-    const rawConfig: Partial<ThemeConfig> = seller.theme_config || {};
+    const rawConfig: Partial<ThemeConfig> = currentStore.theme_config || {};
     const config = {
         ...DEFAULT_THEME_CONFIG,
         ...rawConfig,
@@ -114,12 +107,12 @@ export default async function StorePage({ params }: StorePageProps) {
         },
     };
 
-    // Fetch active products, pages, promos, and categories in parallel
+    // Fetch active products, pages, promos, and categories by store_id
     const [productsRes, pagesRes, promosRes, categoriesRes] = await Promise.all([
-        supabase.from("products").select("*").eq("user_id", seller.id).eq("is_active", true).order("created_at", { ascending: false }),
-        supabase.from("pages").select("*").eq("user_id", seller.id).eq("is_published", true).order("created_at", { ascending: true }),
-        supabase.from("promos").select("*").eq("user_id", seller.id).eq("is_active", true),
-        supabase.from("categories").select("*").eq("user_id", seller.id).order("position", { ascending: true }),
+        supabase.from("products").select("*").eq("store_id", currentStore.id).eq("is_active", true).order("created_at", { ascending: false }),
+        supabase.from("pages").select("*").eq("store_id", currentStore.id).eq("is_published", true).order("created_at", { ascending: true }),
+        supabase.from("promos").select("*").eq("store_id", currentStore.id).eq("is_active", true),
+        supabase.from("categories").select("*").eq("store_id", currentStore.id).order("position", { ascending: true }),
     ]);
 
     const activeProducts = (productsRes.data as Product[]) || [];
@@ -129,9 +122,9 @@ export default async function StorePage({ params }: StorePageProps) {
 
     // Build navigation: preconfigured pages + custom pages
     const navPages: Page[] = [
-        ...(config.aboutPageContent?.visible !== false ? [{ id: "about", user_id: seller.id, slug: "a-propos", title: "À propos", content: null, is_published: true, created_at: "" }] : []),
-        ...(config.contactPageContent?.visible !== false ? [{ id: "contact", user_id: seller.id, slug: "contact", title: "Contact", content: null, is_published: true, created_at: "" }] : []),
-        ...(config.faqPageContent?.visible !== false ? [{ id: "faq", user_id: seller.id, slug: "faq", title: "FAQ", content: null, is_published: true, created_at: "" }] : []),
+        ...(config.aboutPageContent?.visible !== false ? [{ id: "about", user_id: currentStore.id, slug: "a-propos", title: "À propos", content: null, is_published: true, created_at: "" }] : []),
+        ...(config.contactPageContent?.visible !== false ? [{ id: "contact", user_id: currentStore.id, slug: "contact", title: "Contact", content: null, is_published: true, created_at: "" }] : []),
+        ...(config.faqPageContent?.visible !== false ? [{ id: "faq", user_id: currentStore.id, slug: "faq", title: "FAQ", content: null, is_published: true, created_at: "" }] : []),
         ...customPages,
     ];
 
@@ -140,8 +133,8 @@ export default async function StorePage({ params }: StorePageProps) {
         config,
         products: activeProducts,
         categories,
-        sellerId: seller.id,
-        storeName: seller.store_name,
+        sellerId: currentStore.id,
+        storeName: currentStore.name,
         pages: navPages,
         promos: activePromos,
     };
@@ -167,7 +160,7 @@ export default async function StorePage({ params }: StorePageProps) {
             )}
 
             {/* Watermark for free users */}
-            <ElenaShopWatermark isPro={seller.subscription_status === "pro"} />
+            <ElenaShopWatermark isPro={currentStore.subscription_status === "pro"} />
         </>
     );
 }
