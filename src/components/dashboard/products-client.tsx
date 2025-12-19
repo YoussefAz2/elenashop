@@ -280,244 +280,240 @@ export function ProductsClient({ seller, products: initialProducts, categories }
     const allPreviews = [...existingImages, ...imagePreviews];
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
-            <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur-md dark:border-slate-800 dark:bg-slate-900/80">
-                <div className="mx-auto flex h-16 max-w-4xl items-center justify-between px-4">
-                    <div className="flex items-center gap-3">
-                        <a href="/dashboard" className="text-slate-500 hover:text-slate-700">
-                            <ArrowLeft className="h-5 w-5" />
-                        </a>
-                        <div className="flex items-center gap-2">
-                            <Package className="h-5 w-5 text-emerald-600" />
-                            <h1 className="text-lg font-bold text-slate-900 dark:text-slate-100">Mes Produits</h1>
-                        </div>
-                    </div>
-                    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                        <DialogTrigger asChild>
-                            <Button onClick={openNewDialog} className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full px-4">
-                                <Plus className="h-4 w-4 mr-2" />
-                                Nouveau
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
-                            <DialogHeader>
-                                <DialogTitle>{editingProduct ? "Modifier le produit" : "Ajouter un produit"}</DialogTitle>
-                                <DialogDescription>
-                                    {editingProduct ? "Modifiez les informations du produit" : "Remplissez les informations de votre produit"}
-                                </DialogDescription>
-                            </DialogHeader>
-                            <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-                                {error && <div className="rounded-xl bg-red-50 p-3 text-sm text-red-600">{error}</div>}
-
-                                {/* Images Gallery */}
-                                <div className="space-y-2">
-                                    <div className="flex items-center justify-between">
-                                        <Label>Images du produit</Label>
-                                        <span className="text-xs text-slate-400">{allPreviews.length}/5</span>
-                                    </div>
-
-                                    <div className="grid grid-cols-3 gap-2">
-                                        {/* Existing images */}
-                                        {existingImages.map((url, idx) => (
-                                            <div
-                                                key={`existing-${idx}`}
-                                                className={`relative aspect-square rounded-lg overflow-hidden bg-slate-100 cursor-pointer transition-all ${idx === 0 ? "ring-2 ring-emerald-500" : "hover:ring-2 hover:ring-blue-400"}`}
-                                                onClick={() => setAsMainImage(idx)}
-                                                title={idx === 0 ? "Image principale" : "Cliquez pour définir comme principale"}
-                                            >
-                                                <Image src={url} alt={`Image ${idx + 1}`} fill className="object-cover" />
-                                                <button
-                                                    type="button"
-                                                    onClick={(e) => { e.stopPropagation(); removeExistingImage(idx); }}
-                                                    className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 z-10"
-                                                >
-                                                    <X className="h-3 w-3" />
-                                                </button>
-                                                {idx === 0 ? (
-                                                    <span className="absolute bottom-1 left-1 text-[10px] bg-emerald-500 text-white px-1.5 py-0.5 rounded flex items-center gap-1">
-                                                        ⭐ Principal
-                                                    </span>
-                                                ) : (
-                                                    <span className="absolute bottom-1 left-1 text-[10px] bg-slate-800/70 text-white px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100">
-                                                        Cliquez = principal
-                                                    </span>
-                                                )}
-                                            </div>
-                                        ))}
-
-                                        {/* New image previews */}
-                                        {imagePreviews.map((url, idx) => (
-                                            <div key={`new-${idx}`} className="relative aspect-square rounded-lg overflow-hidden bg-slate-100 ring-2 ring-emerald-400">
-                                                <Image src={url} alt={`Nouvelle ${idx + 1}`} fill className="object-cover" />
-                                                <button
-                                                    type="button"
-                                                    onClick={() => removeNewImage(idx)}
-                                                    className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600"
-                                                >
-                                                    <X className="h-3 w-3" />
-                                                </button>
-                                                <span className="absolute bottom-1 left-1 text-[10px] bg-blue-500 text-white px-1.5 py-0.5 rounded">
-                                                    Nouveau
-                                                </span>
-                                            </div>
-                                        ))}
-
-                                        {/* Add button */}
-                                        {allPreviews.length < 5 && (
-                                            <div
-                                                className="aspect-square border-2 border-dashed border-slate-200 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-emerald-400 transition-colors"
-                                                onClick={() => document.getElementById("image-input")?.click()}
-                                            >
-                                                <ImagePlus className="h-6 w-6 text-slate-300" />
-                                                <span className="text-xs text-slate-400 mt-1">Ajouter</span>
-                                            </div>
-                                        )}
-                                    </div>
-                                    <input
-                                        id="image-input"
-                                        type="file"
-                                        accept="image/*"
-                                        multiple
-                                        onChange={handleAddImages}
-                                        className="hidden"
-                                    />
-                                    <p className="text-xs text-slate-400">La première image sera l'image principale</p>
-
-                                    {/* Image Position */}
-                                    <div className="space-y-2 mt-3">
-                                        <Label>Position de l'image dans la carte</Label>
-                                        <div className="flex gap-2">
-                                            <button
-                                                type="button"
-                                                onClick={() => setImagePosition("top")}
-                                                className={`flex-1 flex flex-col items-center gap-1 p-3 rounded-lg border-2 transition-colors ${imagePosition === "top"
-                                                    ? "border-emerald-500 bg-emerald-50 text-emerald-700"
-                                                    : "border-slate-200 hover:border-slate-300"
-                                                    }`}
-                                            >
-                                                <AlignVerticalJustifyStart className="h-5 w-5" />
-                                                <span className="text-xs">Haut</span>
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => setImagePosition("center")}
-                                                className={`flex-1 flex flex-col items-center gap-1 p-3 rounded-lg border-2 transition-colors ${imagePosition === "center"
-                                                    ? "border-emerald-500 bg-emerald-50 text-emerald-700"
-                                                    : "border-slate-200 hover:border-slate-300"
-                                                    }`}
-                                            >
-                                                <AlignVerticalJustifyCenter className="h-5 w-5" />
-                                                <span className="text-xs">Centre</span>
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => setImagePosition("bottom")}
-                                                className={`flex-1 flex flex-col items-center gap-1 p-3 rounded-lg border-2 transition-colors ${imagePosition === "bottom"
-                                                    ? "border-emerald-500 bg-emerald-50 text-emerald-700"
-                                                    : "border-slate-200 hover:border-slate-300"
-                                                    }`}
-                                            >
-                                                <AlignVerticalJustifyEnd className="h-5 w-5" />
-                                                <span className="text-xs">Bas</span>
-                                            </button>
-                                        </div>
-                                        <p className="text-xs text-slate-400">Contrôle quelle partie de l'image est visible dans les cartes produit</p>
-                                    </div>
-                                </div>
-
-                                {/* Title */}
-                                <div className="space-y-2">
-                                    <Label htmlFor="title">Titre du produit *</Label>
-                                    <Input id="title" placeholder="Ex: Robe d'été fleurie" value={title} onChange={(e) => setTitle(e.target.value)} className="h-12 rounded-xl" required />
-                                </div>
-
-                                {/* Description */}
-                                <div className="space-y-2">
-                                    <Label htmlFor="description">Description</Label>
-                                    <Textarea
-                                        id="description"
-                                        placeholder="Décrivez votre produit..."
-                                        value={description}
-                                        onChange={(e) => setDescription(e.target.value)}
-                                        rows={3}
-                                        className="rounded-xl"
-                                    />
-                                </div>
-
-                                {/* Price & Stock */}
-                                <div className="grid grid-cols-2 gap-3">
-                                    <div className="space-y-2">
-                                        <Label htmlFor="price">Prix (TND) *</Label>
-                                        <Input id="price" type="number" placeholder="99" value={price} onChange={(e) => setPrice(e.target.value)} className="h-12 rounded-xl" min="0" step="0.01" required />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="stock">Stock *</Label>
-                                        <Input id="stock" type="number" placeholder="1" value={stock} onChange={(e) => setStock(e.target.value)} className="h-12 rounded-xl" min="0" required />
-                                    </div>
-                                </div>
-
-                                {/* Category */}
-                                {categories.length > 0 && (
-                                    <div className="space-y-2">
-                                        <Label>Catégorie</Label>
-                                        <Select value={categoryId} onValueChange={setCategoryId}>
-                                            <SelectTrigger className="h-12 rounded-xl">
-                                                <SelectValue placeholder="Choisir une catégorie..." />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                {categories.map(cat => (
-                                                    <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-                                )}
-
-                                {/* Visibility */}
-                                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
-                                    <div>
-                                        <Label className="text-sm font-medium">Visible sur la boutique</Label>
-                                        <p className="text-xs text-slate-500">Les visiteurs peuvent voir ce produit</p>
-                                    </div>
-                                    <Switch checked={isActive} onCheckedChange={setIsActive} />
-                                </div>
-
-                                {/* Submit */}
-                                <Button type="submit" className="w-full h-12 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold" disabled={isLoading}>
-                                    {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : editingProduct ? "Enregistrer les modifications" : "Ajouter le produit"}
-                                </Button>
-                            </form>
-                        </DialogContent>
-                    </Dialog>
+        <div className="max-w-6xl mx-auto space-y-6">
+            <div className="flex items-center justify-between">
+                <div>
+                    <h1 className="text-2xl font-bold text-slate-900">Produits</h1>
+                    <p className="text-slate-500">{products.length} produit{products.length !== 1 ? "s" : ""}</p>
                 </div>
-            </header>
+                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                    <DialogTrigger asChild>
+                        <Button onClick={openNewDialog} className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg px-4">
+                            <Plus className="h-4 w-4 mr-2" />
+                            Nouveau produit
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
+                        <DialogHeader>
+                            <DialogTitle>{editingProduct ? "Modifier le produit" : "Ajouter un produit"}</DialogTitle>
+                            <DialogDescription>
+                                {editingProduct ? "Modifiez les informations du produit" : "Remplissez les informations de votre produit"}
+                            </DialogDescription>
+                        </DialogHeader>
+                        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+                            {error && <div className="rounded-xl bg-red-50 p-3 text-sm text-red-600">{error}</div>}
 
-            <main className="mx-auto max-w-4xl px-4 py-6">
-                {products.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-20 text-center">
-                        <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-slate-100">
-                            <ShoppingBag className="h-10 w-10 text-slate-300" />
-                        </div>
-                        <h2 className="text-lg font-semibold text-slate-900">Aucun produit</h2>
-                        <p className="mt-1 text-sm text-slate-500">Ajoutez votre premier produit pour commencer à vendre</p>
+                            {/* Images Gallery */}
+                            <div className="space-y-2">
+                                <div className="flex items-center justify-between">
+                                    <Label>Images du produit</Label>
+                                    <span className="text-xs text-slate-400">{allPreviews.length}/5</span>
+                                </div>
+
+                                <div className="grid grid-cols-3 gap-2">
+                                    {/* Existing images */}
+                                    {existingImages.map((url, idx) => (
+                                        <div
+                                            key={`existing-${idx}`}
+                                            className={`relative aspect-square rounded-lg overflow-hidden bg-slate-100 cursor-pointer transition-all ${idx === 0 ? "ring-2 ring-emerald-500" : "hover:ring-2 hover:ring-blue-400"}`}
+                                            onClick={() => setAsMainImage(idx)}
+                                            title={idx === 0 ? "Image principale" : "Cliquez pour définir comme principale"}
+                                        >
+                                            <Image src={url} alt={`Image ${idx + 1}`} fill className="object-cover" />
+                                            <button
+                                                type="button"
+                                                onClick={(e) => { e.stopPropagation(); removeExistingImage(idx); }}
+                                                className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 z-10"
+                                            >
+                                                <X className="h-3 w-3" />
+                                            </button>
+                                            {idx === 0 ? (
+                                                <span className="absolute bottom-1 left-1 text-[10px] bg-emerald-500 text-white px-1.5 py-0.5 rounded flex items-center gap-1">
+                                                    ⭐ Principal
+                                                </span>
+                                            ) : (
+                                                <span className="absolute bottom-1 left-1 text-[10px] bg-slate-800/70 text-white px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100">
+                                                    Cliquez = principal
+                                                </span>
+                                            )}
+                                        </div>
+                                    ))}
+
+                                    {/* New image previews */}
+                                    {imagePreviews.map((url, idx) => (
+                                        <div key={`new-${idx}`} className="relative aspect-square rounded-lg overflow-hidden bg-slate-100 ring-2 ring-emerald-400">
+                                            <Image src={url} alt={`Nouvelle ${idx + 1}`} fill className="object-cover" />
+                                            <button
+                                                type="button"
+                                                onClick={() => removeNewImage(idx)}
+                                                className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600"
+                                            >
+                                                <X className="h-3 w-3" />
+                                            </button>
+                                            <span className="absolute bottom-1 left-1 text-[10px] bg-blue-500 text-white px-1.5 py-0.5 rounded">
+                                                Nouveau
+                                            </span>
+                                        </div>
+                                    ))}
+
+                                    {/* Add button */}
+                                    {allPreviews.length < 5 && (
+                                        <div
+                                            className="aspect-square border-2 border-dashed border-slate-200 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-emerald-400 transition-colors"
+                                            onClick={() => document.getElementById("image-input")?.click()}
+                                        >
+                                            <ImagePlus className="h-6 w-6 text-slate-300" />
+                                            <span className="text-xs text-slate-400 mt-1">Ajouter</span>
+                                        </div>
+                                    )}
+                                </div>
+                                <input
+                                    id="image-input"
+                                    type="file"
+                                    accept="image/*"
+                                    multiple
+                                    onChange={handleAddImages}
+                                    className="hidden"
+                                />
+                                <p className="text-xs text-slate-400">La première image sera l'image principale</p>
+
+                                {/* Image Position */}
+                                <div className="space-y-2 mt-3">
+                                    <Label>Position de l'image dans la carte</Label>
+                                    <div className="flex gap-2">
+                                        <button
+                                            type="button"
+                                            onClick={() => setImagePosition("top")}
+                                            className={`flex-1 flex flex-col items-center gap-1 p-3 rounded-lg border-2 transition-colors ${imagePosition === "top"
+                                                ? "border-emerald-500 bg-emerald-50 text-emerald-700"
+                                                : "border-slate-200 hover:border-slate-300"
+                                                }`}
+                                        >
+                                            <AlignVerticalJustifyStart className="h-5 w-5" />
+                                            <span className="text-xs">Haut</span>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setImagePosition("center")}
+                                            className={`flex-1 flex flex-col items-center gap-1 p-3 rounded-lg border-2 transition-colors ${imagePosition === "center"
+                                                ? "border-emerald-500 bg-emerald-50 text-emerald-700"
+                                                : "border-slate-200 hover:border-slate-300"
+                                                }`}
+                                        >
+                                            <AlignVerticalJustifyCenter className="h-5 w-5" />
+                                            <span className="text-xs">Centre</span>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setImagePosition("bottom")}
+                                            className={`flex-1 flex flex-col items-center gap-1 p-3 rounded-lg border-2 transition-colors ${imagePosition === "bottom"
+                                                ? "border-emerald-500 bg-emerald-50 text-emerald-700"
+                                                : "border-slate-200 hover:border-slate-300"
+                                                }`}
+                                        >
+                                            <AlignVerticalJustifyEnd className="h-5 w-5" />
+                                            <span className="text-xs">Bas</span>
+                                        </button>
+                                    </div>
+                                    <p className="text-xs text-slate-400">Contrôle quelle partie de l'image est visible dans les cartes produit</p>
+                                </div>
+                            </div>
+
+                            {/* Title */}
+                            <div className="space-y-2">
+                                <Label htmlFor="title">Titre du produit *</Label>
+                                <Input id="title" placeholder="Ex: Robe d'été fleurie" value={title} onChange={(e) => setTitle(e.target.value)} className="h-12 rounded-xl" required />
+                            </div>
+
+                            {/* Description */}
+                            <div className="space-y-2">
+                                <Label htmlFor="description">Description</Label>
+                                <Textarea
+                                    id="description"
+                                    placeholder="Décrivez votre produit..."
+                                    value={description}
+                                    onChange={(e) => setDescription(e.target.value)}
+                                    rows={3}
+                                    className="rounded-xl"
+                                />
+                            </div>
+
+                            {/* Price & Stock */}
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="space-y-2">
+                                    <Label htmlFor="price">Prix (TND) *</Label>
+                                    <Input id="price" type="number" placeholder="99" value={price} onChange={(e) => setPrice(e.target.value)} className="h-12 rounded-xl" min="0" step="0.01" required />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="stock">Stock *</Label>
+                                    <Input id="stock" type="number" placeholder="1" value={stock} onChange={(e) => setStock(e.target.value)} className="h-12 rounded-xl" min="0" required />
+                                </div>
+                            </div>
+
+                            {/* Category */}
+                            {categories.length > 0 && (
+                                <div className="space-y-2">
+                                    <Label>Catégorie</Label>
+                                    <Select value={categoryId} onValueChange={setCategoryId}>
+                                        <SelectTrigger className="h-12 rounded-xl">
+                                            <SelectValue placeholder="Choisir une catégorie..." />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {categories.map(cat => (
+                                                <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            )}
+
+                            {/* Visibility */}
+                            <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+                                <div>
+                                    <Label className="text-sm font-medium">Visible sur la boutique</Label>
+                                    <p className="text-xs text-slate-500">Les visiteurs peuvent voir ce produit</p>
+                                </div>
+                                <Switch checked={isActive} onCheckedChange={setIsActive} />
+                            </div>
+
+                            {/* Submit */}
+                            <Button type="submit" className="w-full h-12 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold" disabled={isLoading}>
+                                {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : editingProduct ? "Enregistrer les modifications" : "Ajouter le produit"}
+                            </Button>
+                        </form>
+                    </DialogContent>
+                </Dialog>
+            </div>
+
+            {/* Products List */}
+            {products.length === 0 ? (
+                <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
+                    <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <ShoppingBag className="h-8 w-8 text-slate-300" />
                     </div>
-                ) : (
-                    <div className="space-y-3">
-                        {products.map((product) => (
-                            <ProductListItem
-                                key={product.id}
-                                product={product}
-                                getCategoryName={getCategoryName}
-                                getImageCount={getImageCount}
-                                onEdit={openEditDialog}
-                                onDelete={handleDelete}
-                                onToggleVisibility={toggleVisibility}
-                                deletingId={deletingId}
-                            />
-                        ))}
-                    </div>
-                )}
-            </main>
+                    <h3 className="font-semibold text-slate-900 mb-2">Aucun produit</h3>
+                    <p className="text-slate-500 mb-6">Ajoutez votre premier produit pour commencer à vendre</p>
+                    <Button onClick={openNewDialog} className="bg-emerald-600 hover:bg-emerald-700 text-white">
+                        <Plus className="h-4 w-4 mr-2" />
+                        Ajouter un produit
+                    </Button>
+                </div>
+            ) : (
+                <div className="space-y-3">
+                    {products.map((product) => (
+                        <ProductListItem
+                            key={product.id}
+                            product={product}
+                            getCategoryName={getCategoryName}
+                            getImageCount={getImageCount}
+                            onEdit={openEditDialog}
+                            onDelete={handleDelete}
+                            onToggleVisibility={toggleVisibility}
+                            deletingId={deletingId}
+                        />
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

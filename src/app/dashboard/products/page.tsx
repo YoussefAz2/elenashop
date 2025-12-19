@@ -2,18 +2,14 @@ import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
 import type { Store, Product, Category } from "@/types";
-import { ProductsWrapper } from "@/components/dashboard/products-wrapper";
-import Link from "next/link";
+import { ProductsClient } from "@/components/dashboard/products-client";
 
 export default async function ProductsPage() {
     const supabase = await createClient();
     const cookieStore = await cookies();
 
     // Check authentication
-    const {
-        data: { user },
-        error: authError,
-    } = await supabase.auth.getUser();
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
 
     if (authError || !user) {
         redirect("/login");
@@ -34,21 +30,7 @@ export default async function ProductsPage() {
         .single();
 
     if (storeError || !store) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
-                <div className="text-center p-8 bg-white rounded-2xl shadow-xl max-w-md">
-                    <h1 className="text-2xl font-bold text-slate-900 mb-4">
-                        Boutique introuvable
-                    </h1>
-                    <Link
-                        href="/dashboard"
-                        className="inline-block px-6 py-3 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 transition-colors"
-                    >
-                        Retour au dashboard
-                    </Link>
-                </div>
-            </div>
-        );
+        redirect("/dashboard");
     }
 
     const currentStore = store as Store;
@@ -60,7 +42,7 @@ export default async function ProductsPage() {
     ]);
 
     return (
-        <ProductsWrapper
+        <ProductsClient
             seller={currentStore as any}
             products={(productsRes.data as Product[]) || []}
             categories={(categoriesRes.data as Category[]) || []}
