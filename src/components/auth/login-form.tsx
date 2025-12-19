@@ -35,8 +35,12 @@ function GoogleIcon({ className }: { className?: string }) {
     );
 }
 
-export function LoginForm() {
-    const [mode, setMode] = useState<Mode>("login");
+interface LoginFormProps {
+    defaultMode?: "login" | "signup";
+}
+
+export function LoginForm({ defaultMode = "login" }: LoginFormProps) {
+    const [mode, setMode] = useState<Mode>(defaultMode);
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");

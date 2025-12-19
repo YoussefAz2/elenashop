@@ -36,7 +36,7 @@ export default function Home() {
                   Se connecter
                 </Button>
               </Link>
-              <Link href="/login">
+              <Link href="/login?mode=signup">
                 <Button className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full px-5">
                   Commencer
                 </Button>
@@ -86,7 +86,7 @@ export default function Home() {
 
               {/* CTA */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8">
-                <Link href="/login">
+                <Link href="/login?mode=signup">
                   <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full px-8 h-14 text-lg font-semibold shadow-lg shadow-emerald-600/25 hover:shadow-xl hover:shadow-emerald-600/30 transition-all hover:-translate-y-0.5">
                     Commencer gratuitement
                     <ArrowRight className="ml-2 h-5 w-5" />
@@ -425,7 +425,7 @@ export default function Home() {
             Créez votre boutique maintenant. Aucune carte bancaire requise.
             Upgradez quand vous êtes prêt.
           </p>
-          <Link href="/login">
+          <Link href="/login?mode=signup">
             <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full px-8 h-14 text-lg font-semibold shadow-lg shadow-emerald-600/25 hover:shadow-xl transition-all hover:-translate-y-0.5">
               Créer ma boutique gratuitement
               <ArrowRight className="ml-2 h-5 w-5" />
