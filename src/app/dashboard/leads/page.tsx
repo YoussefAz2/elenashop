@@ -77,10 +77,24 @@ export default async function LeadsPage() {
     );
 
     return (
-        <LeadsClient
-            seller={currentStore as any}
-            leads={abandonedLeads}
-            totalLeads={allLeads.length}
-        />
+        <div className="max-w-7xl mx-auto space-y-8">
+            {/* Header - Clean & Bold */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-6">
+                <div>
+                    <h1 className="text-4xl font-bold tracking-tight text-slate-900 leading-tight font-display">
+                        Paniers Abandonnés
+                    </h1>
+                    <p className="text-slate-500 mt-2 text-lg font-medium">
+                        Relancez vos visiteurs et convertissez-les en clients.
+                    </p>
+                </div>
+            </div>
+
+            <LeadsClient
+                seller={currentStore as any}
+                leads={abandonedLeads}
+                totalLeads={allLeads.length}
+            />
+        </div>
     );
 }

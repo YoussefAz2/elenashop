@@ -61,11 +61,25 @@ export default async function PromosPage() {
     ]);
 
     return (
-        <PromosClient
-            seller={currentStore as any}
-            promos={(promosRes.data as Promo[]) || []}
-            categories={(categoriesRes.data as Category[]) || []}
-            products={(productsRes.data as Pick<Product, "id" | "title" | "price" | "image_url">[]) || []}
-        />
+        <div className="max-w-7xl mx-auto space-y-8">
+            {/* Header - Clean & Bold */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-6">
+                <div>
+                    <h1 className="text-4xl font-bold tracking-tight text-slate-900 leading-tight font-display">
+                        Promotions
+                    </h1>
+                    <p className="text-slate-500 mt-2 text-lg font-medium">
+                        Créez des offres irrésistibles pour vos clients.
+                    </p>
+                </div>
+            </div>
+
+            <PromosClient
+                seller={currentStore as any}
+                promos={(promosRes.data as Promo[]) || []}
+                categories={(categoriesRes.data as Category[]) || []}
+                products={(productsRes.data as Pick<Product, "id" | "title" | "price" | "image_url">[]) || []}
+            />
+        </div>
     );
 }
