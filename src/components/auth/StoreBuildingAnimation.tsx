@@ -101,7 +101,7 @@ export function StoreBuildingAnimation({
                     initial={{ scale: 0.8, opacity: 0, rotateY: -15 }}
                     animate={{ scale: 1, opacity: 1, rotateY: 0 }}
                     transition={{ type: "spring", duration: 0.8 }}
-                    className="relative w-[280px] h-[560px] bg-slate-800 rounded-[3rem] p-2 shadow-2xl shadow-black/50"
+                    className="relative w-[340px] h-[680px] bg-slate-800 rounded-[3rem] p-2 shadow-2xl shadow-black/50"
                     style={{ perspective: "1000px" }}
                 >
                     {/* Screen */}
