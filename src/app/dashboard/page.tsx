@@ -6,12 +6,13 @@ import { DashboardClient } from "@/components/dashboard/dashboard-client";
 import Link from "next/link";
 
 interface PageProps {
-    searchParams: Promise<{ from?: string; tab?: string }>;
+    searchParams: Promise<{ from?: string; tab?: string; newStore?: string }>;
 }
 
 export default async function DashboardPage({ searchParams }: PageProps) {
     const supabase = await createClient();
     const params = await searchParams;
+    const cookieStore = await cookies();
 
     // Check authentication
     const {
@@ -23,15 +24,63 @@ export default async function DashboardPage({ searchParams }: PageProps) {
         redirect("/login");
     }
 
-    // Get user's store memberships first
+    // If coming from new store creation, try to load store directly from cookie first
+    const isNewStore = params.newStore === "true";
+    const cookieStoreId = cookieStore.get("current_store_id")?.value;
+
+    // Get user's store memberships
     const { data: storeMemberships, error: membershipError } = await supabase
         .from("store_members")
         .select("store_id, role")
         .eq("user_id", user.id);
 
+    // If new store and we have a cookie, try direct load even if membership query fails
+    if (isNewStore && cookieStoreId) {
+        const { data: directStore } = await supabase
+            .from("stores")
+            .select("*")
+            .eq("id", cookieStoreId)
+            .single();
+
+        if (directStore) {
+            // Store loaded successfully, continue with this store
+            const currentStore = directStore as Store;
+            const userStores = [{ ...currentStore, role: "owner" as const }];
+
+            // Fetch orders for this store
+            const { data: orders } = await supabase
+                .from("orders")
+                .select("*")
+                .eq("store_id", currentStore.id)
+                .order("created_at", { ascending: false });
+
+            const allOrders = (orders as Order[]) || [];
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const todayOrders = allOrders.filter((order) => new Date(order.created_at) >= today);
+
+            const stats = {
+                totalOrders: allOrders.length,
+                todayOrders: todayOrders.length,
+                totalRevenue: allOrders.reduce((sum, order) => sum + Number(order.total_price), 0),
+                todayRevenue: todayOrders.reduce((sum, order) => sum + Number(order.total_price), 0),
+            };
+
+            return (
+                <DashboardClient
+                    currentStore={currentStore}
+                    currentRole="owner"
+                    stores={userStores}
+                    orders={allOrders}
+                    stats={stats}
+                />
+            );
+        }
+    }
+
     // If no memberships - redirect to onboarding with loop protection
     if (membershipError || !storeMemberships || storeMemberships.length === 0) {
-        if (params.from === "onboarding") {
+        if (params.from === "onboarding" || isNewStore) {
             // We came from onboarding, don't redirect back - show a helpful page
             return (
                 <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
@@ -108,7 +157,6 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     }).filter((s) => s !== null) as (Store & { role: "owner" | "admin" | "editor" })[];
 
     // Get current store from cookie or use first store
-    const cookieStore = await cookies();
     const currentStoreId = cookieStore.get("current_store_id")?.value;
 
     // Find current store or default to first

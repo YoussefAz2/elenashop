@@ -29,7 +29,7 @@ import {
     type StoreCategory,
     type VisualStyle,
 } from "@/lib/onboarding-data";
-import { createStore, isSlugAvailable, setCurrentStoreId } from "@/lib/stores";
+import { createStore, isSlugAvailable, setCurrentStoreId, getCurrentStoreId } from "@/lib/stores";
 import type { TemplateId } from "@/types";
 
 interface OnboardingFormProps {
@@ -209,8 +209,13 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
                 templateId={selectedTemplate}
                 category={categoryLabel}
                 onComplete={() => {
-                    // Use window.location to avoid Next.js prefetch issues
-                    window.location.href = "/dashboard";
+                    // Set cookie for server-side access
+                    const storeId = getCurrentStoreId();
+                    if (storeId) {
+                        document.cookie = `current_store_id=${storeId}; path=/; max-age=31536000`;
+                    }
+                    // Navigate with newStore flag to skip initial checks
+                    window.location.href = "/dashboard?newStore=true";
                 }}
             />
         );
