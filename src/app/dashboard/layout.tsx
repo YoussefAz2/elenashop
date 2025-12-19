@@ -56,7 +56,12 @@ export default async function DashboardLayout({
     const storeSlug = store?.slug || "";
 
     return (
-        <div className="min-h-screen bg-slate-50">
+        <div className="min-h-screen bg-slate-50/50 relative overflow-hidden">
+            {/* Mesh Gradients Background */}
+            <div className="fixed top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-emerald-400/10 blur-[120px] pointer-events-none" />
+            <div className="fixed bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-violet-400/10 blur-[120px] pointer-events-none" />
+            <div className="fixed top-[20%] right-[20%] w-[30%] h-[30%] rounded-full bg-blue-400/10 blur-[100px] pointer-events-none" />
+
             {/* Desktop Sidebar */}
             <Sidebar storeName={storeName} storeSlug={storeSlug} />
 
@@ -64,8 +69,8 @@ export default async function DashboardLayout({
             <MobileNav storeName={storeName} storeSlug={storeSlug} />
 
             {/* Main Content */}
-            <main className="lg:pl-[250px] pt-14 lg:pt-0 min-h-screen">
-                <div className="p-4 lg:p-6">
+            <main className="lg:pl-[260px] pt-14 lg:pt-0 min-h-screen relative z-10">
+                <div className="p-4 lg:p-8 max-w-7xl mx-auto">
                     {children}
                 </div>
             </main>

@@ -15,6 +15,7 @@ import {
     Palette,
     Menu,
     X,
+    Tag,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -36,6 +37,7 @@ const navItems: NavItem[] = [
     { label: "Commandes", href: "/dashboard/orders", icon: ShoppingBag },
     { label: "Produits", href: "/dashboard/products", icon: Package },
     { label: "Catégories", href: "/dashboard/categories", icon: FolderOpen },
+    { label: "Promotions", href: "/dashboard/promos", icon: Tag },
     { label: "Clients", href: "/dashboard/leads", icon: Users },
     { label: "Stats", href: "/dashboard/stats", icon: BarChart3 },
     { label: "Réglages", href: "/dashboard/settings", icon: Settings },
@@ -75,21 +77,34 @@ export function MobileNav({ storeName, storeSlug }: MobileNavProps) {
                             <Menu className="h-5 w-5 text-slate-600" />
                         </button>
                     </SheetTrigger>
-                    <SheetContent side="left" className="w-[280px] p-0">
-                        <SheetHeader className="p-4 border-b border-slate-100">
+                    <SheetContent side="left" className="w-[300px] p-0 border-r border-slate-200/60 bg-white/90 backdrop-blur-xl">
+                        <SheetHeader className="p-5 border-b border-slate-100/50">
                             <SheetTitle className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center text-white font-bold text-lg">
+                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-900 to-slate-700 flex items-center justify-center text-white font-bold text-lg shadow-lg">
                                     {storeName.charAt(0).toUpperCase()}
                                 </div>
                                 <div className="text-left">
-                                    <p className="font-semibold text-slate-900">{storeName}</p>
-                                    <p className="text-xs text-slate-400 font-normal">/{storeSlug}</p>
+                                    <p className="font-bold text-slate-900">{storeName}</p>
+                                    <p className="text-xs text-slate-400 font-medium">/{storeSlug}</p>
                                 </div>
                             </SheetTitle>
+
+                            {/* Mobile Hero Button */}
+                            <div className="mt-6">
+                                <Link
+                                    href="/dashboard/editor"
+                                    onClick={() => setIsOpen(false)}
+                                    className="flex items-center justify-center gap-2 w-full p-3 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-semibold shadow-lg shadow-indigo-200"
+                                >
+                                    <Palette className="h-4 w-4" />
+                                    <span>Éditeur Magic</span>
+                                </Link>
+                            </div>
                         </SheetHeader>
 
                         {/* Navigation */}
-                        <nav className="flex-1 p-3 space-y-1">
+                        <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
+                            <p className="px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Menu</p>
                             {navItems.map((item) => {
                                 const Icon = item.icon;
                                 const active = isActive(item.href);
@@ -99,13 +114,13 @@ export function MobileNav({ storeName, storeSlug }: MobileNavProps) {
                                         href={item.href}
                                         onClick={() => setIsOpen(false)}
                                         className={cn(
-                                            "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150",
+                                            "flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-150",
                                             active
-                                                ? "bg-slate-100 text-emerald-600"
-                                                : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                                                ? "bg-slate-50 text-slate-900 shadow-sm ring-1 ring-slate-200"
+                                                : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
                                         )}
                                     >
-                                        <Icon className={cn("h-5 w-5", active ? "text-emerald-600" : "text-slate-400")} />
+                                        <Icon className={cn("h-5 w-5", active ? "text-violet-600" : "text-slate-400")} />
                                         {item.label}
                                     </Link>
                                 );
@@ -113,23 +128,18 @@ export function MobileNav({ storeName, storeSlug }: MobileNavProps) {
                         </nav>
 
                         {/* Footer Actions */}
-                        <div className="p-3 border-t border-slate-100 space-y-2 mt-auto">
-                            <Link
-                                href="/dashboard/editor"
-                                onClick={() => setIsOpen(false)}
-                                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 transition-all duration-150"
-                            >
-                                <Palette className="h-5 w-5 text-slate-400" />
-                                Éditeur de boutique
-                            </Link>
+                        <div className="p-4 border-t border-slate-100/50 bg-slate-50/30 mt-auto">
                             <a
                                 href={`/${storeSlug}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all duration-150"
+                                className="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-slate-500 hover:text-slate-800 hover:bg-white transition-all duration-200"
                             >
-                                <ExternalLink className="h-5 w-5 text-slate-400" />
-                                Voir ma boutique
+                                <div className="flex items-center gap-2">
+                                    <ExternalLink className="h-4 w-4" />
+                                    Voir la boutique
+                                </div>
+                                <span>→</span>
                             </a>
                         </div>
                     </SheetContent>

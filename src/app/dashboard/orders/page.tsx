@@ -97,13 +97,26 @@ export default async function OrdersPage() {
         });
     };
 
+    const currentDate = new Date().toLocaleDateString("fr-FR", {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+    });
+
     return (
-        <div className="max-w-6xl mx-auto space-y-6">
+        <div className="max-w-6xl mx-auto space-y-8">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-900">Commandes</h1>
-                    <p className="text-slate-500">{allOrders.length} commande{allOrders.length !== 1 ? "s" : ""}</p>
+                    <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 leading-tight">
+                        Commandes
+                    </h1>
+                    <p className="text-slate-500 mt-2 text-lg">
+                        Gérez vos commandes et leur avancement.
+                    </p>
+                </div>
+                <div className="hidden md:block px-4 py-2 bg-white/60 backdrop-blur-md rounded-full border border-white/50 text-sm font-semibold text-slate-600 shadow-sm">
+                    🗓️ {currentDate.replace(".", "")}
                 </div>
             </div>
 

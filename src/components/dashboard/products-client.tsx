@@ -280,15 +280,15 @@ export function ProductsClient({ seller, products: initialProducts, categories }
     const allPreviews = [...existingImages, ...imagePreviews];
 
     return (
-        <div className="max-w-6xl mx-auto space-y-6">
+        <div className="max-w-7xl mx-auto space-y-8">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-900">Produits</h1>
-                    <p className="text-slate-500">{products.length} produit{products.length !== 1 ? "s" : ""}</p>
+                    <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 leading-tight">Produits</h1>
+                    <p className="text-slate-500 mt-2 text-lg">{products.length} produit{products.length !== 1 ? "s" : ""}</p>
                 </div>
                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                     <DialogTrigger asChild>
-                        <Button onClick={openNewDialog} className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg px-4">
+                        <Button onClick={openNewDialog} className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg px-4 shadow-sm hover:shadow transition-all">
                             <Plus className="h-4 w-4 mr-2" />
                             Nouveau produit
                         </Button>

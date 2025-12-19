@@ -110,20 +110,20 @@ export default async function SettingsPage() {
     ];
 
     return (
-        <div className="max-w-3xl mx-auto space-y-6">
+        <div className="max-w-4xl mx-auto space-y-8">
             {/* Header */}
             <div>
-                <h1 className="text-2xl font-bold text-slate-900">Réglages</h1>
-                <p className="text-slate-500">Configurez votre boutique</p>
+                <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 leading-tight">Réglages</h1>
+                <p className="text-slate-500 mt-2 text-lg">Configurez votre boutique et vos préférences.</p>
             </div>
 
             {/* Settings Sections */}
             {settingsSections.map((section) => (
-                <div key={section.title} className="space-y-3">
-                    <h2 className="text-sm font-medium text-slate-500 uppercase tracking-wider px-1">
+                <div key={section.title} className="space-y-4">
+                    <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-widest px-1">
                         {section.title}
                     </h2>
-                    <div className="bg-white rounded-xl border border-slate-200 divide-y divide-slate-100">
+                    <div className="bg-white rounded-xl border border-slate-200/60 shadow-sm overflow-hidden divide-y divide-slate-50">
                         {section.items.map((item) => {
                             const Icon = item.icon;
                             const content = (
