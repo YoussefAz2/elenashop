@@ -5,9 +5,14 @@ import type { Order, Store, StoreWithRole } from "@/types";
 import { DashboardClient } from "@/components/dashboard/dashboard-client";
 import Link from "next/link";
 
-export default async function DashboardPage() {
+interface PageProps {
+    searchParams: Promise<{ store?: string }>;
+}
+
+export default async function DashboardPage({ searchParams }: PageProps) {
     const supabase = await createClient();
     const cookieStore = await cookies();
+    const params = await searchParams;
 
     // Check authentication
     const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -16,8 +21,14 @@ export default async function DashboardPage() {
         redirect("/login");
     }
 
-    // Try to get store from cookie first (for new store flow)
-    const cookieStoreId = cookieStore.get("current_store_id")?.value;
+    // Handle store selection from query param (set cookie)
+    const storeFromParam = params.store;
+    if (storeFromParam) {
+        cookieStore.set("current_store_id", storeFromParam, { path: "/", maxAge: 31536000 });
+    }
+
+    // Try to get store from cookie or query param
+    const cookieStoreId = storeFromParam || cookieStore.get("current_store_id")?.value;
 
     let currentStore: Store | null = null;
     let allStores: StoreWithRole[] = [];
@@ -69,6 +80,63 @@ export default async function DashboardPage() {
         } catch (e) {
             console.error("Membership query failed:", e);
         }
+    }
+
+    // Multiple stores and no preference saved - show selection page
+    if (allStores.length > 1 && !cookieStoreId) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-slate-50 to-slate-100 px-4 py-12">
+                <div className="w-full max-w-2xl">
+                    <div className="text-center mb-8">
+                        <div className="inline-flex items-center justify-center w-16 h-16 bg-emerald-100 rounded-full mb-4">
+                            <span className="text-3xl">🏪</span>
+                        </div>
+                        <h1 className="text-2xl font-bold text-slate-900 mb-2">
+                            Choisissez une boutique
+                        </h1>
+                        <p className="text-slate-600">
+                            Vous avez accès à {allStores.length} boutiques
+                        </p>
+                    </div>
+
+                    <div className="grid gap-4">
+                        {allStores.map((store) => (
+                            <a
+                                key={store.id}
+                                href={`/dashboard?store=${store.id}`}
+                                className="block p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 border border-slate-100"
+                            >
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
+                                        <span className="text-xl">🏪</span>
+                                    </div>
+                                    <div className="flex-1">
+                                        <h3 className="font-bold text-slate-900 text-lg">
+                                            {store.name}
+                                        </h3>
+                                        <p className="text-slate-500 text-sm">
+                                            {store.slug}.elenashop.vercel.app • {store.role === "owner" ? "Propriétaire" : store.role}
+                                        </p>
+                                    </div>
+                                    <div className="text-emerald-600">
+                                        →
+                                    </div>
+                                </div>
+                            </a>
+                        ))}
+                    </div>
+
+                    <div className="text-center mt-8">
+                        <Link
+                            href="/onboarding"
+                            className="text-emerald-600 hover:text-emerald-700 font-medium"
+                        >
+                            + Créer une nouvelle boutique
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        );
     }
 
     // No store found - show helpful page
