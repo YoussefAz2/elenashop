@@ -94,17 +94,9 @@ export function LoginForm() {
                 }
 
                 if (user) {
-                    // Check if user has completed onboarding (has at least one store)
-                    const { data: storeMemberships } = await supabase
-                        .from("store_members")
-                        .select("store_id")
-                        .eq("user_id", user.id)
-                        .limit(1);
-
-                    const hasCompletedOnboarding = storeMemberships && storeMemberships.length > 0;
-
-                    // Redirect based on onboarding status
-                    router.push(hasCompletedOnboarding ? "/dashboard" : "/onboarding");
+                    // Always redirect to dashboard - it will handle showing
+                    // appropriate content based on store membership
+                    router.push("/dashboard");
                     router.refresh();
                 }
             } else {
