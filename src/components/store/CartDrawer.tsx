@@ -133,7 +133,7 @@ export function CartDrawer({
         try {
             const fullPhone = `${countryCode}${data.customer_phone}`;
             await supabase.from("leads").insert({
-                user_id: sellerId,
+                store_id: sellerId,
                 customer_name: data.customer_name,
                 customer_phone: fullPhone,
             });
@@ -155,7 +155,7 @@ export function CartDrawer({
         try {
             const fullPhone = `${step1Data.countryCode}${step1Data.customer_phone}`;
             const { error } = await supabase.from("orders").insert({
-                user_id: sellerId,
+                store_id: sellerId,
                 customer_name: step1Data.customer_name,
                 customer_phone: fullPhone,
                 customer_governorate: data.customer_governorate,

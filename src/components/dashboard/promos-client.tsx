@@ -134,7 +134,7 @@ export function PromosClient({ seller, promos: initialPromos, categories, produc
             } else {
                 const { data: newPromo, error: insertError } = await supabase
                     .from("promos")
-                    .insert({ ...promoData, user_id: seller.id })
+                    .insert({ ...promoData, store_id: seller.id })
                     .select()
                     .single();
 

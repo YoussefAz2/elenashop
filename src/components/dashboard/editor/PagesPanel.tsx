@@ -68,7 +68,7 @@ export function PagesPanel({ seller, pages: initialPages }: PagesPanelProps) {
             } else {
                 const { data, error } = await supabase
                     .from("pages")
-                    .insert({ user_id: seller.id, title, slug, content })
+                    .insert({ store_id: seller.id, title, slug, content })
                     .select()
                     .single();
 

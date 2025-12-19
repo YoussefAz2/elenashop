@@ -224,7 +224,7 @@ export function ProductsClient({ seller, products: initialProducts, categories }
             } else {
                 const { data: newProduct, error: insertError } = await supabase
                     .from("products")
-                    .insert({ ...productData, user_id: seller.id })
+                    .insert({ ...productData, store_id: seller.id })
                     .select()
                     .single();
 
@@ -391,8 +391,8 @@ export function ProductsClient({ seller, products: initialProducts, categories }
                                                 type="button"
                                                 onClick={() => setImagePosition("top")}
                                                 className={`flex-1 flex flex-col items-center gap-1 p-3 rounded-lg border-2 transition-colors ${imagePosition === "top"
-                                                        ? "border-emerald-500 bg-emerald-50 text-emerald-700"
-                                                        : "border-slate-200 hover:border-slate-300"
+                                                    ? "border-emerald-500 bg-emerald-50 text-emerald-700"
+                                                    : "border-slate-200 hover:border-slate-300"
                                                     }`}
                                             >
                                                 <AlignVerticalJustifyStart className="h-5 w-5" />
@@ -402,8 +402,8 @@ export function ProductsClient({ seller, products: initialProducts, categories }
                                                 type="button"
                                                 onClick={() => setImagePosition("center")}
                                                 className={`flex-1 flex flex-col items-center gap-1 p-3 rounded-lg border-2 transition-colors ${imagePosition === "center"
-                                                        ? "border-emerald-500 bg-emerald-50 text-emerald-700"
-                                                        : "border-slate-200 hover:border-slate-300"
+                                                    ? "border-emerald-500 bg-emerald-50 text-emerald-700"
+                                                    : "border-slate-200 hover:border-slate-300"
                                                     }`}
                                             >
                                                 <AlignVerticalJustifyCenter className="h-5 w-5" />
@@ -413,8 +413,8 @@ export function ProductsClient({ seller, products: initialProducts, categories }
                                                 type="button"
                                                 onClick={() => setImagePosition("bottom")}
                                                 className={`flex-1 flex flex-col items-center gap-1 p-3 rounded-lg border-2 transition-colors ${imagePosition === "bottom"
-                                                        ? "border-emerald-500 bg-emerald-50 text-emerald-700"
-                                                        : "border-slate-200 hover:border-slate-300"
+                                                    ? "border-emerald-500 bg-emerald-50 text-emerald-700"
+                                                    : "border-slate-200 hover:border-slate-300"
                                                     }`}
                                             >
                                                 <AlignVerticalJustifyEnd className="h-5 w-5" />

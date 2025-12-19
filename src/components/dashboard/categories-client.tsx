@@ -75,7 +75,7 @@ export function CategoriesClient({ seller, categories: initialCategories }: Cate
                 const { data: newCategory, error: insertError } = await supabase
                     .from("categories")
                     .insert({
-                        user_id: seller.id,
+                        store_id: seller.id,
                         name: name.trim(),
                         slug: generateSlug(name),
                         position: categories.length,
