@@ -45,6 +45,9 @@ export async function updateSession(request: NextRequest) {
         !pathname.startsWith("/onboarding") &&
         pathname !== "/";
 
+    // Legal routes
+    const isLegalRoute = pathname.startsWith("/legal");
+
     // If accessing dashboard or onboarding without being logged in
     if (!user && (pathname.startsWith("/dashboard") || pathname.startsWith("/onboarding"))) {
         const url = request.nextUrl.clone();
@@ -52,45 +55,14 @@ export async function updateSession(request: NextRequest) {
         return NextResponse.redirect(url);
     }
 
-    // If user is logged in, check if they have completed onboarding
-    if (user && !isPublicRoute && !isStoreRoute) {
-        // Check if user has a store_name (completed onboarding)
-        const { data: profile } = await supabase
-            .from("profiles")
-            .select("store_name")
-            .eq("id", user.id)
-            .single();
+    // Allow dashboard and onboarding pages to handle their own logic
+    // No more middleware redirects between them - this prevents redirect loops
+    // The pages themselves will show appropriate content based on store_members
 
-        const hasCompletedOnboarding = profile?.store_name && profile.store_name.trim() !== "";
-
-        // If trying to access dashboard without completing onboarding
-        if (pathname.startsWith("/dashboard") && !hasCompletedOnboarding) {
-            const url = request.nextUrl.clone();
-            url.pathname = "/onboarding";
-            return NextResponse.redirect(url);
-        }
-
-        // If trying to access onboarding but already completed
-        if (pathname.startsWith("/onboarding") && hasCompletedOnboarding) {
-            const url = request.nextUrl.clone();
-            url.pathname = "/dashboard";
-            return NextResponse.redirect(url);
-        }
-    }
-
-    // If logged in user tries to access login page
+    // If logged in user tries to access login page, redirect to dashboard
     if (user && pathname === "/login") {
-        // Check if they have completed onboarding
-        const { data: profile } = await supabase
-            .from("profiles")
-            .select("store_name")
-            .eq("id", user.id)
-            .single();
-
-        const hasCompletedOnboarding = profile?.store_name && profile.store_name.trim() !== "";
-
         const url = request.nextUrl.clone();
-        url.pathname = hasCompletedOnboarding ? "/dashboard" : "/onboarding";
+        url.pathname = "/dashboard";
         return NextResponse.redirect(url);
     }
 
