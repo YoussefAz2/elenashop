@@ -317,7 +317,6 @@ export function CatalogueClient({ seller, products: initialProducts, categories:
                     c.id === editingCategory.id ? { ...c, name: categoryName.trim(), slug: generateSlug(categoryName) } : c
                 ));
             } else {
-                console.log("Creating category with store_id:", seller.id);
                 const { data: newCategory, error: insertError } = await supabase
                     .from("categories")
                     .insert({
