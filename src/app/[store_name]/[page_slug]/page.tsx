@@ -83,13 +83,8 @@ export default async function StorePage({ params }: PageProps) {
 
     const publishedPages = (pages as Page[]) || [];
 
-    // Build navigation (preconfigured + custom pages)
-    const navPages: Page[] = [
-        ...(config.aboutPageContent.visible ? [{ id: "about", user_id: currentStore.id, slug: "a-propos", title: "À propos", content: null, is_published: true, created_at: "" }] : []),
-        ...(config.contactPageContent.visible ? [{ id: "contact", user_id: currentStore.id, slug: "contact", title: "Contact", content: null, is_published: true, created_at: "" }] : []),
-        ...(config.faqPageContent.visible ? [{ id: "faq", user_id: currentStore.id, slug: "faq", title: "FAQ", content: null, is_published: true, created_at: "" }] : []),
-        ...publishedPages,
-    ];
+    // Build navigation (only custom pages - templates handle built-in pages separately)
+    const navPages: Page[] = [...publishedPages];
 
     // Google Font
     const fontFamily = config.global.font || "Inter";

@@ -11,20 +11,21 @@ export async function GET(request: Request) {
         const { error } = await supabase.auth.exchangeCodeForSession(code);
 
         if (!error) {
-            // Check if user has completed onboarding
+            // Check if user has any stores
             const { data: { user } } = await supabase.auth.getUser();
 
             if (user) {
-                const { data: profile } = await supabase
-                    .from("profiles")
-                    .select("store_name")
-                    .eq("id", user.id)
+                // Check store_members for existing store membership
+                const { data: membership } = await supabase
+                    .from("store_members")
+                    .select("store_id")
+                    .eq("user_id", user.id)
+                    .limit(1)
                     .single();
 
-                const hasCompletedOnboarding = profile?.store_name && profile.store_name.trim() !== "";
-
-                // Redirect based on onboarding status
-                const redirectUrl = hasCompletedOnboarding ? "/dashboard" : "/onboarding";
+                // Redirect based on store membership
+                const hasStore = !!membership?.store_id;
+                const redirectUrl = hasStore ? "/dashboard" : "/onboarding";
                 return NextResponse.redirect(`${origin}${redirectUrl}`);
             }
 
@@ -35,3 +36,4 @@ export async function GET(request: Request) {
     // Return the user to an error page with instructions
     return NextResponse.redirect(`${origin}/login?error=auth`);
 }
+

@@ -120,13 +120,8 @@ export default async function StorePage({ params }: StorePageProps) {
     const activePromos = (promosRes.data as Promo[]) || [];
     const categories = (categoriesRes.data as Category[]) || [];
 
-    // Build navigation: preconfigured pages + custom pages
-    const navPages: Page[] = [
-        ...(config.aboutPageContent?.visible !== false ? [{ id: "about", user_id: currentStore.id, slug: "a-propos", title: "À propos", content: null, is_published: true, created_at: "" }] : []),
-        ...(config.contactPageContent?.visible !== false ? [{ id: "contact", user_id: currentStore.id, slug: "contact", title: "Contact", content: null, is_published: true, created_at: "" }] : []),
-        ...(config.faqPageContent?.visible !== false ? [{ id: "faq", user_id: currentStore.id, slug: "faq", title: "FAQ", content: null, is_published: true, created_at: "" }] : []),
-        ...customPages,
-    ];
+    // Build navigation: only custom pages (templates handle built-in pages separately)
+    const navPages: Page[] = [...customPages];
 
     // Common props for all templates
     const templateProps = {

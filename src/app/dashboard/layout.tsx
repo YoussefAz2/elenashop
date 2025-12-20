@@ -4,6 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 import type { Store } from "@/types";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { MobileNav } from "@/components/dashboard/mobile-nav";
+import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 
 export default async function DashboardLayout({
     children,
@@ -69,9 +70,9 @@ export default async function DashboardLayout({
 
             {/* Main Content */}
             <main className="lg:pl-[260px] pt-14 lg:pt-0 min-h-screen relative z-10">
-                <div className="p-4 lg:p-8 max-w-7xl mx-auto">
+                <DashboardShell>
                     {children}
-                </div>
+                </DashboardShell>
             </main>
         </div>
     );

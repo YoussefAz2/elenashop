@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
     LayoutDashboard,
     Package,
@@ -16,8 +16,10 @@ import {
     Menu,
     X,
     Tag,
+    LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { createClient } from "@/utils/supabase/client";
 import {
     Sheet,
     SheetContent,
@@ -41,6 +43,29 @@ const navItems: NavItem[] = [
     { label: "Stats", href: "/dashboard/stats", icon: BarChart3 },
     { label: "Réglages", href: "/dashboard/settings", icon: Settings },
 ];
+
+function MobileLogoutButton({ onLogout }: { onLogout: () => void }) {
+    const router = useRouter();
+    const supabase = createClient();
+
+    const handleLogout = async () => {
+        onLogout();
+        await supabase.auth.signOut();
+        document.cookie = "current_store_id=; path=/; max-age=0";
+        router.push("/login");
+        router.refresh();
+    };
+
+    return (
+        <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-red-500 hover:text-red-700 hover:bg-red-50 transition-all duration-200"
+        >
+            <LogOut className="h-4 w-4" />
+            Se déconnecter
+        </button>
+    );
+}
 
 interface MobileNavProps {
     storeName: string;
@@ -91,7 +116,7 @@ export function MobileNav({ storeName, storeSlug }: MobileNavProps) {
                             {/* Mobile Hero Button */}
                             <div className="mt-6">
                                 <Link
-                                    href="/dashboard/editor"
+                                    href="/editor"
                                     onClick={() => setIsOpen(false)}
                                     className="flex items-center justify-center gap-2 w-full p-3 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-semibold shadow-lg shadow-indigo-200"
                                 >
@@ -127,7 +152,7 @@ export function MobileNav({ storeName, storeSlug }: MobileNavProps) {
                         </nav>
 
                         {/* Footer Actions */}
-                        <div className="p-4 border-t border-slate-100/50 bg-slate-50/30 mt-auto">
+                        <div className="p-4 border-t border-slate-100/50 bg-slate-50/30 mt-auto space-y-2">
                             <a
                                 href={`/${storeSlug}`}
                                 target="_blank"
@@ -140,6 +165,7 @@ export function MobileNav({ storeName, storeSlug }: MobileNavProps) {
                                 </div>
                                 <span>→</span>
                             </a>
+                            <MobileLogoutButton onLogout={() => setIsOpen(false)} />
                         </div>
                     </SheetContent>
                 </Sheet>

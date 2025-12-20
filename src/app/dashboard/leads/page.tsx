@@ -5,6 +5,9 @@ import type { Store, Lead, Order } from "@/types";
 import { LeadsClient } from "@/components/dashboard/leads-client";
 import Link from "next/link";
 
+// Cache for smoother navigation
+export const revalidate = 60;
+
 export default async function LeadsPage() {
     const supabase = await createClient();
     const cookieStore = await cookies();

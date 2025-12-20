@@ -19,7 +19,7 @@ import {
     Sparkles,
 } from "lucide-react";
 import { TemplateCard } from "./TemplateCard";
-import { StoreBuildingAnimation } from "./StoreBuildingAnimation";
+import { StoreBuildingAnimation } from "./StoreBuildingAnimation"; // V2.0 Cinematic Animation
 import {
     STORE_CATEGORIES,
     VISUAL_STYLES,
@@ -214,9 +214,9 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
                     if (storeId) {
                         document.cookie = `current_store_id=${storeId}; path=/; max-age=31536000`;
                     }
-                    // Navigate with newStore flag to skip initial checks
-                    window.location.href = "/dashboard?newStore=true";
+                    router.push('/dashboard?newStore=true');
                 }}
+                targetUrl="/dashboard?newStore=true"
             />
         );
     }

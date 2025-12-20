@@ -14,6 +14,9 @@ import {
     Package,
 } from "lucide-react";
 
+// Cache for smoother navigation
+export const revalidate = 60;
+
 export default async function OrdersPage() {
     const supabase = await createClient();
     const cookieStore = await cookies();

@@ -317,6 +317,7 @@ export function CatalogueClient({ seller, products: initialProducts, categories:
                     c.id === editingCategory.id ? { ...c, name: categoryName.trim(), slug: generateSlug(categoryName) } : c
                 ));
             } else {
+                console.log("Creating category with store_id:", seller.id);
                 const { data: newCategory, error: insertError } = await supabase
                     .from("categories")
                     .insert({
@@ -328,7 +329,10 @@ export function CatalogueClient({ seller, products: initialProducts, categories:
                     .select()
                     .single();
 
-                if (insertError) throw insertError;
+                if (insertError) {
+                    console.error("Category insert error:", insertError);
+                    throw insertError;
+                }
                 setCategories([...categories, newCategory as Category]);
             }
 
@@ -336,9 +340,9 @@ export function CatalogueClient({ seller, products: initialProducts, categories:
             setEditingCategory(null);
             setIsCategoryDialogOpen(false);
             router.refresh();
-        } catch (err) {
-            console.error(err);
-            alert("Erreur lors de la sauvegarde");
+        } catch (err: any) {
+            console.error("Full error:", err);
+            alert(`Erreur: ${err?.message || "Erreur inconnue"}`);
         } finally {
             setIsCategoryLoading(false);
         }
@@ -619,8 +623,8 @@ export function CatalogueClient({ seller, products: initialProducts, categories:
                                             type="button"
                                             onClick={() => setImagePosition(value as "center" | "top" | "bottom")}
                                             className={`flex-1 flex flex-col items-center gap-1 p-3 rounded-lg border-2 transition-colors ${imagePosition === value
-                                                    ? "border-emerald-500 bg-emerald-50 text-emerald-700"
-                                                    : "border-slate-200 hover:border-slate-300"
+                                                ? "border-emerald-500 bg-emerald-50 text-emerald-700"
+                                                : "border-slate-200 hover:border-slate-300"
                                                 }`}
                                         >
                                             <Icon className="h-5 w-5" />

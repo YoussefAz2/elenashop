@@ -4,6 +4,9 @@ import { createClient } from "@/utils/supabase/server";
 import type { Store, Product, Category } from "@/types";
 import { CatalogueClient } from "@/components/dashboard/catalogue-client";
 
+// Cache for smoother navigation
+export const revalidate = 60;
+
 export default async function CataloguePage() {
     const supabase = await createClient();
     const cookieStore = await cookies();

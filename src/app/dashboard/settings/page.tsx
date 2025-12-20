@@ -13,6 +13,9 @@ import {
     ExternalLink,
 } from "lucide-react";
 
+// Cache for smoother navigation
+export const revalidate = 60;
+
 export default async function SettingsPage() {
     const supabase = await createClient();
     const cookieStore = await cookies();
@@ -66,7 +69,7 @@ export default async function SettingsPage() {
                     icon: Palette,
                     label: "Personnaliser ma boutique",
                     description: "Logo, couleurs, mise en page",
-                    href: "/dashboard/editor",
+                    href: "/editor",
                 },
                 {
                     icon: Globe,

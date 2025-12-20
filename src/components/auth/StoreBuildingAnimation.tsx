@@ -1,464 +1,511 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Store, ShoppingBag, Check, Rocket, Sparkles } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { motion, AnimatePresence, Variants } from "framer-motion";
+import { ArrowRight, Crown, ShoppingBag, Menu, Search, Zap } from "lucide-react";
 
 interface StoreBuildingAnimationProps {
     storeName: string;
     templateId: string;
     category: string;
     onComplete: () => void;
+    targetUrl?: string; // Optional URL for prefetching
 }
 
 const STEPS = [
-    { id: "init", label: "Préparation de votre espace...", duration: 800 },
-    { id: "header", label: "Design du header...", duration: 600 },
-    { id: "hero", label: "Création de la bannière...", duration: 800 },
-    { id: "name", label: "Personnalisation...", duration: 1000 },
-    { id: "products", label: "Mise en place des produits...", duration: 1200 },
-    { id: "style", label: "Touches finales...", duration: 600 },
-    { id: "done", label: "✨ Magie en cours...", duration: 500 },
+    { id: "structure", label: "Initialisation Core", duration: 1500 },
+    { id: "style", label: "Injection du Thème", duration: 1500 },
+    { id: "branding", label: "Application Identité", duration: 1500 },
+    { id: "content", label: "Génération Catalogue", duration: 1800 },
+    { id: "final", label: "Optimisation Finale", duration: 1200 },
 ];
-
-// Fun emojis for confetti
-const CONFETTI_ITEMS = ["🎉", "✨", "💫", "⭐", "🚀", "💎", "🎊", "🌟", "💜", "💚", "🔥", "💰"];
 
 export function StoreBuildingAnimation({
     storeName,
     templateId,
     category,
     onComplete,
+    targetUrl
 }: StoreBuildingAnimationProps) {
     const [currentStep, setCurrentStep] = useState(0);
-    const [displayedName, setDisplayedName] = useState("");
-    const [showConfetti, setShowConfetti] = useState(false);
+    const [isCompleted, setIsCompleted] = useState(false);
+    const [isExiting, setIsExiting] = useState(false);
+    const router = useRouter();
 
-    // Get template colors
-    const templateColors = {
-        minimal: { primary: "#10b981", secondary: "#34d399", bg: "#ffffff", text: "#1e293b" },
-        luxe: { primary: "#d4af37", secondary: "#f4d03f", bg: "#1a1a1a", text: "#ffffff" },
-        street: { primary: "#a855f7", secondary: "#c084fc", bg: "#0f0f0f", text: "#ffffff" },
-    }[templateId] || { primary: "#10b981", secondary: "#34d399", bg: "#ffffff", text: "#1e293b" };
-
-    // Auto-advance steps
+    // Prefetch next page for instant load
     useEffect(() => {
-        if (currentStep < STEPS.length) {
-            const timer = setTimeout(() => {
-                setCurrentStep((prev) => prev + 1);
-            }, STEPS[currentStep]?.duration || 500);
-            return () => clearTimeout(timer);
-        } else {
-            setShowConfetti(true);
+        if (targetUrl) {
+            router.prefetch(targetUrl);
         }
-    }, [currentStep]);
+    }, [targetUrl, router]);
 
-    // Typing effect for store name
+    const handleStartTransition = () => {
+        setIsExiting(true);
+        // OPTIMISTIC NAVIGATION: Start loading the new page concurrently with the animation
+        // The doors open in 1.4s. We start navigation at 400ms.
+        // This gives Next.js ~1s to fetch the new page while the user watches the door animation.
+        setTimeout(() => {
+            onComplete();
+        }, 400);
+    };
+
+    // Deep theme configuration
+    const theme = {
+        minimal: {
+            name: "Minimal",
+            primary: "#10b981",
+            accent: "#34d399",
+            bg: "#ffffff",
+            text: "text-slate-900",
+            font: "font-sans",
+            glow: "shadow-[0_0_40px_rgba(16,185,129,0.2)]",
+            ambient: "#10b981", // Color for the background aura
+            sidebarBg: "bg-white border-r border-slate-200",
+            headerBg: "bg-white/80 border-b border-slate-100",
+            productRadius: "rounded-xl",
+            buttonStyle: "rounded-full",
+            gradient: "from-emerald-500 to-teal-400",
+            card: "bg-slate-50 border-slate-100"
+        },
+        luxe: {
+            name: "Luxe",
+            primary: "#BF953F", // Authentic Metallic Gold
+            accent: "#FBF5B7", // Shimmer Gold
+            bg: "#0c0a09", // Rich Black (Warmer than pure black)
+            text: "text-white",
+            font: "font-serif",
+            glow: "shadow-[0_0_50px_rgba(191,149,63,0.15)]",
+            ambient: "#453823", // Much darker, subtle coffee/gold aura, not yellow mud
+            sidebarBg: "bg-stone-950 border-r border-stone-800",
+            headerBg: "bg-stone-950/80 border-b border-stone-800",
+            productRadius: "rounded-sm",
+            buttonStyle: "rounded-sm",
+            gradient: "from-yellow-700 via-yellow-600 to-yellow-800", // Gold gradient
+            card: "bg-stone-900 border-stone-800"
+        },
+        street: {
+            name: "Street",
+            primary: "#8b5cf6",
+            accent: "#a78bfa",
+            bg: "#09090b",
+            text: "text-white",
+            font: "font-mono",
+            glow: "shadow-[0_0_40px_rgba(139,92,246,0.3)]",
+            ambient: "#8b5cf6",
+            sidebarBg: "bg-black border-r border-zinc-800",
+            headerBg: "bg-black/80 border-b border-zinc-800",
+            productRadius: "rounded-none border border-white/20",
+            buttonStyle: "rounded-none border border-white",
+            gradient: "from-violet-600 to-indigo-500",
+            card: "bg-zinc-900 border-zinc-700"
+        },
+    }[templateId] || {
+        name: "Standard",
+        primary: "#10b981",
+        accent: "#34d399",
+        bg: "#ffffff",
+        text: "text-slate-900",
+        font: "font-sans",
+        glow: "shadow-[0_0_30px_rgba(16,185,129,0.3)]",
+        ambient: "#10b981",
+        sidebarBg: "bg-white border-r border-slate-200",
+        headerBg: "bg-white/80 border-b border-slate-100",
+        productRadius: "rounded-lg",
+        buttonStyle: "rounded-lg",
+        gradient: "from-emerald-500 to-teal-400",
+        card: "bg-slate-50 border-slate-100"
+    };
+
     useEffect(() => {
-        if (currentStep >= 3 && displayedName.length < storeName.length) {
-            const timer = setTimeout(() => {
-                setDisplayedName(storeName.slice(0, displayedName.length + 1));
-            }, 80);
-            return () => clearTimeout(timer);
-        }
-    }, [currentStep, displayedName, storeName]);
+        let step = 0;
+        const processStep = () => {
+            if (step < STEPS.length) {
+                setTimeout(() => {
+                    setCurrentStep(step + 1);
+                    step++;
+                    processStep();
+                }, STEPS[step].duration);
+            } else {
+                setTimeout(() => setIsCompleted(true), 1000);
+            }
+        };
+        processStep();
+    }, []);
 
-    const isStepComplete = (stepIndex: number) => currentStep > stepIndex;
-    const isStepActive = (stepIndex: number) => currentStep === stepIndex;
+    // ANIMATION LAYERS
+    // Layer 0: Mock Dashboard (Bottom)
+    // Layer 1: Doors (Middle)
+    // Layer 2: Hologram Content (Top)
+
+    const containerVariants: Variants = {
+        hidden: { opacity: 0 },
+        visible: { opacity: 1, transition: { duration: 1.5 } },
+        exit: { opacity: 0, scale: 0.95, transition: { duration: 0.5 } }
+    };
+
+    const successVariants: Variants = {
+        hidden: { opacity: 0, y: 30 },
+        visible: { opacity: 1, y: 0, transition: { duration: 1, ease: "easeOut" } },
+        exit: { opacity: 0, scale: 0.8, transition: { duration: 0.3 } }
+    };
 
     return (
-        <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 flex flex-col items-center justify-center z-50 overflow-hidden">
-            {/* Animated background particles */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                {[...Array(20)].map((_, i) => (
-                    <motion.div
-                        key={`bg-${i}`}
-                        initial={{
-                            x: Math.random() * window.innerWidth,
-                            y: Math.random() * window.innerHeight,
-                            opacity: 0.1
-                        }}
-                        animate={{
-                            y: [null, Math.random() * -200],
-                            opacity: [0.1, 0.3, 0.1]
-                        }}
-                        transition={{
-                            duration: 5 + Math.random() * 5,
-                            repeat: Infinity,
-                            ease: "easeInOut"
-                        }}
-                        className="absolute w-1 h-1 rounded-full bg-white/20"
-                    />
-                ))}
-            </div>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden font-sans bg-black">
 
-            {/* Progress indicator - Creative dots */}
-            <div className="absolute top-8 left-1/2 -translate-x-1/2">
-                <div className="flex items-center gap-3">
-                    {STEPS.slice(0, -1).map((step, i) => (
-                        <motion.div
-                            key={step.id}
-                            initial={{ scale: 0.5, opacity: 0.3 }}
-                            animate={{
-                                scale: isStepActive(i) ? 1.4 : isStepComplete(i) ? 1 : 0.8,
-                                opacity: isStepComplete(i) ? 1 : isStepActive(i) ? 1 : 0.3,
-                            }}
-                            className="relative"
-                        >
-                            <div
-                                className={`w-3 h-3 rounded-full transition-colors duration-300 ${isStepComplete(i)
-                                        ? "bg-emerald-400"
-                                        : isStepActive(i)
-                                            ? "bg-blue-400"
-                                            : "bg-slate-600"
-                                    }`}
-                            />
-                            {isStepActive(i) && (
-                                <motion.div
-                                    animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0, 0.5] }}
-                                    transition={{ repeat: Infinity, duration: 1 }}
-                                    className="absolute inset-0 rounded-full bg-blue-400"
-                                />
-                            )}
-                        </motion.div>
-                    ))}
+            {/* LAYER 0: ACTUAL DASHBOARD CLONE (Revealed when doors open) */}
+            {/* This mimics layout.tsx EXACTLY to ensure seamless transition */}
+            <div className="absolute inset-0 z-0 bg-[#FDFDFD] overflow-hidden">
+                {/* Background Textures from layout.tsx */}
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-slate-50/50 via-transparent to-transparent opacity-50 pointer-events-none" />
+                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.015] pointer-events-none mix-blend-multiply" />
+
+                {/* Sidebar - Positioned exactly as in layout (fixed) */}
+                <div className="absolute left-0 top-0 bottom-0 z-20 hidden lg:block">
+                    {/* We use specific dimensions instead of <Sidebar> to avoid running its logic/hooks */}
+                    <div className="w-[260px] h-full border-r border-slate-200 bg-white p-4 flex flex-col gap-6">
+                        {/* Logo Area */}
+                        <div className="h-8 w-32 bg-slate-900 rounded-md opacity-10 animate-pulse" />
+
+                        {/* Nav Items */}
+                        <div className="space-y-1">
+                            {[1, 2, 3, 4, 5].map(i => (
+                                <div key={i} className="h-10 w-full rounded-lg bg-slate-50 border border-slate-100" />
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Mobile Nav Header - Positioned exactly as in layout */}
+                <div className="absolute top-0 left-0 right-0 h-14 border-b border-slate-200 bg-white lg:hidden z-20 flex items-center px-4 gap-4">
+                    <div className="w-8 h-8 rounded-md bg-slate-100" />
+                    <div className="h-6 w-32 bg-slate-100 rounded" />
+                </div>
+
+                {/* Main Content Area */}
+                <div className="lg:pl-[260px] pt-14 lg:pt-0 w-full h-full relative z-10">
+                    <div className="p-4 lg:p-8 max-w-7xl mx-auto space-y-6">
+                        {/* Dashboard Header Skeleton */}
+                        <div className="flex items-center justify-between">
+                            <div className="space-y-2">
+                                <div className="h-8 w-48 bg-slate-200 rounded animate-pulse" />
+                                <div className="h-4 w-64 bg-slate-100 rounded" />
+                            </div>
+                            <div className="h-10 w-10 rounded-full bg-slate-100" />
+                        </div>
+
+                        {/* Stats Grid Skeleton */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+                            {[1, 2, 3].map(i => (
+                                <div key={i} className="h-32 bg-white border border-slate-100 rounded-xl shadow-sm p-6 space-y-4">
+                                    <div className="h-4 w-8 bg-slate-100 rounded" />
+                                    <div className="h-8 w-24 bg-slate-100 rounded" />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            {/* Current step label with icon */}
-            <motion.div
-                key={currentStep}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="flex items-center gap-2 mb-6"
-            >
-                <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
-                >
-                    <Sparkles className="w-4 h-4 text-amber-400" />
-                </motion.div>
-                <span className="text-amber-300 text-sm font-medium tracking-wide">
-                    {STEPS[currentStep]?.label || "C'est prêt !"}
-                </span>
-            </motion.div>
-
-            {/* Phone Mockup with glow effect */}
-            <div className="relative">
-                {/* Glow effect behind phone */}
-                <motion.div
-                    animate={{
-                        boxShadow: [
-                            `0 0 60px ${templateColors.primary}40`,
-                            `0 0 100px ${templateColors.primary}60`,
-                            `0 0 60px ${templateColors.primary}40`
-                        ]
-                    }}
-                    transition={{ repeat: Infinity, duration: 2 }}
-                    className="absolute inset-0 rounded-[3rem] blur-xl"
-                />
-
-                {/* Phone Frame */}
-                <motion.div
-                    initial={{ scale: 0.8, opacity: 0, rotateY: -15 }}
-                    animate={{ scale: 1, opacity: 1, rotateY: 0 }}
-                    transition={{ type: "spring", duration: 0.8 }}
-                    className="relative w-[320px] h-[640px] bg-gradient-to-b from-slate-700 to-slate-800 rounded-[3rem] p-2 shadow-2xl"
-                >
-                    {/* Screen */}
-                    <motion.div
-                        className="w-full h-full rounded-[2.5rem] overflow-hidden relative"
-                        animate={{ backgroundColor: templateColors.bg }}
-                        transition={{ delay: 2.5, duration: 0.5 }}
-                    >
-                        {/* Notch */}
-                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-7 bg-slate-800 rounded-b-3xl z-20 flex items-center justify-center">
-                            <div className="w-16 h-1.5 bg-slate-700 rounded-full" />
-                        </div>
-
-                        {/* Content that builds up */}
-                        <div className="w-full h-full pt-10 flex flex-col">
-                            {/* Header - Step 1 */}
-                            <AnimatePresence>
-                                {currentStep >= 1 && (
-                                    <motion.div
-                                        initial={{ y: -50, opacity: 0 }}
-                                        animate={{ y: 0, opacity: 1 }}
-                                        className="px-4 py-3 border-b flex items-center justify-between"
-                                        style={{ borderColor: `${templateColors.text}15` }}
-                                    >
-                                        <div className="flex items-center gap-2">
-                                            <motion.div
-                                                animate={{
-                                                    backgroundColor: templateColors.primary,
-                                                    boxShadow: `0 0 20px ${templateColors.primary}50`
-                                                }}
-                                                className="w-8 h-8 rounded-xl flex items-center justify-center"
-                                            >
-                                                <Store className="w-4 h-4 text-white" />
-                                            </motion.div>
-                                            <motion.span
-                                                animate={{ color: templateColors.text }}
-                                                className="text-sm font-bold"
-                                            >
-                                                {displayedName || "..."}
-                                                {currentStep === 3 && displayedName.length < storeName.length && (
-                                                    <motion.span
-                                                        animate={{ opacity: [1, 0] }}
-                                                        transition={{ repeat: Infinity, duration: 0.5 }}
-                                                        className="text-emerald-400"
-                                                    >
-                                                        |
-                                                    </motion.span>
-                                                )}
-                                            </motion.span>
-                                        </div>
-                                        <ShoppingBag className="w-5 h-5" style={{ color: templateColors.text }} />
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-
-                            {/* Hero - Step 2 */}
-                            <AnimatePresence>
-                                {currentStep >= 2 && (
-                                    <motion.div
-                                        initial={{ scaleY: 0, opacity: 0 }}
-                                        animate={{ scaleY: 1, opacity: 1 }}
-                                        style={{
-                                            originY: 0,
-                                            background: `linear-gradient(135deg, ${templateColors.primary}, ${templateColors.secondary})`
-                                        }}
-                                        className="h-36 flex flex-col items-center justify-center px-4 relative overflow-hidden"
-                                    >
-                                        {/* Decorative circles */}
-                                        <div className="absolute -right-10 -top-10 w-32 h-32 rounded-full bg-white/10" />
-                                        <div className="absolute -left-5 -bottom-5 w-20 h-20 rounded-full bg-white/10" />
-
-                                        <motion.h1
-                                            initial={{ opacity: 0, y: 20 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            transition={{ delay: 0.3 }}
-                                            className="text-white text-xl font-bold text-center relative z-10"
-                                        >
-                                            Bienvenue
-                                        </motion.h1>
-                                        <motion.p
-                                            initial={{ opacity: 0 }}
-                                            animate={{ opacity: 0.9 }}
-                                            transition={{ delay: 0.5 }}
-                                            className="text-white/90 text-sm text-center mt-1 relative z-10"
-                                        >
-                                            Découvrez notre collection
-                                        </motion.p>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-
-                            {/* Products Grid - Step 4 */}
-                            <AnimatePresence>
-                                {currentStep >= 4 && (
-                                    <motion.div
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        className="flex-1 p-3 grid grid-cols-2 gap-3"
-                                    >
-                                        {[0, 1, 2, 3].map((i) => (
-                                            <motion.div
-                                                key={i}
-                                                initial={{ scale: 0, opacity: 0, rotate: -10 }}
-                                                animate={{ scale: 1, opacity: 1, rotate: 0 }}
-                                                transition={{ delay: i * 0.15, type: "spring", bounce: 0.4 }}
-                                                className="rounded-xl overflow-hidden shadow-lg"
-                                                style={{ backgroundColor: `${templateColors.text}08` }}
-                                            >
-                                                <div
-                                                    className="aspect-square relative"
-                                                    style={{
-                                                        background: `linear-gradient(135deg, ${templateColors.primary}20, ${templateColors.secondary}30)`
-                                                    }}
-                                                >
-                                                    {/* Product placeholder icon */}
-                                                    <div className="absolute inset-0 flex items-center justify-center">
-                                                        <div
-                                                            className="w-8 h-8 rounded-full"
-                                                            style={{ backgroundColor: `${templateColors.primary}40` }}
-                                                        />
-                                                    </div>
-                                                </div>
-                                                <div className="p-2">
-                                                    <div
-                                                        className="h-2 rounded-full w-3/4 mb-1.5"
-                                                        style={{ backgroundColor: `${templateColors.text}20` }}
-                                                    />
-                                                    <motion.div
-                                                        animate={{ backgroundColor: templateColors.primary }}
-                                                        className="h-2 rounded-full w-1/2"
-                                                    />
-                                                </div>
-                                            </motion.div>
-                                        ))}
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </div>
-
-                        {/* Style flash effect - Step 5 */}
-                        <AnimatePresence>
-                            {currentStep === 5 && (
-                                <motion.div
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: [0, 1, 0] }}
-                                    transition={{ duration: 0.4 }}
-                                    className="absolute inset-0 z-30"
-                                    style={{
-                                        background: `radial-gradient(circle at center, ${templateColors.primary}80, transparent)`
-                                    }}
-                                />
-                            )}
-                        </AnimatePresence>
-                    </motion.div>
-                </motion.div>
-
-                {/* Floating emojis during build */}
-                <AnimatePresence>
-                    {currentStep >= 1 && currentStep <= 5 && (
-                        <>
-                            {["🔨", "✨", "🎨", "⚡"].map((emoji, i) => (
-                                <motion.div
-                                    key={emoji}
-                                    initial={{ opacity: 0, scale: 0 }}
-                                    animate={{
-                                        opacity: [0, 1, 0],
-                                        scale: [0.5, 1.2, 0.5],
-                                        x: [0, (i % 2 === 0 ? -30 : 30), 0],
-                                        y: [0, -20, 0]
-                                    }}
-                                    transition={{
-                                        duration: 2,
-                                        repeat: Infinity,
-                                        delay: i * 0.5
-                                    }}
-                                    className="absolute text-2xl"
-                                    style={{
-                                        left: i % 2 === 0 ? "-40px" : "auto",
-                                        right: i % 2 === 1 ? "-40px" : "auto",
-                                        top: `${25 + i * 20}%`
-                                    }}
-                                >
-                                    {emoji}
-                                </motion.div>
-                            ))}
-                        </>
-                    )}
-                </AnimatePresence>
-            </div>
-
-            {/* Completion state - More creative */}
+            {/* LIGHT BURST EFFECT (When doors open) */}
             <AnimatePresence>
-                {showConfetti && (
+                {isExiting && (
                     <motion.div
-                        initial={{ opacity: 0, y: 50 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ type: "spring", bounce: 0.4 }}
-                        className="absolute bottom-8 text-center"
-                    >
-                        {/* Success icon with multiple rings */}
-                        <div className="relative inline-block mb-6">
-                            <motion.div
-                                animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.1, 0.3] }}
-                                transition={{ repeat: Infinity, duration: 2 }}
-                                className="absolute inset-0 w-24 h-24 -m-2 rounded-full bg-emerald-400"
-                            />
-                            <motion.div
-                                animate={{ scale: [1, 1.1, 1] }}
-                                transition={{ repeat: Infinity, duration: 1.5, delay: 0.2 }}
-                                className="absolute inset-0 w-20 h-20 rounded-full bg-emerald-500/50"
-                            />
-                            <motion.div
-                                initial={{ scale: 0, rotate: -180 }}
-                                animate={{ scale: 1, rotate: 0 }}
-                                transition={{ type: "spring", delay: 0.3, bounce: 0.5 }}
-                                className="relative w-20 h-20 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/40"
-                            >
-                                <Check className="w-10 h-10 text-white" strokeWidth={3} />
-                            </motion.div>
-                        </div>
-
-                        {/* Text */}
-                        <motion.h2
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.5 }}
-                            className="text-3xl font-bold text-white mb-2"
-                        >
-                            <span className="text-4xl">🎉</span> Votre boutique est prête !
-                        </motion.h2>
-                        <motion.p
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.7 }}
-                            className="text-slate-400 mb-8"
-                        >
-                            <span className="text-emerald-400 font-semibold">{storeName}</span>
-                            <span className="mx-2">•</span>
-                            {category}
-                        </motion.p>
-
-                        {/* Creative button */}
-                        <motion.button
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.9, type: "spring" }}
-                            whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(16, 185, 129, 0.4)" }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={onComplete}
-                            className="group relative inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-600 text-white font-bold text-lg rounded-2xl shadow-xl shadow-emerald-500/30 overflow-hidden"
-                        >
-                            {/* Button shine effect */}
-                            <motion.div
-                                animate={{ x: [-200, 200] }}
-                                transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-                                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12"
-                            />
-
-                            <Rocket className="w-6 h-6 group-hover:rotate-12 transition-transform" />
-                            <span>Lancer ma boutique</span>
-                        </motion.button>
-                    </motion.div>
+                        initial={{ width: "0px", opacity: 0 }}
+                        animate={{ width: "100%", opacity: [0, 1, 0] }}
+                        transition={{ duration: 0.8, ease: "easeOut" }}
+                        className="absolute inset-y-0 left-1/2 -translate-x-1/2 z-[45] bg-white blur-3xl pointer-events-none mix-blend-overlay"
+                    />
                 )}
             </AnimatePresence>
 
-            {/* Emoji confetti - more fun! */}
-            {showConfetti && (
-                <div className="fixed inset-0 pointer-events-none overflow-hidden">
-                    {[...Array(40)].map((_, i) => (
+            {/* LAYER 1: THE DOORS */}
+            {/* Left Door */}
+            <motion.div
+                initial={{ x: "0%" }}
+                animate={isExiting ? { x: "-100%" } : { x: "0%" }}
+                transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+                className="absolute left-0 top-0 bottom-0 w-[50.5%] bg-black z-40 shadow-[10px_0_50px_rgba(0,0,0,0.8)]"
+            >
+                {/* Subtle texture for realism */}
+                <div className="absolute inset-0 opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent to-white/5" />
+            </motion.div>
+
+            {/* Right Door */}
+            <motion.div
+                initial={{ x: "0%" }}
+                animate={isExiting ? { x: "100%" } : { x: "0%" }}
+                transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+                className="absolute right-0 top-0 bottom-0 w-[50.5%] bg-black z-40 shadow-[-10px_0_50px_rgba(0,0,0,0.8)]"
+            >
+                {/* Subtle texture for realism */}
+                <div className="absolute inset-0 opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+                <div className="absolute inset-0 bg-gradient-to-l from-transparent to-white/5" />
+            </motion.div>
+
+            {/* Ambient Aura (Attached to Doors/Front Layer) */}
+            <motion.div
+                animate={isExiting ? { opacity: 0 } : { opacity: [0.2, 0.4, 0.2], scale: [1, 1.1, 1] }}
+                transition={{ duration: 8, repeat: Infinity }}
+                className="absolute z-50 top-[-20%] left-[-20%] w-[140%] h-[140%] opacity-20 blur-[120px] rounded-full mix-blend-screen pointer-events-none"
+                // Use 'ambient' color instead of primary to control the mudiness
+                style={{ backgroundColor: theme.ambient }}
+            />
+
+            {/* LAYER 2: CONTENT (The Hologram) */}
+            <AnimatePresence mode="wait">
+                {!isCompleted ? (
+                    <motion.div
+                        key="building"
+                        className="relative z-[60] flex flex-col items-center justify-center h-full w-full"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0, scale: 0.9, filter: "blur(10px)", transition: { duration: 0.5 } }}
+                    >
+                        {/* HEADER TEXT */}
                         <motion.div
-                            key={i}
-                            initial={{
-                                x: "50vw",
-                                y: "110vh",
-                                scale: 0,
-                                rotate: 0,
-                            }}
-                            animate={{
-                                x: `${10 + Math.random() * 80}vw`,
-                                y: `${-10 + Math.random() * 60}vh`,
-                                scale: [0, 1.5, 1],
-                                rotate: Math.random() * 360,
-                            }}
-                            transition={{
-                                duration: 1.5 + Math.random() * 1,
-                                ease: "easeOut",
-                                delay: Math.random() * 0.5,
-                            }}
-                            className="absolute text-2xl"
+                            className="absolute top-[10%] text-center z-20 w-full px-4"
+                            initial={{ opacity: 0, y: -20 }}
+                            animate={{ opacity: 1, y: 0 }}
                         >
-                            {CONFETTI_ITEMS[Math.floor(Math.random() * CONFETTI_ITEMS.length)]}
+                            <h3 className="text-white/40 text-[10px] md:text-xs tracking-[0.4em] uppercase font-medium mb-4 flex items-center justify-center gap-4">
+                                <span className="w-12 h-px bg-white/10" />
+                                CONFIGURATION {theme.name.toUpperCase()}
+                                <span className="w-12 h-px bg-white/10" />
+                            </h3>
+                            <h2 className="text-4xl md:text-6xl font-bold text-white tracking-tight drop-shadow-2xl">
+                                {storeName}
+                            </h2>
                         </motion.div>
-                    ))}
-                </div>
-            )}
+
+                        {/* PHONE SIMULATION */}
+                        <div className="relative w-[360px] h-[720px] flex items-center justify-center perspective-[2500px] mt-8">
+
+                            {/* Scanning Beam */}
+                            <motion.div
+                                initial={{ top: "0%", opacity: 0 }}
+                                animate={{ top: ["0%", "100%", "0%"], opacity: 1 }}
+                                transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
+                                className="absolute w-[150%] h-[2px] z-50 blur-[5px] shadow-[0_0_40px_currentColor] mix-blend-screen"
+                                style={{ color: theme.primary, backgroundColor: theme.primary }}
+                            />
+
+                            {/* Phone Body */}
+                            <motion.div
+                                className={`relative w-[320px] h-[640px] rounded-[3.5rem] border-[8px] border-slate-900 bg-slate-950 shadow-2xl flex flex-col overflow-hidden ${theme.glow}`}
+                                initial={{ rotateY: 25, rotateX: 5, scale: 0.9 }}
+                                animate={{
+                                    rotateY: [25, -25, 0],
+                                    rotateX: [5, -5, 0],
+                                    scale: 1
+                                }}
+                                transition={{ duration: 7.5, ease: "easeInOut" }}
+                                style={{ transformStyle: "preserve-3d" }}
+                            >
+                                {/* Glossy Reflection on Glass */}
+                                <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-transparent to-transparent pointer-events-none z-50 rounded-[3rem]" />
+
+                                {/* Dynamic Reflection moving across screen */}
+                                <motion.div
+                                    animate={{ left: ["-100%", "200%"] }}
+                                    transition={{ duration: 3, repeat: Infinity, delay: 1, ease: "easeInOut" }}
+                                    className="absolute top-0 bottom-0 w-32 bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-12 pointer-events-none z-50 blur-sm"
+                                />
+
+                                {/* SIMULATED SCREEN CONTENT */}
+                                <div className="absolute inset-0 bg-white flex flex-col" style={{ backgroundColor: theme.bg }}>
+
+                                    {/* 1. HEADER BAR */}
+                                    <motion.div
+                                        initial={{ y: -80, opacity: 0 }}
+                                        animate={{ y: currentStep >= 1 ? 0 : -80, opacity: currentStep >= 1 ? 1 : 0 }}
+                                        transition={{ type: "spring", stiffness: 70, damping: 15 }}
+                                        className="h-24 pt-10 px-6 flex items-end justify-between pb-4 z-20 relative"
+                                        style={{ backgroundColor: templateId === 'minimal' ? '#ffffff' : theme.bg }}
+                                    >
+                                        <Menu className={`w-6 h-6 ${theme.text}`} strokeWidth={1.5} />
+                                        <div className={`font-bold text-lg tracking-tight ${theme.font}`} style={{ color: theme.primary }}>
+                                            {storeName}
+                                        </div>
+                                        <div className="flex gap-4">
+                                            <Search className={`w-5 h-5 ${theme.text} opacity-60`} strokeWidth={2} />
+                                            <ShoppingBag className={`w-5 h-5 ${theme.text}`} strokeWidth={2} />
+                                        </div>
+                                    </motion.div>
+
+                                    {/* 2. HERO SECTION */}
+                                    <motion.div
+                                        initial={{ scale: 0.8, opacity: 0, filter: "blur(10px)" }}
+                                        animate={{ scale: currentStep >= 2 ? 1 : 0.8, opacity: currentStep >= 2 ? 1 : 0, filter: "blur(0px)" }}
+                                        transition={{ duration: 0.8, ease: "circOut" }}
+                                        className={`relative h-56 mx-5 rounded-[2rem] overflow-hidden flex flex-col justify-end p-6 shadow-lg`}
+                                    >
+                                        <div className={`absolute inset-0 bg-gradient-to-br ${theme.gradient}`} />
+                                        {/* Noise texture overlay */}
+                                        <div className="absolute inset-0 opacity-20 mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+
+                                        {/* Fake Hero Content */}
+                                        <div className="relative z-10 w-full space-y-3">
+                                            <motion.div
+                                                initial={{ width: 0 }}
+                                                animate={{ width: "60%" }}
+                                                transition={{ delay: 0.5, duration: 0.8 }}
+                                                className="h-2 bg-white/60 rounded-full"
+                                            />
+                                            <motion.div
+                                                initial={{ width: 0 }}
+                                                animate={{ width: "80%" }}
+                                                transition={{ delay: 0.6, duration: 0.8 }}
+                                                className="h-6 bg-white rounded-lg shadow-sm w-3/4"
+                                            />
+                                            <motion.div
+                                                initial={{ width: 0, opacity: 0 }}
+                                                animate={{ width: "auto", opacity: 1 }}
+                                                transition={{ delay: 0.8 }}
+                                                className={`mt-2 inline-flex h-8 px-4 items-center bg-black/20 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-wider ${theme.buttonStyle}`}
+                                            >
+                                                Découvrir
+                                            </motion.div>
+                                        </div>
+                                    </motion.div>
+
+                                    {/* 3. PRODUCT GRID */}
+                                    <div className="flex-1 p-5 grid grid-cols-2 gap-4 overflow-hidden">
+                                        {[1, 2, 3, 4].map((i) => (
+                                            <motion.div
+                                                key={i}
+                                                initial={{ y: 50, opacity: 0 }}
+                                                animate={{ y: currentStep >= 3 ? 0 : 50, opacity: currentStep >= 3 ? 1 : 0 }}
+                                                transition={{ delay: 0.2 + (i * 0.1), type: "spring", stiffness: 100, damping: 15 }}
+                                                className={`flex flex-col gap-3 group`}
+                                            >
+                                                {/* Image Placeholder */}
+                                                <div className={`w-full aspect-[4/5] ${theme.productRadius} bg-gray-100 relative overflow-hidden shadow-sm`} style={{ backgroundColor: templateId === 'street' ? '#18181b' : templateId === 'luxe' ? '#292524' : '#f1f5f9' }}>
+                                                    <div className={`absolute top-3 right-3 w-6 h-6 rounded-full flex items-center justify-center ${templateId === 'minimal' ? 'bg-white shadow-sm' : 'bg-white/10'}`}>
+                                                        <div className={`w-3 h-3 ${templateId === 'minimal' ? 'bg-slate-200' : 'bg-white/50'} rounded-full`} />
+                                                    </div>
+                                                </div>
+
+                                                {/* Product Info */}
+                                                <div className="px-1 space-y-2">
+                                                    <div className={`h-3 w-full rounded-sm ${templateId === 'luxe' ? 'bg-white/10' : 'bg-slate-200'}`} />
+                                                    <div className="flex justify-between items-center">
+                                                        <div className={`h-3 w-12 rounded-sm ${templateId === 'luxe' ? 'bg-white/30' : 'bg-slate-300'}`} />
+                                                        <div
+                                                            className={`h-5 w-12 flex items-center justify-center rounded text-[8px] font-bold text-white uppercase tracking-wider`}
+                                                            style={{ backgroundColor: theme.primary }}
+                                                        >
+                                                            ADD
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </motion.div>
+                                        ))}
+                                    </div>
+
+                                    {/* Bottom Nav Simulation */}
+                                    <motion.div
+                                        initial={{ y: 100 }}
+                                        animate={{ y: currentStep >= 1 ? 0 : 100 }}
+                                        className="h-16 border-t flex items-center justify-around px-6 relative z-20"
+                                        style={{
+                                            backgroundColor: theme.bg,
+                                            borderColor: templateId === 'street' ? '#27272a' : templateId === 'luxe' ? '#44403c' : '#e2e8f0'
+                                        }}
+                                    >
+                                        <div className="w-12 h-1 rounded-full bg-current opacity-20" />
+                                    </motion.div>
+
+                                </div>
+                            </motion.div>
+                        </div>
+
+                        {/* Progress Status Bar - Refined */}
+                        <div className="absolute bottom-12 w-full max-w-[280px] flex flex-col gap-2">
+                            <div className="flex justify-between text-[10px] font-mono font-bold text-white/40 uppercase tracking-widest">
+                                <span>{STEPS[currentStep]?.label}</span>
+                                <span>{Math.min(100, Math.round(((currentStep + 1) / STEPS.length) * 100))}%</span>
+                            </div>
+                            <div className="h-[2px] w-full bg-white/10 rounded-full overflow-hidden">
+                                <motion.div
+                                    className="h-full bg-white shadow-[0_0_15px_white]"
+                                    initial={{ width: "0%" }}
+                                    animate={{ width: `${((currentStep + 1) / STEPS.length) * 100}%` }}
+                                    transition={{ duration: 0.5 }}
+                                />
+                            </div>
+                        </div>
+
+                    </motion.div>
+                ) : (
+                    <motion.div
+                        key="success"
+                        className="relative z-[70] flex flex-col items-center justify-center text-center max-w-4xl p-8"
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="visible"
+                        exit="exit"
+                    >
+                        {/* 👑 MAJESTIC REVEAL - Refined */}
+                        <motion.div
+                            variants={successVariants}
+                            className="relative w-32 h-32 mb-10 flex items-center justify-center"
+                        >
+                            <div className="absolute inset-0 rounded-full animate-ping opacity-25 duration-1000" style={{ backgroundColor: theme.primary }} />
+                            <div className="absolute inset-0 rounded-full opacity-50 blur-xl" style={{ backgroundColor: theme.primary }} />
+
+                            <div
+                                className="w-24 h-24 rounded-[2rem] flex items-center justify-center shadow-2xl relative z-10 border border-white/20"
+                                style={{ background: `linear-gradient(135deg, ${theme.primary}, ${theme.accent})` }}
+                            >
+                                <Crown className="w-12 h-12 text-white drop-shadow-md" strokeWidth={1.5} />
+                            </div>
+                        </motion.div>
+
+                        <motion.h1
+                            variants={successVariants}
+                            className="text-5xl md:text-8xl font-black text-white mb-6 tracking-tighter drop-shadow-2xl"
+                        >
+                            {storeName}
+                        </motion.h1>
+
+                        <motion.div
+                            variants={successVariants}
+                            className="flex items-center gap-6 text-white/70 text-sm md:text-lg mb-14 font-light border border-white/10 px-8 py-3 rounded-full bg-white/5 backdrop-blur-md"
+                        >
+                            <span className="flex items-center gap-3">
+                                <span className="relative flex h-3 w-3">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: theme.primary }}></span>
+                                    <span className="relative inline-flex rounded-full h-3 w-3" style={{ backgroundColor: theme.primary }}></span>
+                                </span>
+                                Thème {theme.name}
+                            </span>
+                            <span className="w-px h-4 bg-white/20" />
+                            <span className="uppercase tracking-widest text-xs font-bold opacity-80">{category}</span>
+                        </motion.div>
+
+                        <motion.button
+                            onClick={handleStartTransition}
+                            variants={successVariants}
+                            whileHover={{ scale: 1.05, boxShadow: `0 0 50px ${theme.primary}50` }}
+                            whileTap={{ scale: 0.95 }}
+                            className="group relative px-12 py-5 bg-white text-black font-bold text-sm tracking-[0.2em] uppercase rounded-full flex items-center gap-4 hover:bg-white transition-all duration-300 shadow-[0_0_30px_rgba(255,255,255,0.2)]"
+                        >
+                            <Zap className="w-4 h-4 mr-2" fill="currentColor" />
+                            Ouvrir le Dashboard
+                        </motion.button>
+
+                        <motion.p
+                            variants={successVariants}
+                            className="mt-8 text-white/20 text-xs font-mono tracking-widest uppercase"
+                        >
+                            Architecture V2.1 Ready
+                        </motion.p>
+
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

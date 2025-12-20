@@ -5,6 +5,9 @@ import type { Store, Category, Promo, Product } from "@/types";
 import { PromosClient } from "@/components/dashboard/promos-client";
 import Link from "next/link";
 
+// Cache for smoother navigation
+export const revalidate = 60;
+
 export default async function PromosPage() {
     const supabase = await createClient();
     const cookieStore = await cookies();

@@ -110,13 +110,13 @@ export function DashboardClient({
                                                 key={store.id}
                                                 onClick={() => handleStoreChange(store.id)}
                                                 className={`w-full flex items-center gap-3 p-2.5 rounded-lg transition-colors ${store.id === currentStore.id
-                                                        ? "bg-emerald-50 text-emerald-700"
-                                                        : "hover:bg-slate-50 text-slate-700"
+                                                    ? "bg-emerald-50 text-emerald-700"
+                                                    : "hover:bg-slate-50 text-slate-700"
                                                     }`}
                                             >
                                                 <div className={`flex items-center justify-center h-8 w-8 rounded-lg ${store.id === currentStore.id
-                                                        ? "bg-emerald-100"
-                                                        : "bg-slate-100"
+                                                    ? "bg-emerald-100"
+                                                    : "bg-slate-100"
                                                     }`}>
                                                     <Store className="h-4 w-4" />
                                                 </div>
@@ -314,7 +314,7 @@ export function DashboardClient({
                         icon={<Wand2 className="h-12 w-12 text-purple-400 mb-4" />}
                         title="Éditeur visuel"
                         subtitle="Personnalisez votre site en temps réel"
-                        href="/dashboard/editor"
+                        href="/editor"
                         buttonText="Ouvrir l'éditeur"
                         buttonColor="bg-purple-600 hover:bg-purple-700"
                     />

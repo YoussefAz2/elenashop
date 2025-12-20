@@ -16,6 +16,9 @@ import {
     XCircle,
 } from "lucide-react";
 
+// Cache page data for 60 seconds for smoother navigation
+export const revalidate = 60;
+
 interface PageProps {
     searchParams: Promise<{ store?: string }>;
 }

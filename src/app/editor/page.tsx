@@ -1,14 +1,12 @@
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
-import type { Store, Order, Product } from "@/types";
-import { StatsClient } from "@/components/dashboard/stats-client";
+import type { Store, Product, Page } from "@/types";
+import { DEFAULT_THEME_CONFIG } from "@/types";
+import { EditorClient } from "@/components/dashboard/editor/EditorClient";
 import Link from "next/link";
 
-// Cache for smoother navigation
-export const revalidate = 60;
-
-export default async function StatsPage() {
+export default async function EditorPage() {
     const supabase = await createClient();
     const cookieStore = await cookies();
 
@@ -43,6 +41,9 @@ export default async function StatsPage() {
                     <h1 className="text-2xl font-bold text-slate-900 mb-4">
                         Boutique introuvable
                     </h1>
+                    <p className="text-slate-600 mb-6">
+                        Impossible de charger votre boutique.
+                    </p>
                     <Link
                         href="/dashboard"
                         className="inline-block px-6 py-3 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 transition-colors"
@@ -55,39 +56,34 @@ export default async function StatsPage() {
     }
 
     const currentStore = store as Store;
+    const themeConfig = currentStore.theme_config || DEFAULT_THEME_CONFIG;
 
-    // Fetch all orders for this store
-    const { data: orders } = await supabase
-        .from("orders")
-        .select("*")
-        .eq("store_id", currentStore.id)
-        .order("created_at", { ascending: false });
-
-    // Fetch products for top products stats
-    const { data: products } = await supabase
-        .from("products")
-        .select("id, title, price, image_url")
-        .eq("store_id", currentStore.id);
+    // Fetch products and pages in parallel
+    const [productsRes, pagesRes, categoriesRes] = await Promise.all([
+        supabase
+            .from("products")
+            .select("*")
+            .eq("store_id", currentStore.id)
+            .eq("is_active", true)
+            .order("created_at", { ascending: false }),
+        supabase
+            .from("pages")
+            .select("*")
+            .eq("store_id", currentStore.id)
+            .order("created_at", { ascending: false }),
+        supabase
+            .from("categories")
+            .select("*")
+            .eq("store_id", currentStore.id)
+            .order("position", { ascending: true }),
+    ]);
 
     return (
-        <div className="max-w-7xl mx-auto space-y-8">
-            {/* Header - Clean & Bold */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-6">
-                <div>
-                    <h1 className="text-4xl font-bold tracking-tight text-slate-900 leading-tight font-display">
-                        Statistiques
-                    </h1>
-                    <p className="text-slate-500 mt-2 text-lg font-medium">
-                        Analysez les performances de votre boutique.
-                    </p>
-                </div>
-            </div>
-
-            <StatsClient
-                seller={currentStore as any}
-                orders={(orders as Order[]) || []}
-                products={(products as Pick<Product, "id" | "title" | "price" | "image_url">[]) || []}
-            />
-        </div>
+        <EditorClient
+            seller={currentStore as any}
+            themeConfig={themeConfig}
+            products={(productsRes.data as Product[]) || []}
+            pages={(pagesRes.data as Page[]) || []}
+        />
     );
 }

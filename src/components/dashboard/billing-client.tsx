@@ -49,7 +49,7 @@ export function BillingClient({ seller }: BillingClientProps) {
         if (!error) {
             setSuccess(true);
             setTimeout(() => {
-                router.push("/dashboard/editor");
+                router.push("/editor");
                 router.refresh();
             }, 2000);
         } else {

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
     LayoutDashboard,
     Package,
@@ -14,8 +14,10 @@ import {
     Palette,
     Tag,
     Sparkles,
+    LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { createClient } from "@/utils/supabase/client";
 
 interface NavItem {
     label: string;
@@ -32,6 +34,29 @@ const navItems: NavItem[] = [
     { label: "Stats", href: "/dashboard/stats", icon: BarChart3 },
     { label: "Réglages", href: "/dashboard/settings", icon: Settings },
 ];
+
+function LogoutButton() {
+    const router = useRouter();
+    const supabase = createClient();
+
+    const handleLogout = async () => {
+        await supabase.auth.signOut();
+        // Clear cookies
+        document.cookie = "current_store_id=; path=/; max-age=0";
+        router.push("/login");
+        router.refresh();
+    };
+
+    return (
+        <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-red-500 hover:text-red-700 hover:bg-red-50 transition-all duration-200 border border-transparent hover:border-red-100"
+        >
+            <LogOut className="h-4 w-4" />
+            Se déconnecter
+        </button>
+    );
+}
 
 interface SidebarProps {
     storeName: string;
@@ -64,7 +89,7 @@ export function Sidebar({ storeName, storeSlug }: SidebarProps) {
 
                 {/* HERO CTA BUTTON */}
                 <Link
-                    href="/dashboard/editor"
+                    href="/editor"
                     className="group relative flex items-center justify-center gap-2 w-full p-3 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-semibold shadow-lg shadow-indigo-200 transition-all duration-200 hover:shadow-xl hover:shadow-indigo-300 hover:-translate-y-0.5"
                 >
                     <div className="absolute inset-0 rounded-xl bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -104,7 +129,7 @@ export function Sidebar({ storeName, storeSlug }: SidebarProps) {
             </nav>
 
             {/* Footer Actions */}
-            <div className="p-4 border-t border-slate-100/50 bg-slate-50/30">
+            <div className="p-4 border-t border-slate-100/50 bg-slate-50/30 space-y-2">
                 <a
                     href={`/${storeSlug}`}
                     target="_blank"
@@ -117,6 +142,7 @@ export function Sidebar({ storeName, storeSlug }: SidebarProps) {
                     </div>
                     <span className="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
                 </a>
+                <LogoutButton />
             </div>
         </aside>
     );
