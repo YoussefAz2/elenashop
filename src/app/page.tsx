@@ -1,8 +1,11 @@
+"use client";
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { AnimatedCounter } from "@/components/landing/animated-counter";
 import { FAQSection } from "@/components/landing/faq-section";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import {
   Store,
   Zap,
@@ -15,477 +18,1054 @@ import {
   Shield,
   Star,
   CreditCard,
+  Sparkles,
+  TrendingUp,
+  Globe,
+  Bell,
+  Instagram,
+  Facebook,
+  Linkedin,
+  ShieldCheck,
+  Rocket
 } from "lucide-react";
+import { useRef } from "react";
+
+// Parallax Section - Mimics the Hero "Superposition" Effect
+// As you scroll down, this section moves slightly slower and fades out,
+// making the next section appear to slide "over" it.
+const ParallaxSection = ({ children, className, id }: { children: React.ReactNode, className?: string, id?: string }) => {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end start"]
+  });
+
+  // Matches Hero Effect: Move down slowly (0 -> 100px) as user scrolls down
+  const y = useTransform(scrollYProgress, [0, 1], [0, 150]);
+  const opacity = useTransform(scrollYProgress, [0.5, 1], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 0.95]);
+
+  return (
+    <section ref={ref} id={id} className={`relative z-10 ${className}`}>
+      <motion.div style={{ y, opacity, scale }} className="h-full w-full origin-top">
+        {children}
+      </motion.div>
+    </section>
+  );
+};
 
 export default function Home() {
+  const { scrollY } = useScroll();
+  const heroY = useTransform(scrollY, [0, 500], [0, 150]);
+  const opacity = useTransform(scrollY, [0, 300], [1, 0]);
+
   return (
-    <div className="min-h-screen bg-white overflow-hidden">
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-2">
-              <div className="h-9 w-9 rounded-xl bg-emerald-600 flex items-center justify-center">
-                <Store className="h-5 w-5 text-white" />
+    <div className="min-h-screen bg-[#f8fafc] overflow-hidden font-sans selection:bg-indigo-100 selection:text-indigo-900">
+      {/* Global Fixed Grid Background */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <div className="absolute inset-0 bg-grid-slate-100 opacity-[0.4]"></div>
+      </div>
+      {/* Navigation - Glassmorphism */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/60 backdrop-blur-xl border-b border-indigo-50/50 supports-[backdrop-filter]:bg-white/40 transition-all duration-300">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-20">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="flex items-center gap-2.5"
+            >
+              {/* User Logo */}
+              <div className="relative group cursor-pointer">
+                <div className="absolute -inset-2 bg-indigo-500/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full"></div>
+                <img src="/elena_logo.png" alt="ElenaShop" className="h-20 w-auto relative z-10" />
               </div>
-              <span className="font-bold text-xl text-slate-900">ElenaShop</span>
-            </div>
-            <div className="flex items-center gap-3">
+            </motion.div>
+            <div className="flex items-center gap-6">
               <Link href="/login">
-                <Button variant="ghost" className="text-slate-600 hover:text-slate-900">
+                <span className="text-slate-600 font-medium hover:text-indigo-600 transition-colors relative group text-sm cursor-pointer">
                   Se connecter
-                </Button>
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-indigo-600 transition-all duration-300 group-hover:w-full"></span>
+                </span>
               </Link>
-              <Link href="/login?mode=signup">
-                <Button className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full px-5">
-                  Commencer
-                </Button>
-              </Link>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Link href="/login?mode=signup">
+                  <Button className="bg-slate-900 hover:bg-slate-800 text-white rounded-full px-6 py-6 font-semibold shadow-xl shadow-indigo-500/20 transition-all relative overflow-hidden group">
+                    <span className="relative z-10 flex items-center gap-2">
+                      Commencer
+                      <Sparkles className="h-4 w-4 text-indigo-400" />
+                    </span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+                  </Button>
+                </Link>
+              </motion.div>
             </div>
           </div>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 relative">
-        {/* Animated background elements */}
+      {/* Hero Section - Alive & Dynamic */}
+      <section className="pt-32 pb-40 px-4 sm:px-6 lg:px-8 relative overflow-visible snap-start">
+        {/* Animated Background Mesh */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
-          <div className="absolute top-40 right-10 w-72 h-72 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
-          <div className="absolute bottom-20 left-1/2 w-72 h-72 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
+          <motion.div
+            animate={{
+              scale: [1, 1.2, 1],
+              rotate: [0, 10, -10, 0],
+              opacity: [0.3, 0.5, 0.3]
+            }}
+            transition={{ duration: 15, repeat: Infinity, repeatType: "reverse" }}
+            className="absolute -top-[20%] -right-[10%] w-[60rem] h-[60rem] bg-gradient-to-br from-indigo-200/20 to-purple-200/20 rounded-full blur-3xl mix-blend-multiply"
+          />
+          <motion.div
+            animate={{
+              scale: [1, 1.1, 1],
+              x: [0, 50, 0],
+              opacity: [0.3, 0.4, 0.3]
+            }}
+            transition={{ duration: 20, repeat: Infinity, repeatType: "reverse" }}
+            className="absolute top-[20%] -left-[10%] w-[50rem] h-[50rem] bg-gradient-to-tr from-blue-200/20 to-cyan-200/20 rounded-full blur-3xl mix-blend-multiply"
+          />
+          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
+          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
         </div>
 
-        <div className="max-w-6xl mx-auto relative">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="max-w-7xl mx-auto relative">
+          <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
             {/* Left - Content */}
-            <div className="text-center lg:text-left animate-fade-in-up">
-              {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 rounded-full text-emerald-700 text-sm font-medium mb-6">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            <motion.div
+              style={{ y: heroY, opacity }}
+              className="text-center lg:text-left flex flex-col items-center lg:items-start z-10"
+            >
+              {/* Animated Badge */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-md rounded-full border border-indigo-100 shadow-sm mb-8 hover:border-indigo-200 transition-colors cursor-default group"
+              >
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-indigo-500 group-hover:bg-indigo-600 transition-colors"></span>
                 </span>
-                Nouveau : Paiement par carte disponible 💳
-              </div>
+                <span className="text-sm font-semibold text-slate-600">
+                  Nouveau : <span className="text-indigo-600 font-bold">Paiement Carte Bancaire 💳</span>
+                </span>
+              </motion.div>
 
-              {/* Title */}
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight mb-6">
-                Votre boutique en ligne en{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">
-                  2 minutes
-                </span>
-                .
-                <br />
-                <span className="text-slate-500">Spécialement pour la Tunisie.</span>
+              {/* Staggered Title Animation */}
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-slate-900 leading-[1.05] mb-8 tracking-tight perspective-lg">
+                <motion.span
+                  initial={{ opacity: 0, y: 50, rotateX: 20 }}
+                  animate={{ opacity: 1, y: 0, rotateX: 0 }}
+                  transition={{ duration: 0.8, ease: "easeOut" }}
+                  className="block"
+                >
+                  Votre boutique
+                </motion.span>
+                <motion.span
+                  initial={{ opacity: 0, y: 50, rotateX: 20 }}
+                  animate={{ opacity: 1, y: 0, rotateX: 0 }}
+                  transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
+                  className="block relative"
+                >
+                  <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-violet-600 to-indigo-600 animate-gradient-x bg-[length:200%_auto]">
+                    en ligne
+                  </span>
+                  <motion.svg
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ duration: 1, delay: 0.8, ease: "easeInOut" }}
+                    className="absolute w-full h-3 -bottom-1 left-0 text-indigo-200 -z-10"
+                    viewBox="0 0 100 10"
+                    preserveAspectRatio="none"
+                  >
+                    <path d="M0 5 Q 50 10 100 5 L 100 10 L 0 10 Z" fill="currentColor" />
+                  </motion.svg>
+                </motion.span>
+                <motion.span
+                  initial={{ opacity: 0, y: 50, rotateX: 20 }}
+                  animate={{ opacity: 1, y: 0, rotateX: 0 }}
+                  transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+                  className="block"
+                >
+                  en 2 min.
+                </motion.span>
               </h1>
 
-              {/* Subtitle */}
-              <p className="text-lg sm:text-xl text-slate-600 mb-8 max-w-xl mx-auto lg:mx-0">
-                Paiement à la livraison <strong>ou par carte</strong>, WhatsApp intégré, 100% optimisé mobile.
-              </p>
+              {/* Paragraph */}
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5, duration: 1 }}
+                className="text-xl sm:text-2xl text-slate-600 mb-10 max-w-xl leading-relaxed font-medium"
+              >
+                Lancez votre marque <span className="text-slate-900 font-semibold">gratuitement</span>.
+                Paiement à la livraison, carte bancaire, et tout l'écosystème pour réussir en Tunisie.
+              </motion.p>
 
-              {/* CTA */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8">
-                <Link href="/login?mode=signup">
-                  <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full px-8 h-14 text-lg font-semibold shadow-lg shadow-emerald-600/25 hover:shadow-xl hover:shadow-emerald-600/30 transition-all hover:-translate-y-0.5">
-                    Commencer gratuitement
-                    <ArrowRight className="ml-2 h-5 w-5" />
+              {/* Buttons */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 }}
+                className="flex flex-col sm:flex-row gap-5 w-full sm:w-auto"
+              >
+                <Link href="/login?mode=signup" className="w-full sm:w-auto">
+                  <Button size="lg" className="group w-full sm:w-auto h-16 bg-[#4f46e5] hover:bg-[#4338ca] text-white rounded-2xl px-10 text-lg font-bold shadow-xl shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:-translate-y-1 transition-all duration-300 ring-4 ring-indigo-500/10">
+                    Lancer ma boutique
+                    <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
-                <Link href="#features">
-                  <Button variant="outline" size="lg" className="rounded-full px-8 h-14 text-lg border-2 hover:bg-slate-50 transition-all">
-                    Voir les fonctionnalités
+                <Link href="#how-it-works" className="w-full sm:w-auto">
+                  <Button variant="outline" size="lg" className="w-full sm:w-auto h-16 rounded-2xl px-10 text-lg border-2 border-slate-200 hover:border-indigo-200 hover:bg-indigo-50/50 hover:text-indigo-700 transition-all font-semibold bg-white/50 backdrop-blur-sm">
+                    Voir la démo
                   </Button>
                 </Link>
-              </div>
+              </motion.div>
 
-              {/* Trust Badges */}
-              <div className="flex flex-wrap gap-6 justify-center lg:justify-start text-sm text-slate-500">
-                <div className="flex items-center gap-2">
-                  <Check className="h-5 w-5 text-emerald-500" />
-                  <span>Gratuit pour commencer</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="h-5 w-5 text-emerald-500" />
-                  <span>Sans carte bancaire</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="h-5 w-5 text-emerald-500" />
-                  <span>Setup en 2 minutes</span>
+              {/* Infinite Social Proof Marquee - Platforms */}
+              <div className="mt-12 w-full max-w-md">
+                <p className="text-xs font-bold text-slate-400 mb-4 tracking-widest uppercase text-center lg:text-left">Compatible avec vos réseaux préférés</p>
+                <div className="overflow-hidden relative fade-mask-x">
+                  <div className="flex gap-12 animate-marquee whitespace-nowrap items-center">
+                    {[
+                      { name: 'Instagram', icon: <Instagram className="w-5 h-5" />, color: 'text-pink-600' },
+                      { name: 'TikTok', icon: <span className="text-lg">🎵</span>, color: 'text-black' },
+                      { name: 'WhatsApp', icon: <MessageCircle className="w-5 h-5" />, color: 'text-green-600' },
+                      { name: 'Facebook', icon: <Facebook className="w-5 h-5" />, color: 'text-blue-600' },
+                      { name: 'Snapchat', icon: <span className="text-lg">👻</span>, color: 'text-yellow-500' }
+                    ].map((platform, i) => (
+                      <div key={`a-${i}`} className="flex items-center gap-2 opacity-70 grayscale hover:grayscale-0 transition-all duration-300">
+                        <div className={`p-2 bg-white rounded-full shadow-sm ${platform.color}`}>
+                          {platform.icon}
+                        </div>
+                        <span className="font-bold text-slate-700">{platform.name}</span>
+                      </div>
+                    ))}
+                    {[
+                      { name: 'Instagram', icon: <Instagram className="w-5 h-5" />, color: 'text-pink-600' },
+                      { name: 'TikTok', icon: <span className="text-lg">🎵</span>, color: 'text-black' },
+                      { name: 'WhatsApp', icon: <MessageCircle className="w-5 h-5" />, color: 'text-green-600' },
+                      { name: 'Facebook', icon: <Facebook className="w-5 h-5" />, color: 'text-blue-600' },
+                      { name: 'Snapchat', icon: <span className="text-lg">👻</span>, color: 'text-yellow-500' }
+                    ].map((platform, i) => (
+                      <div key={`b-${i}`} className="flex items-center gap-2 opacity-70 grayscale hover:grayscale-0 transition-all duration-300">
+                        <div className={`p-2 bg-white rounded-full shadow-sm ${platform.color}`}>
+                          {platform.icon}
+                        </div>
+                        <span className="font-bold text-slate-700">{platform.name}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
-            {/* Right - Phone Mockup */}
-            <div className="relative flex justify-center lg:justify-end animate-fade-in-up animation-delay-200">
-              <div className="relative">
-                {/* Phone Frame */}
-                <div className="relative w-[260px] h-[520px] bg-slate-900 rounded-[2.5rem] p-2 shadow-2xl hover:shadow-emerald-500/20 transition-shadow duration-500">
-                  <div className="w-full h-full bg-white rounded-[2rem] overflow-hidden relative">
+            {/* Right - 3D Phone Mockup (Enhanced) */}
+            <div className="relative flex justify-center lg:justify-end perspective-1000 group">
+              {/* Glow Behind */}
+              <motion.div
+                animate={{ scale: [1, 1.1, 1], opacity: [0.5, 0.8, 0.5] }}
+                transition={{ duration: 5, repeat: Infinity }}
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-tr from-indigo-500/20 to-purple-500/20 rounded-full blur-3xl -z-10"
+              />
+
+              <motion.div
+                initial={{ rotateY: 15, rotateX: 5, y: 50, opacity: 0 }}
+                animate={{ rotateY: -5, rotateX: 0, y: 0, opacity: 1 }}
+                transition={{ duration: 1.5, ease: "easeOut" }}
+                whileHover={{ rotateY: 0, rotateX: 0, scale: 1.02, transition: { duration: 0.5 } }}
+                className="relative preserve-3d"
+              >
+
+                {/* Floating Cards - Floating further out for clean look */}
+                <motion.div
+                  animate={{ y: [0, -15, 0] }}
+                  transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                  className="hidden lg:block absolute -right-28 top-20 bg-white/90 backdrop-blur-md p-3 rounded-2xl shadow-xl shadow-indigo-500/10 border border-white/50 z-30 w-48"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 bg-green-100 rounded-full flex items-center justify-center shrink-0">
+                      <MessageCircle className="h-5 w-5 text-green-600" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-slate-500 font-medium whitespace-nowrap">Nouvelle commande !</p>
+                      <p className="text-sm font-bold text-slate-900">+ 149.000 TND</p>
+                    </div>
+                  </div>
+                </motion.div>
+
+                <motion.div
+                  animate={{ y: [0, 20, 0] }}
+                  transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                  className="hidden lg:block absolute -left-28 bottom-40 bg-white/90 backdrop-blur-md p-3 rounded-2xl shadow-xl shadow-purple-500/10 border border-white/50 z-30 w-48"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 bg-indigo-100 rounded-full flex items-center justify-center shrink-0">
+                      <TrendingUp className="h-5 w-5 text-indigo-600" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-slate-500 font-medium whitespace-nowrap">Visiteurs en direct</p>
+                      <p className="text-sm font-bold text-slate-900">42 personnes</p>
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* The Phone */}
+                <div className="relative w-[320px] h-[640px] bg-[#0f172a] rounded-[3.5rem] p-3 shadow-[0_0_0_12px_#1e293b,0_0_0_14px_#334155,50px_50px_100px_-20px_rgba(79,70,229,0.4)]">
+                  <div className="w-full h-full bg-slate-50 rounded-[3rem] overflow-hidden relative flex flex-col">
+
                     {/* Dynamic Island */}
-                    <div className="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-6 bg-black rounded-full z-10 flex items-center justify-center">
-                      <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-8 bg-black rounded-b-3xl z-40 flex items-center justify-center">
+                      <div className="w-20 h-5 bg-white/5 rounded-full blur-[2px]"></div>
                     </div>
 
-                    {/* Screen Content */}
-                    <div className="pt-12 px-3 pb-3 h-full">
-                      {/* Store Header */}
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-2">
-                          <div className="h-8 w-8 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg flex items-center justify-center shadow-lg shadow-emerald-500/30">
-                            <Store className="h-4 w-4 text-white" />
-                          </div>
-                          <span className="font-semibold text-sm text-slate-900">Ma Boutique</span>
-                        </div>
-                        <div className="relative">
-                          <span className="text-lg">🛒</span>
-                          <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full text-[9px] text-white flex items-center justify-center font-bold">2</span>
-                        </div>
-                      </div>
+                    {/* Scrollable Content Area */}
+                    <div className="flex-1 overflow-y-auto no-scrollbar relative z-10">
 
-                      {/* Hero */}
-                      <div className="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl p-3 mb-4 relative overflow-hidden">
-                        <div className="absolute top-0 right-0 -mt-2 -mr-2 w-16 h-16 bg-white/10 rounded-full"></div>
-                        <p className="text-white text-xs opacity-80">Nouvelle collection</p>
-                        <p className="text-white font-bold text-lg">Été 2024 ☀️</p>
-                        <span className="inline-block mt-1 text-[10px] bg-white/20 text-white px-2 py-0.5 rounded-full">-20% cette semaine</span>
-                      </div>
-
-                      {/* Products */}
-                      <div className="grid grid-cols-2 gap-2">
-                        {[
-                          { sold: true, price: "89" },
-                          { sold: false, price: "65" },
-                          { sold: false, price: "45" },
-                          { sold: true, price: "120" },
-                        ].map((product, i) => (
-                          <div key={i} className="bg-slate-50 rounded-lg p-2 relative">
-                            <div className="aspect-square bg-gradient-to-br from-slate-100 to-slate-200 rounded-md mb-1.5 flex items-center justify-center">
-                              <span className="text-2xl opacity-40">{['👗', '👜', '👟', '⌚'][i]}</span>
+                      {/* App Header */}
+                      <div className="pt-14 px-5 pb-4 bg-white sticky top-0 z-20 shadow-sm">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center gap-2">
+                            <div className="h-8 w-8 rounded-full bg-black flex items-center justify-center shrink-0">
+                              <span className="text-white font-bold text-xs">S</span>
                             </div>
-                            {product.sold && (
-                              <span className="absolute top-1 right-1 text-[8px] bg-red-500 text-white px-1.5 py-0.5 rounded font-medium">VENDU</span>
-                            )}
-                            <p className="text-[10px] text-slate-600 truncate">Produit</p>
-                            <p className="text-xs font-bold text-emerald-600">{product.price} TND</p>
+                            <div className="flex flex-col">
+                              <div className="flex items-center gap-1">
+                                <span className="font-bold text-sm text-slate-900 leading-none">Sneakers TN</span>
+                                <div className="h-3 w-3 bg-blue-500 rounded-full flex items-center justify-center">
+                                  <Check className="h-2 w-2 text-white" />
+                                </div>
+                              </div>
+                              <span className="text-[10px] text-indigo-500 font-medium leading-tight">Powered by ElenaShop</span>
+                            </div>
                           </div>
-                        ))}
+                          <div className="h-8 w-8 rounded-full bg-slate-50 flex items-center justify-center relative border border-slate-100">
+                            <Bell className="h-4 w-4 text-slate-400" />
+                            <span className="absolute top-0 right-0 h-2.5 w-2.5 bg-red-500 rounded-full border-2 border-white"></span>
+                          </div>
+                        </div>
+                        <div className="h-10 bg-slate-100 rounded-xl w-full flex items-center px-4 gap-2">
+                          <span className="text-slate-400">🔍</span>
+                          <div className="h-2 w-24 bg-slate-200 rounded-full"></div>
+                        </div>
+                      </div>
+
+                      {/* App Content */}
+                      <div className="p-5 space-y-6 pb-24">
+                        {/* Categories */}
+                        <div className="flex gap-2 overflow-x-auto no-scrollbar">
+                          {['Tout', 'Nouveautés', 'Promos'].map((cat, i) => (
+                            <div key={i} className={`px-3 py-1.5 rounded-full text-[10px] font-bold whitespace-nowrap ${i === 0 ? 'bg-slate-900 text-white' : 'bg-white text-slate-600 border border-slate-100'}`}>
+                              {cat}
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Hero Product Card */}
+                        <div className="aspect-[4/5] bg-white rounded-2xl overflow-hidden relative shadow-sm border border-slate-100">
+                          <div className="absolute top-3 left-3 bg-black text-white text-[10px] font-bold px-2 py-1 rounded-full z-10">
+                            NOUVEAU
+                          </div>
+                          <div className="absolute inset-0 bg-slate-100 flex items-center justify-center">
+                            <div className="relative w-32 h-32">
+                              <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-full blur-xl opacity-20"></div>
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <span className="text-6xl">👟</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="absolute bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-sm">
+                            <h4 className="font-bold text-slate-900 text-sm mb-1">Urban Runner X</h4>
+                            <div className="flex items-center gap-2 mb-2">
+                              <span className="px-1.5 py-0.5 rounded text-[8px] font-bold bg-green-100 text-green-700">LIVRAISON GRATUITE</span>
+                              <span className="flex items-center text-[8px] text-amber-500 font-bold"><Star className="h-2 w-2 fill-current mr-0.5" /> 4.9</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                              <span className="text-indigo-600 font-bold text-sm">149.000 DT</span>
+                              <div className="h-6 w-6 bg-black rounded-full flex items-center justify-center text-white text-xs">+</div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Best Sellers */}
+                        <div>
+                          <div className="flex justify-between items-center mb-3">
+                            <h5 className="font-bold text-slate-900 text-xs">Best Sellers 🔥</h5>
+                            <span className="text-[10px] text-indigo-600 font-bold">Voir tout</span>
+                          </div>
+                          <div className="flex gap-3 overflow-x-auto no-scrollbar">
+                            {[1, 2].map(i => (
+                              <div key={i} className="w-28 shrink-0 bg-white rounded-xl border border-slate-100 p-2 flex flex-col gap-2">
+                                <div className="aspect-square bg-slate-50 rounded-lg flex items-center justify-center text-2xl">
+                                  {i === 1 ? '🧢' : '🎒'}
+                                </div>
+                                <div>
+                                  <p className="font-bold text-[10px] text-slate-900 leading-tight mb-0.5">{i === 1 ? 'Casquette NY' : 'Sac Urban'}</p>
+                                  <p className="font-bold text-[10px] text-indigo-600">49.000 DT</p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Bottom Nav - Fixed */}
+                    <div className="h-16 bg-white/90 backdrop-blur border-t border-slate-100 flex items-center justify-around px-2 absolute bottom-0 left-0 right-0 z-30">
+                      <div className="w-12 h-full flex flex-col items-center justify-center gap-1 text-indigo-600">
+                        <Store className="h-5 w-5" />
+                        <div className="h-1 w-1 bg-current rounded-full"></div>
+                      </div>
+                      <div className="w-12 h-full flex flex-col items-center justify-center gap-1 text-slate-300">
+                        <Globe className="h-5 w-5" />
+                      </div>
+                      <div className="w-12 h-full flex flex-col items-center justify-center gap-1 text-slate-300">
+                        <div className="h-5 w-5 bg-slate-200 rounded-full"></div>
                       </div>
                     </div>
                   </div>
                 </div>
-
-                {/* Success notification */}
-                <div className="absolute -right-4 top-24 bg-white rounded-xl shadow-lg p-2.5 animate-float border border-slate-100">
-                  <div className="flex items-center gap-2">
-                    <div className="h-6 w-6 bg-emerald-100 rounded-full flex items-center justify-center">
-                      <Check className="h-3 w-3 text-emerald-600" />
-                    </div>
-                    <p className="text-[10px] font-medium text-slate-700">Commande reçue !</p>
-                  </div>
-                </div>
-
-                {/* Glow effect */}
-                <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-emerald-200 rounded-full blur-3xl opacity-40"></div>
-              </div>
+              </motion.div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Logos / Social Proof */}
-      <section className="py-12 bg-slate-50 border-y border-slate-100">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-slate-500 text-sm mb-6">
-            Déjà adopté par <AnimatedCounter target={150} /> vendeurs en Tunisie
-          </p>
-          <div className="flex flex-wrap justify-center items-center gap-8">
-            {/* Instagram */}
-            <div className="flex items-center gap-2 text-slate-600 hover:text-pink-600 transition-colors cursor-pointer">
-              <svg className="h-7 w-7" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-              </svg>
-              <span className="font-medium">Instagram</span>
+      {/* Trust Badges - Clean Minimal Strip */}
+      <section className="py-12 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="max-w-5xl mx-auto px-4"
+        >
+          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16">
+            <div className="flex items-center gap-2 text-slate-500">
+              <Truck className="h-5 w-5 text-indigo-500" />
+              <span className="text-sm font-semibold">Livraison Tunisie</span>
             </div>
-            {/* TikTok */}
-            <div className="flex items-center gap-2 text-slate-600 hover:text-slate-900 transition-colors cursor-pointer">
-              <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z" />
-              </svg>
-              <span className="font-medium">TikTok</span>
+            <div className="flex items-center gap-2 text-slate-500">
+              <CreditCard className="h-5 w-5 text-indigo-500" />
+              <span className="text-sm font-semibold">Paiement Sécurisé</span>
             </div>
-            {/* Facebook */}
-            <div className="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition-colors cursor-pointer">
-              <svg className="h-7 w-7" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-              </svg>
-              <span className="font-medium">Facebook</span>
+            <div className="flex items-center gap-2 text-slate-500">
+              <Shield className="h-5 w-5 text-indigo-500" />
+              <span className="text-sm font-semibold">100% Gratuit</span>
             </div>
-            {/* WhatsApp */}
-            <div className="flex items-center gap-2 text-slate-600 hover:text-green-600 transition-colors cursor-pointer">
-              <svg className="h-7 w-7" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-              </svg>
-              <span className="font-medium">WhatsApp</span>
+            <div className="flex items-center gap-2 text-slate-500">
+              <Zap className="h-5 w-5 text-indigo-500" />
+              <span className="text-sm font-semibold">Lancement Rapide</span>
             </div>
           </div>
-        </div>
+        </motion.div>
       </section>
 
-      {/* Features Section */}
-      <section id="features" className="py-24 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto">
+      {/* Features Section - Deep Indigo Style */}
+      <ParallaxSection className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden snap-start bg-white">
+        <div className="absolute top-1/2 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-100 to-transparent"></div>
+        <div className="max-w-7xl mx-auto relative z-10">
           {/* Section Header */}
-          <div className="text-center mb-16 animate-fade-in-up">
-            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-4 tracking-tight">
               Pourquoi choisir ElenaShop ?
             </h2>
             <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-              Tout ce dont vous avez besoin pour vendre en ligne, adapté au marché tunisien.
+              Tout ce dont vous avez besoin pour vendre en ligne, sans la complexité technique.
             </p>
-          </div>
+          </motion.div>
 
-          {/* Features Grid */}
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                icon: <Zap className="h-8 w-8" />,
-                title: "Ultra Rapide",
-                description: "Boutique optimisée mobile, temps de chargement instantané. Vos clients achètent sans friction.",
-                color: "from-amber-400 to-orange-500",
-                delay: "0",
-              },
-              {
-                icon: <MessageCircle className="h-8 w-8" />,
-                title: "WhatsApp Natif",
-                description: "Recevez et gérez vos commandes via WhatsApp. Un clic pour contacter vos clients.",
-                color: "from-green-400 to-emerald-500",
-                delay: "100",
-              },
-              {
-                icon: <MapPin className="h-8 w-8" />,
-                title: "100% Tunisien",
-                description: "24 gouvernorats pré-configurés, paiement à la livraison ET par carte. Pensé pour vous.",
-                color: "from-blue-400 to-indigo-500",
-                delay: "200",
-              },
-            ].map((feature, i) => (
-              <Card key={i} className="border-slate-200 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group animate-fade-in-up" style={{ animationDelay: `${feature.delay}ms` }}>
-                <CardContent className="p-8">
-                  <div className={`inline-flex items-center justify-center h-16 w-16 rounded-2xl bg-gradient-to-br ${feature.color} text-white mb-6 group-hover:scale-110 transition-transform`}>
-                    {feature.icon}
+          {/* Features Bento Grid */}
+          <div className="grid md:grid-cols-3 gap-6 auto-rows-[minmax(250px,auto)]">
+            {/* Feature 1: Ultra Rapide (Large) */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="md:col-span-2 bg-gradient-to-br from-white to-indigo-50/50 rounded-[2rem] p-8 border border-white/50 shadow-sm hover:shadow-xl hover:shadow-indigo-500/10 transition-all group overflow-hidden relative"
+            >
+              {/* Background Tech Pulse */}
+              <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 animate-pulse-slow"></div>
+
+              <div className="relative z-10 h-full flex flex-col justify-between">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <div className="h-14 w-14 rounded-2xl bg-indigo-600 flex items-center justify-center mb-6 shadow-lg shadow-indigo-600/20 group-hover:scale-110 transition-transform duration-300">
+                      <Zap className="h-7 w-7 text-white fill-indigo-100" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-slate-900 mb-3">Performance Extrême</h3>
+                    <p className="text-slate-500 leading-relaxed max-w-md">Optimisé spécialement pour les réseaux bas débit (3G/4G). Vos clients n'attendent pas.</p>
                   </div>
-                  <h3 className="text-xl font-bold text-slate-900 mb-3">{feature.title}</h3>
-                  <p className="text-slate-600">{feature.description}</p>
-                </CardContent>
-              </Card>
-            ))}
+
+                  {/* Speedometer Animation */}
+                  <div className="hidden sm:block relative w-32 h-32">
+                    <svg viewBox="0 0 100 60" className="w-full h-full overflow-visible">
+                      {/* Gauge BG */}
+                      <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="#e2e8f0" strokeWidth="8" strokeLinecap="round" />
+                      {/* Gauge Value */}
+                      <motion.path
+                        d="M 10 50 A 40 40 0 0 1 90 50"
+                        fill="none"
+                        stroke="#6366f1"
+                        strokeWidth="8"
+                        strokeLinecap="round"
+                        initial={{ pathLength: 0 }}
+                        whileInView={{ pathLength: 1 }}
+                        transition={{ duration: 1.5, ease: "easeInOut", delay: 0.2 }}
+                      />
+                      {/* Needle Group - Rotating from Center */}
+                      <motion.g
+                        initial={{ rotate: -90 }}
+                        whileInView={{ rotate: 90 }}
+                        transition={{ duration: 1.5, ease: "easeInOut", delay: 0.2 }}
+                        style={{ translateX: 50, translateY: 50 }}
+                      >
+                        {/* The needle itself, drawn from (0,0) upwards */}
+                        <line x1="0" y1="0" x2="0" y2="-35" stroke="#334155" strokeWidth="3" strokeLinecap="round" />
+                        <circle cx="0" cy="0" r="4" fill="#334155" />
+                      </motion.g>
+                      <text x="50" y="75" textAnchor="middle" className="text-[12px] font-bold fill-indigo-600">100/100</text>
+                    </svg>
+                  </div>
+                </div>
+
+                <div className="mt-8 flex items-center gap-4 text-sm font-semibold text-indigo-700 bg-indigo-50/80 p-3 rounded-xl w-fit backdrop-blur-sm border border-indigo-100">
+                  <span className="flex items-center gap-1.5"><div className="h-2 w-2 rounded-full bg-green-500 animate-pulse"></div> Accessible 24h/24</span>
+                  <div className="h-4 w-px bg-indigo-200"></div>
+                  <span className="flex items-center gap-1.5"><Rocket className="h-3.5 w-3.5" /> Chargement Instantané</span>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Feature 2: WhatsApp (Vertical - Restored) */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="md:row-span-2 bg-[#25D366]/5 rounded-[2rem] p-8 border border-[#25D366]/10 shadow-sm hover:shadow-xl hover:shadow-[#25D366]/10 transition-all group relative overflow-hidden flex flex-col"
+            >
+              <div className="absolute bottom-0 right-0 w-48 h-48 bg-[#25D366]/10 rounded-full blur-2xl translate-y-1/3 translate-x-1/3"></div>
+
+              <div className="h-full flex flex-col">
+                <div className="h-14 w-14 rounded-2xl bg-[#25D366]/20 flex items-center justify-center mb-6 group-hover:rotate-12 transition-transform">
+                  <MessageCircle className="h-7 w-7 text-[#25D366]" />
+                </div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-3">WhatsApp First</h3>
+                <p className="text-slate-600 leading-relaxed mb-8 flex-1">
+                  Ne changez pas vos habitudes. Recevez chaque commande comme un message WhatsApp pré-rempli.
+                </p>
+
+                {/* Animated Chat UI */}
+                <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 text-xs space-y-3 transform group-hover:translate-y-[-5px] transition-transform relative z-10">
+                  {/* Message 1 (Customer) */}
+                  <motion.div
+                    initial={{ opacity: 0, x: -10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.4 }}
+                    className="flex gap-2"
+                  >
+                    <div className="h-8 w-8 rounded-full bg-indigo-100 flex-shrink-0 flex items-center justify-center text-[10px] font-bold text-indigo-500">C</div>
+                    <div className="bg-indigo-50 p-3 rounded-r-2xl rounded-bl-2xl text-slate-700 max-w-[80%]">
+                      Sahby, commande #123 confirmée ?
+                    </div>
+                  </motion.div>
+
+                  {/* Message 2 (Store) */}
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.8, type: "spring" }}
+                    className="flex gap-2 justify-end"
+                  >
+                    <div className="bg-[#dcf8c6] p-3 rounded-l-2xl rounded-br-2xl text-slate-900 shadow-sm max-w-[80%] font-medium">
+                      Oui ! Livraison demain 🚚
+                    </div>
+                  </motion.div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Feature 3: Tunisian Market (Config Toggles) */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3 }}
+              className="bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-rose-500/5 transition-all group relative overflow-hidden"
+            >
+              {/* Background Shapes */}
+              <div className="absolute -top-10 -right-10 w-40 h-40 bg-rose-50 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
+
+              <div className="h-14 w-14 rounded-2xl bg-rose-50 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform relative z-10">
+                <MapPin className="h-7 w-7 text-rose-600" />
+              </div>
+
+              <div className="relative z-10">
+                <div className="flex items-center gap-2 mb-2">
+                  <h3 className="text-xl font-bold text-slate-900">100% Tunisien</h3>
+                  <span className="bg-rose-100 text-rose-600 text-[10px] font-bold px-2 py-0.5 rounded-full">TN</span>
+                </div>
+                <p className="text-slate-500 text-sm mb-6">Tout est pré-configuré pour la Tunisie. Activez votre boutique en 1 clic.</p>
+
+                {/* Config Toggles Animation (SaaS Style) */}
+                <div className="bg-slate-50 rounded-xl p-4 border border-slate-100 space-y-3">
+                  {/* Toggle 1: Currency */}
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-slate-600">Devise (TND)</span>
+                    <motion.div
+                      className="w-8 h-4 bg-slate-200 rounded-full relative"
+                      whileInView={{ backgroundColor: "#10b981" }}
+                      transition={{ delay: 0.5, duration: 0.6 }}
+                    >
+                      <motion.div className="absolute top-0.5 left-0.5 w-3 h-3 bg-white rounded-full shadow-sm" whileInView={{ x: 16 }} transition={{ delay: 0.5, duration: 0.6, type: "spring" }} />
+                    </motion.div>
+                  </div>
+                  {/* Toggle 2: Governorates */}
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-slate-600">24 Gouvernorats</span>
+                    <motion.div
+                      className="w-8 h-4 bg-slate-200 rounded-full relative"
+                      whileInView={{ backgroundColor: "#10b981" }}
+                      transition={{ delay: 1.0, duration: 0.6 }}
+                    >
+                      <motion.div className="absolute top-0.5 left-0.5 w-3 h-3 bg-white rounded-full shadow-sm" whileInView={{ x: 16 }} transition={{ delay: 1.0, duration: 0.6, type: "spring" }} />
+                    </motion.div>
+                  </div>
+                  {/* Toggle 3: Instant Site */}
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-slate-600">Site Instantané</span>
+                    <motion.div
+                      className="w-8 h-4 bg-slate-200 rounded-full relative"
+                      whileInView={{ backgroundColor: "#10b981" }}
+                      transition={{ delay: 1.5, duration: 0.6 }}
+                    >
+                      <motion.div className="absolute top-0.5 left-0.5 w-3 h-3 bg-white rounded-full shadow-sm" whileInView={{ x: 16 }} transition={{ delay: 1.5, duration: 0.6, type: "spring" }} />
+                    </motion.div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Feature 4: Dashboard (Live Analytics) */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1, duration: 0.5 }}
+              className="md:col-span-1 bg-slate-900 rounded-[2rem] p-8 shadow-xl shadow-indigo-900/10 group relative overflow-hidden flex flex-col justify-between h-full min-h-[400px]"
+            >
+              {/* Content Container (Z-Index High) */}
+              <div className="relative z-20 flex flex-col gap-6">
+                {/* Header: Icon + Live Badge */}
+                <div className="flex justify-between items-start">
+                  <div className="h-12 w-12 rounded-2xl bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <TrendingUp className="h-6 w-6 text-indigo-400" />
+                  </div>
+                  <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    <span className="text-xs font-bold text-emerald-400 uppercase tracking-wide">Live</span>
+                  </div>
+                </div>
+
+                {/* Text Section */}
+                <div>
+                  <h3 className="text-2xl font-bold text-white mb-2">Statistiques</h3>
+                  <p className="text-slate-400 text-sm leading-relaxed max-w-[90%]">
+                    Suivez vos ventes et votre croissance en temps réel.
+                  </p>
+                </div>
+
+                {/* Metric Section (Moved Up) */}
+                <div>
+                  <p className="text-slate-500 text-[10px] font-bold uppercase tracking-wider mb-1">Revenus (Ce mois)</p>
+                  <h3 className="text-4xl font-bold text-white tracking-tight flex items-baseline gap-2">
+                    7,240<span className="text-2xl text-white/90">.00</span> <span className="text-sm font-medium text-white/90">TND</span>
+                  </h3>
+                </div>
+              </div>
+
+              {/* Chart Container (positioned absolutely at bottom) */}
+              <div className="absolute bottom-0 left-0 right-0 h-40 w-full z-10 translate-y-2 opacity-80">
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent z-10"></div>
+
+                <svg viewBox="0 0 400 150" className="w-full h-full overflow-visible preserve-3d">
+                  <defs>
+                    <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#6366f1" stopOpacity="0.3" />
+                      <stop offset="100%" stopColor="#6366f1" stopOpacity="0" />
+                    </linearGradient>
+                  </defs>
+
+                  {/* Area Fill */}
+                  <motion.path
+                    d="M0 150 C 50 150, 50 100, 100 110 C 150 120, 150 60, 200 70 C 250 80, 250 40, 300 50 C 350 60, 350 10, 400 20 V 200 H 0 Z"
+                    fill="url(#chartGradient)"
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    transition={{ duration: 1, delay: 0.2 }}
+                  />
+
+                  {/* Line Path */}
+                  <motion.path
+                    d="M0 150 C 50 150, 50 100, 100 110 C 150 120, 150 60, 200 70 C 250 80, 250 40, 300 50 C 350 60, 350 10, 400 20"
+                    fill="none"
+                    stroke="#818cf8"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    initial={{ pathLength: 0 }}
+                    whileInView={{ pathLength: 1 }}
+                    transition={{ duration: 1.5, ease: "easeOut" }}
+                  />
+
+                  {/* Interactive Points */}
+                  {[
+                    { cx: 100, cy: 110, delay: 0.5, val: "+120" },
+                    { cx: 300, cy: 50, delay: 1.1, val: "+890" },
+                  ].map((point, i) => (
+                    <g key={i}>
+                      <motion.circle
+                        cx={point.cx} cy={point.cy} r="4" fill="#1e1b4b" stroke="#818cf8" strokeWidth="2"
+                        initial={{ scale: 0 }}
+                        whileInView={{ scale: 1 }}
+                        transition={{ duration: 0.3, delay: point.delay }}
+                      />
+                      {/* Floating Tooltips */}
+                      <motion.foreignObject x={point.cx - 20} y={point.cy - 30} width="40" height="24"
+                        initial={{ opacity: 0, y: 10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3, delay: point.delay + 0.1 }}
+                      >
+                        <div className="bg-indigo-500/90 backdrop-blur-[2px] text-[10px] font-bold text-white px-1.5 py-0.5 rounded text-center shadow-lg transform -translate-x-1">
+                          {point.val}
+                        </div>
+                      </motion.foreignObject>
+                    </g>
+                  ))}
+                </svg>
+              </div>
+            </motion.div>
           </div>
 
-          {/* Payment Methods Banner */}
-          <div className="mt-16 bg-gradient-to-r from-slate-900 to-slate-800 rounded-3xl p-8 md:p-12 text-center animate-fade-in-up">
-            <h3 className="text-2xl font-bold text-white mb-4">
-              💳 Nouveau : Acceptez les paiements par carte !
-            </h3>
-            <p className="text-slate-300 mb-6 max-w-2xl mx-auto">
-              Vos clients peuvent maintenant payer par carte bancaire ou à la livraison. Plus de flexibilité = plus de ventes.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <div className="flex items-center gap-2 bg-white/10 rounded-full px-4 py-2 text-white">
-                <Truck className="h-5 w-5" />
-                <span>Cash on Delivery</span>
+          {/* Payment Methods Banner - Tech Style */}
+          <div className="mt-20 relative overflow-hidden rounded-3xl bg-[#0f172a]">
+            {/* Background Effects */}
+            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
+            <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-violet-600/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
+
+            <div className="relative p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8">
+              <div className="text-left max-w-2xl">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="h-8 w-8 rounded-full bg-indigo-500/20 flex items-center justify-center">
+                    <CreditCard className="h-4 w-4 text-indigo-400" />
+                  </div>
+                  <span className="text-indigo-400 font-bold uppercase tracking-wider text-xs">Paiement Sécurisé</span>
+                </div>
+                <h3 className="text-3xl font-bold text-white mb-4">
+                  Acceptez la <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-violet-400">Carte Bancaire</span> et le Cash.
+                </h3>
+                <p className="text-slate-400 text-lg">
+                  Offrez le choix à vos clients. Konnect ou Flouci pour le paiement en ligne, et bien sûr le paiement à la livraison.
+                </p>
               </div>
-              <div className="flex items-center gap-2 bg-white/10 rounded-full px-4 py-2 text-white">
-                <CreditCard className="h-5 w-5" />
-                <span>Carte Bancaire</span>
+              <div className="flex flex-col gap-3 min-w-[200px]">
+                <div className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl p-3 px-4 backdrop-blur-sm">
+                  <div className="h-2 w-2 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]"></div>
+                  <span className="text-white font-medium">Cash on Delivery</span>
+                </div>
+                <div className="flex items-center gap-3 bg-indigo-600/20 border border-indigo-500/30 rounded-xl p-3 px-4 backdrop-blur-sm shadow-[0_0_30px_rgba(79,70,229,0.15)]">
+                  <div className="h-2 w-2 rounded-full bg-indigo-400 shadow-[0_0_10px_rgba(129,140,248,0.5)]"></div>
+                  <span className="text-white font-medium">Carte Bancaire</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </section>
+      </ParallaxSection>
 
-      {/* How It Works */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-slate-50">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
-              Comment ça marche ?
+      {/* How It Works - Clean Flow */}
+      <ParallaxSection className="py-32 px-4 sm:px-6 lg:px-8 relative overflow-hidden snap-start bg-white">
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="text-center mb-24">
+            <h2 className="text-4xl sm:text-5xl font-extrabold text-slate-900 mb-6 tracking-tight">
+              Lancez votre empire <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">en 3 étapes simples</span>
             </h2>
-            <p className="text-lg text-slate-600">
-              3 étapes simples pour lancer votre boutique
+            <p className="text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed">
+              Pas de code. Pas de stress. Juste vous et votre business.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-12 relative">
+            {/* Connecting Line */}
+            <div className="hidden md:block absolute top-12 left-[16%] right-[16%] h-0.5 bg-gradient-to-r from-indigo-100 via-indigo-200 to-indigo-100 -z-10"></div>
+
             {[
               {
-                step: 1,
-                icon: <Smartphone className="h-10 w-10" />,
-                title: "Créez votre compte",
-                description: "Inscription gratuite en 30 secondes. Choisissez le nom de votre boutique.",
+                step: "01",
+                icon: <Smartphone className="h-6 w-6" />,
+                title: "Création Instantanée",
+                description: "Inscrivez-vous en 30 secondes. Aucune carte bancaire requise pour démarrer.",
+                bg: "bg-blue-50",
+                text: "text-blue-600"
               },
               {
-                step: 2,
-                icon: <Store className="h-10 w-10" />,
-                title: "Ajoutez vos produits",
-                description: "Uploadez vos photos, fixez vos prix. Interface simple et intuitive.",
+                step: "02",
+                icon: <Store className="h-6 w-6" />,
+                title: "Personnalisation",
+                description: "Ajoutez vos produits, votre logo et vos couleurs. Votre boutique, votre style.",
+                bg: "bg-indigo-50",
+                text: "text-indigo-600"
               },
               {
-                step: 3,
-                icon: <Truck className="h-10 w-10" />,
-                title: "Vendez !",
-                description: "Partagez votre lien, recevez des commandes, gérez tout depuis WhatsApp.",
+                step: "03",
+                icon: <Truck className="h-6 w-6" />,
+                title: "Vente & Profit",
+                description: "Partagez votre lien. Recevez les commandes sur WhatsApp. Encaissez.",
+                bg: "bg-violet-50",
+                text: "text-violet-600"
               },
-            ].map((item) => (
-              <div key={item.step} className="text-center group animate-fade-in-up">
-                <div className="relative inline-flex items-center justify-center mb-6">
-                  <div className="h-20 w-20 bg-white rounded-2xl shadow-lg flex items-center justify-center text-emerald-600 group-hover:shadow-xl group-hover:scale-105 transition-all">
-                    {item.icon}
+            ].map((item, i) => (
+              <div key={i} className="relative group">
+                <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-xl shadow-slate-200/40 hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-500 hover:-translate-y-2 h-full flex flex-col items-center text-center">
+
+                  {/* Icon Bubble */}
+                  <div className={`h-20 w-20 rounded-2xl ${item.bg} flex items-center justify-center mb-8 shadow-inner group-hover:scale-110 transition-transform duration-500 relative z-10`}>
+                    <div className={`h-10 w-10 bg-white rounded-xl flex items-center justify-center shadow-lg ${item.text}`}>
+                      {item.icon}
+                    </div>
                   </div>
-                  <span className="absolute -top-2 -right-2 h-8 w-8 bg-emerald-600 text-white rounded-full flex items-center justify-center font-bold text-sm">
+
+                  <span className={`text-8xl font-black ${item.text} absolute -top-12 right-6 z-0 select-none opacity-30 font-serif transform rotate-6`}>
                     {item.step}
                   </span>
+
+                  <h3 className="text-xl font-bold text-slate-900 mb-4 relative z-10">{item.title}</h3>
+                  <p className="text-slate-500 leading-relaxed relative z-10">
+                    {item.description}
+                  </p>
                 </div>
-                <h3 className="text-xl font-bold text-slate-900 mb-2">{item.title}</h3>
-                <p className="text-slate-600">{item.description}</p>
               </div>
             ))}
           </div>
         </div>
-      </section>
+      </ParallaxSection>
 
-      {/* Testimonials */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
-              Ce que disent nos vendeurs
+      {/* Testimonials - Light Premium (Apple Style) */}
+      <ParallaxSection className="py-32 px-4 sm:px-6 lg:px-8 bg-slate-50 relative snap-start">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-20">
+            <h2 className="text-3xl sm:text-5xl font-extrabold text-slate-900 mb-6 tracking-tight">
+              Adoré par les créateurs
             </h2>
+            <p className="text-xl text-slate-500 max-w-2xl mx-auto">
+              Rejoignez la communauté des entrepreneurs qui changent la donne en Tunisie.
+            </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
                 name: "Sarra M.",
-                role: "Mode & Accessoires",
-                text: "J'ai triplé mes ventes depuis que j'utilise ElenaShop. Mes clientes adorent la simplicité de commande.",
-                avatar: "https://ui-avatars.com/api/?name=Sarra+M&background=f0abfc&color=701a75&bold=true&size=128",
-                emoji: "👩🏻",
+                role: "Fondatrice, Mode & Style",
+                text: "Avant je galérais avec les DMs Instagram. Maintenant, tout est automatisé. J'ai triplé mon chiffre d'affaires en 2 mois.",
+                emoji: "https://ui-avatars.com/api/?name=Sarra+M&background=6366f1&color=fff&bold=true&size=128",
+                stats: "+300% de ventes"
               },
               {
                 name: "Ahmed K.",
-                role: "Électronique",
-                text: "Le système WhatsApp est génial. Je confirme mes commandes en un clic, directement depuis mon téléphone.",
-                avatar: "https://ui-avatars.com/api/?name=Ahmed+K&background=93c5fd&color=1e3a8a&bold=true&size=128",
-                emoji: "👨🏽",
+                role: "Tech Store TN",
+                text: "Le game changer pour moi c'est le paiement par carte. Mes clients achètent plus, et plus vite. Le support est incroyable.",
+                emoji: "https://ui-avatars.com/api/?name=Ahmed+K&background=8b5cf6&color=fff&bold=true&size=128",
+                stats: "Top Vendeur"
               },
               {
                 name: "Ines B.",
-                role: "Cosmétiques",
-                text: "Enfin une solution adaptée à la Tunisie ! Pas de problèmes de paiement, tout est simple et rapide.",
-                avatar: "https://ui-avatars.com/api/?name=Ines+B&background=fcd34d&color=78350f&bold=true&size=128",
-                emoji: "👩🏻‍🦱",
+                role: "Cosmétiques Bio",
+                text: "J'avais peur de la technique, mais l'app est tellement simple. C'est beau, c'est rapide, et mes clientes adorent.",
+                emoji: "https://ui-avatars.com/api/?name=Ines+B&background=ec4899&color=fff&bold=true&size=128",
+                stats: "4.9/5 Avis"
               },
             ].map((testimonial, i) => (
-              <Card key={i} className="border-slate-200 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 animate-fade-in-up" style={{ animationDelay: `${i * 100}ms` }}>
-                <CardContent className="p-6">
-                  <div className="flex gap-1 mb-4">
+              <motion.div
+                key={i}
+                whileHover={{ y: -8 }}
+                className="bg-white rounded-[2rem] p-10 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] border border-slate-100 relative group overflow-hidden"
+              >
+                {/* Decorative Gradient Blob */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-bl-[4rem] -mr-8 -mt-8 transition-transform group-hover:scale-150 duration-700"></div>
+
+                <div className="flex items-center gap-4 mb-8 relative z-10">
+                  <div className="h-14 w-14 rounded-full p-1 bg-white shadow-sm ring-1 ring-slate-100">
+                    <img src={testimonial.emoji} alt={testimonial.name} className="h-full w-full rounded-full" loading="lazy" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-slate-900 text-lg leading-tight">{testimonial.name}</h4>
+                    <p className="text-slate-500 text-sm font-medium">{testimonial.role}</p>
+                  </div>
+                </div>
+
+                <div className="mb-8 relative z-10">
+                  <div className="flex gap-1 mb-3">
                     {[1, 2, 3, 4, 5].map((star) => (
-                      <Star key={star} className="h-5 w-5 fill-amber-400 text-amber-400" />
+                      <Star key={star} className="h-4 w-4 fill-amber-400 text-amber-400" />
                     ))}
                   </div>
-                  <p className="text-slate-600 mb-6">&ldquo;{testimonial.text}&rdquo;</p>
-                  <div className="flex items-center gap-3">
-                    <div className="h-12 w-12 rounded-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center text-2xl shadow-inner">
-                      {testimonial.emoji}
-                    </div>
-                    <div>
-                      <p className="font-semibold text-slate-900">{testimonial.name}</p>
-                      <p className="text-sm text-slate-500">{testimonial.role}</p>
-                    </div>
+                  <p className="text-slate-600 leading-relaxed font-medium">
+                    &quot;{testimonial.text}&quot;
+                  </p>
+                </div>
+
+                <div className="flex items-center justify-between pt-6 border-t border-slate-50 relative z-10">
+                  <div className="flex items-center gap-2">
+                    <span className="flex h-2 w-2 relative">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    <span className="text-xs font-bold text-emerald-600 uppercase tracking-wide">Vérifié</span>
                   </div>
-                </CardContent>
-              </Card>
+                  <span className="text-xs font-bold px-3 py-1.5 rounded-full bg-slate-100 text-slate-600 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors">
+                    {testimonial.stats}
+                  </span>
+                </div>
+              </motion.div>
             ))}
           </div>
         </div>
-      </section>
+      </ParallaxSection>
 
-      {/* Pricing Teaser */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-slate-900">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600/20 rounded-full text-emerald-400 text-sm font-medium mb-6 animate-pulse">
-            <Shield className="h-4 w-4" />
-            Offre de lancement
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-            Commencez gratuitement, sans engagement
-          </h2>
-          <p className="text-lg text-slate-400 mb-8 max-w-2xl mx-auto">
-            Créez votre boutique maintenant. Aucune carte bancaire requise.
-            Upgradez quand vous êtes prêt.
-          </p>
-          <Link href="/login?mode=signup">
-            <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full px-8 h-14 text-lg font-semibold shadow-lg shadow-emerald-600/25 hover:shadow-xl transition-all hover:-translate-y-0.5">
-              Créer ma boutique gratuitement
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-          </Link>
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      <FAQSection />
-
-      {/* Footer */}
-      <footer className="py-12 px-4 sm:px-6 lg:px-8 bg-slate-900 text-white">
+      {/* Pricing Teaser - Dark Card on Light Background */}
+      <ParallaxSection className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden snap-start bg-[#0f172a]">
         <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
-            {/* Brand */}
-            <div className="md:col-span-2">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="h-10 w-10 rounded-xl bg-emerald-600 flex items-center justify-center">
-                  <Store className="h-5 w-5 text-white" />
-                </div>
-                <span className="font-bold text-xl">ElenaShop</span>
+          <div className="bg-[#020617] rounded-[3rem] p-12 sm:p-24 relative overflow-hidden text-center shadow-2xl shadow-indigo-900/20 isolate">
+            {/* Inner Glow Effects */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-indigo-500/20 rounded-full blur-[100px] -z-10 pointer-events-none"></div>
+            <div className="absolute bottom-0 right-0 w-80 h-80 bg-purple-500/10 rounded-full blur-[80px] -z-10 pointer-events-none"></div>
+            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-soft-light -z-10"></div>
+
+            <div className="max-w-3xl mx-auto relative z-10">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full text-indigo-300 text-sm font-semibold mb-8 backdrop-blur-md">
+                <Sparkles className="h-4 w-4" />
+                <span>Offre de lancement</span>
               </div>
-              <p className="text-slate-400 text-sm max-w-xs">
-                La plateforme e-commerce conçue pour les vendeurs Instagram et TikTok en Tunisie.
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white mb-8 tracking-tight leading-tight">
+                Commencez <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-violet-400">gratuitement</span>.<br />
+                Sans engagement.
+              </h2>
+              <p className="text-xl text-slate-400 mb-12 max-w-2xl mx-auto leading-relaxed">
+                Créez votre boutique en quelques minutes. Aucune carte bancaire requise pour démarrer.
+                Upgradez uniquement quand votre business décolle.
               </p>
+              <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                <Link href="/login?mode=signup" className="w-full sm:w-auto">
+                  <Button size="lg" className="w-full sm:w-auto h-16 bg-white hover:bg-indigo-50 text-indigo-950 rounded-full px-10 text-lg font-bold shadow-[0_0_40px_-10px_rgba(255,255,255,0.3)] hover:shadow-[0_0_60px_-15px_rgba(255,255,255,0.4)] transition-all hover:-translate-y-1 hover:scale-105">
+                    Créer ma boutique
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+                <div className="flex items-center gap-2 text-slate-400 text-sm font-medium">
+                  <ShieldCheck className="h-4 w-4" />
+                  <span>Simple. Rapide. Efficace.</span>
+                </div>
+              </div>
             </div>
-
-            {/* Links */}
-            <div>
-              <h4 className="font-semibold mb-4">Produit</h4>
-              <ul className="space-y-2 text-sm text-slate-400">
-                <li><Link href="#features" className="hover:text-emerald-400 transition-colors">Fonctionnalités</Link></li>
-                <li><Link href="#faq" className="hover:text-emerald-400 transition-colors">FAQ</Link></li>
-                <li><Link href="/login" className="hover:text-emerald-400 transition-colors">Connexion</Link></li>
-              </ul>
-            </div>
-
-            {/* Legal */}
-            <div>
-              <h4 className="font-semibold mb-4">Légal</h4>
-              <ul className="space-y-2 text-sm text-slate-400">
-                <li><Link href="/legal/cgu" className="hover:text-emerald-400 transition-colors">Conditions d&apos;utilisation</Link></li>
-                <li><Link href="/legal/privacy" className="hover:text-emerald-400 transition-colors">Politique de confidentialité</Link></li>
-                <li><a href="mailto:contact@elenashop.tn" className="hover:text-emerald-400 transition-colors">Contact</a></li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Bottom */}
-          <div className="pt-8 border-t border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-slate-500">
-              © 2024 ElenaShop. Tous droits réservés.
-            </p>
-            <p className="text-sm text-slate-500">
-              Made with ❤️ in Tunisia 🇹🇳
-            </p>
           </div>
         </div>
-      </footer>
+      </ParallaxSection>
+
+      {/* FAQ Section should interact with the theme */}
+      <ParallaxSection className="snap-start bg-white">
+        <FAQSection />
+      </ParallaxSection>
+
+      {/* Footer - Floating Purity Premium */}
+      <ParallaxSection className="py-12 px-4 sm:px-6 lg:px-8 bg-slate-50">
+        <footer className="max-w-[85rem] mx-auto bg-white rounded-[2rem] border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-12 lg:p-16 relative overflow-hidden snap-start">
+          <div className="grid md:grid-cols-12 gap-12 lg:gap-8">
+
+            {/* Brand - Span 4 */}
+            <div className="md:col-span-4 flex flex-col justify-between">
+              <div className="space-y-6">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-xl bg-slate-900 flex items-center justify-center shadow-lg shadow-slate-900/10">
+                    <Store className="h-5 w-5 text-white" />
+                  </div>
+                  <span className="font-bold text-xl text-slate-900 tracking-tight">ElenaShop</span>
+                </div>
+                <p className="text-slate-500 text-base leading-relaxed font-medium max-w-xs">
+                  La plateforme e-commerce tout-en-un pour les créateurs tunisiens.
+                </p>
+              </div>
+
+              <div className="hidden md:flex items-center gap-2 text-sm font-medium text-slate-400 mt-8">
+                <span>© 2025 ElenaShop Inc.</span>
+              </div>
+            </div>
+
+            {/* Navigation - Span 8 */}
+            <div className="md:col-span-8 grid grid-cols-2 sm:grid-cols-3 gap-8">
+              <div>
+                <h4 className="font-semibold text-slate-900 mb-6 text-sm">Produit</h4>
+                <ul className="space-y-4 text-sm font-medium text-slate-500">
+                  <li><Link href="#features" className="hover:text-indigo-600 transition-colors">Fonctionnalités</Link></li>
+                  <li><Link href="/pricing" className="hover:text-indigo-600 transition-colors">Tarifs</Link></li>
+                  <li><Link href="/showcase" className="hover:text-indigo-600 transition-colors">Exemples</Link></li>
+                  <li><Link href="/changelog" className="hover:text-indigo-600 transition-colors">Nouveautés</Link></li>
+                </ul>
+              </div>
+
+              <div>
+                <h4 className="font-semibold text-slate-900 mb-6 text-sm">Ressources</h4>
+                <ul className="space-y-4 text-sm font-medium text-slate-500">
+                  <li><Link href="/help" className="hover:text-indigo-600 transition-colors">Centre d&apos;aide</Link></li>
+                  <li><Link href="/blog" className="hover:text-indigo-600 transition-colors">Blog</Link></li>
+                  <li><Link href="/community" className="hover:text-indigo-600 transition-colors">Communauté</Link></li>
+                  <li><Link href="/status" className="hover:text-indigo-600 transition-colors flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Status
+                  </Link></li>
+                </ul>
+              </div>
+
+              <div>
+                <h4 className="font-semibold text-slate-900 mb-6 text-sm">Nous suivre</h4>
+                <div className="flex gap-4 mb-6">
+                  <a href="#" aria-label="Suivez-nous sur Instagram" className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-900 transition-all">
+                    <Instagram className="h-4 w-4" />
+                  </a>
+                  <a href="#" aria-label="Suivez-nous sur Facebook" className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-900 transition-all">
+                    <Facebook className="h-4 w-4" />
+                  </a>
+                  <a href="#" aria-label="Suivez-nous sur LinkedIn" className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-900 transition-all">
+                    <Linkedin className="h-4 w-4" />
+                  </a>
+                </div>
+                <div className="space-y-2 text-xs font-medium text-slate-400">
+                  <p><Link href="/legal/privacy" className="hover:text-slate-600">Confidentialité</Link></p>
+                  <p><Link href="/legal/terms" className="hover:text-slate-600">Conditions Générales</Link></p>
+                </div>
+              </div>
+            </div>
+
+            <div className="md:hidden col-span-full pt-8 border-t border-slate-100 flex flex-col items-center gap-4">
+              <p className="text-sm font-medium text-slate-400">© 2025 ElenaShop Inc.</p>
+            </div>
+          </div>
+        </footer>
+      </ParallaxSection>
     </div>
   );
 }

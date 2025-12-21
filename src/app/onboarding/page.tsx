@@ -14,50 +14,73 @@ export default async function OnboardingPage() {
         redirect("/login");
     }
 
-    // Simple check - try to get store memberships
-    let hasStores = false;
-    try {
-        const { data, error } = await supabase
-            .from("store_members")
-            .select("store_id")
-            .eq("user_id", user.id)
-            .limit(1);
+    // Check store count for limit enforcement
+    const MAX_STORES = 3; // TODO: Make this configurable per subscription tier
+    let storeCount = 0;
 
-        hasStores = !error && data && data.length > 0;
+    try {
+        const { data, error, count } = await supabase
+            .from("store_members")
+            .select("store_id", { count: 'exact' })
+            .eq("user_id", user.id);
+
+        if (!error && data) {
+            storeCount = data.length;
+        }
     } catch (e) {
-        // Query failed - assume no stores
         console.error("store_members query failed:", e);
-        hasStores = false;
+        storeCount = 0;
     }
 
-    // If user has stores, show link to dashboard (no redirect to avoid loops)
-    if (hasStores) {
+    // If user has reached store limit, show limit message
+    if (storeCount >= MAX_STORES) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-slate-50 to-slate-100 px-4">
-                <div className="text-center p-8 bg-white rounded-2xl shadow-xl max-w-md">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-emerald-100 rounded-full mb-6">
-                        <span className="text-3xl">🎉</span>
+            <div className="min-h-screen flex items-center justify-center bg-stone-50 px-4 font-sans">
+                <div className="text-center p-10 bg-white rounded-3xl shadow-xl shadow-zinc-200/50 max-w-md border border-zinc-100">
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-amber-50 rounded-2xl mb-6">
+                        <span className="text-3xl">🔒</span>
                     </div>
-                    <h1 className="text-2xl font-bold text-slate-900 mb-4">
-                        Vous avez déjà une boutique !
+                    <h1 className="text-2xl font-bold text-zinc-900 mb-4 tracking-tight">
+                        Limite atteinte
                     </h1>
-                    <p className="text-slate-600 mb-6">
-                        Accédez à votre tableau de bord pour gérer votre boutique.
+                    <p className="text-zinc-500 mb-8 leading-relaxed">
+                        Vous avez atteint la limite de <strong>{MAX_STORES} boutiques</strong>.
+                        Passez à un plan supérieur pour créer plus de boutiques.
                     </p>
-                    <Link
-                        href="/dashboard"
-                        className="inline-block px-6 py-3 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 transition-colors"
-                    >
-                        Aller au dashboard
-                    </Link>
+                    <div className="flex flex-col gap-3">
+                        <Link
+                            href="/stores"
+                            className="inline-block px-6 py-3 bg-zinc-900 text-white font-bold rounded-xl hover:bg-zinc-800 transition-colors"
+                        >
+                            Retour aux boutiques
+                        </Link>
+                        <Link
+                            href="/dashboard/billing"
+                            className="inline-block px-6 py-3 bg-zinc-100 text-zinc-700 font-bold rounded-xl hover:bg-zinc-200 transition-colors"
+                        >
+                            Voir les abonnements
+                        </Link>
+                    </div>
                 </div>
             </div>
         );
     }
 
-    // User has no stores - show onboarding form
+    // User can create a store (0 stores, or less than MAX) - show onboarding form
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-slate-50 to-slate-100 px-4 py-12">
+        <div className="min-h-screen flex flex-col items-center justify-center bg-stone-50 px-4 py-12 font-sans">
+            {/* Back link if user already has stores */}
+            {storeCount > 0 && (
+                <div className="w-full max-w-md mb-6">
+                    <Link
+                        href="/stores"
+                        className="inline-flex items-center gap-2 text-sm text-zinc-500 hover:text-zinc-900 transition-colors"
+                    >
+                        <span>←</span>
+                        Retour aux boutiques ({storeCount}/{MAX_STORES})
+                    </Link>
+                </div>
+            )}
             <OnboardingForm userId={user.id} userEmail={user.email || ""} />
         </div>
     );

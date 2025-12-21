@@ -224,35 +224,36 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
     return (
         <div className="w-full max-w-2xl mx-auto">
             {/* Progress Steps */}
-            <div className="mb-8">
-                <div className="flex items-center justify-between relative">
+            <div className="mb-12">
+                <div className="flex items-center justify-between relative max-w-lg mx-auto">
                     {/* Progress Line */}
-                    <div className="absolute top-5 left-0 right-0 h-0.5 bg-slate-200">
+                    <div className="absolute top-5 left-0 right-0 h-[1px] bg-zinc-200">
                         <motion.div
-                            className="h-full bg-emerald-500"
+                            className="h-full bg-zinc-900"
                             initial={{ width: "0%" }}
                             animate={{ width: `${((currentStep - 1) / (STEPS.length - 1)) * 100}%` }}
-                            transition={{ duration: 0.3 }}
+                            transition={{ duration: 0.5, ease: "circOut" }}
                         />
                     </div>
 
                     {STEPS.map((step) => (
-                        <div key={step.id} className="relative z-10 flex flex-col items-center">
+                        <div key={step.id} className="relative z-10 flex flex-col items-center group">
                             <motion.div
                                 animate={{
                                     scale: currentStep === step.id ? 1.1 : 1,
-                                    backgroundColor: currentStep >= step.id ? "#10b981" : "#e2e8f0",
+                                    backgroundColor: currentStep >= step.id ? "#18181b" : "#ffffff",
+                                    borderColor: currentStep >= step.id ? "#18181b" : "#e4e4e7",
                                 }}
-                                className={`h-10 w-10 rounded-full flex items-center justify-center text-lg shadow-md ${currentStep >= step.id ? "text-white" : "text-slate-400"
+                                className={`h-10 w-10 rounded-full flex items-center justify-center text-sm border-2 transition-colors duration-300 ${currentStep >= step.id ? "text-white" : "text-zinc-300"
                                     }`}
                             >
                                 {currentStep > step.id ? (
-                                    <Check className="h-5 w-5" />
+                                    <Check className="h-4 w-4" />
                                 ) : (
-                                    step.emoji
+                                    <span className="text-lg">{step.emoji}</span>
                                 )}
                             </motion.div>
-                            <span className={`text-xs mt-2 font-medium ${currentStep >= step.id ? "text-emerald-600" : "text-slate-400"
+                            <span className={`text-[10px] mt-3 font-bold uppercase tracking-widest transition-colors duration-300 ${currentStep >= step.id ? "text-zinc-900" : "text-zinc-300"
                                 }`}>
                                 {step.title}
                             </span>
@@ -262,8 +263,8 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
             </div>
 
             {/* Main Card */}
-            <Card className="border-slate-200/50 shadow-2xl overflow-hidden">
-                <CardContent className="p-8">
+            <Card className="border-white shadow-2xl shadow-zinc-200/50 overflow-hidden bg-white/80 backdrop-blur-xl rounded-[2rem]">
+                <CardContent className="p-10">
                     <AnimatePresence mode="wait" custom={direction}>
                         <motion.div
                             key={currentStep}
@@ -276,16 +277,16 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
                         >
                             {/* Step 1: Store Name */}
                             {currentStep === 1 && (
-                                <div className="space-y-6">
-                                    <div className="text-center mb-8">
-                                        <div className="inline-flex items-center justify-center h-16 w-16 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-2xl mb-4 shadow-lg">
-                                            <Store className="h-8 w-8 text-white" />
+                                <div className="space-y-8">
+                                    <div className="text-center mb-10">
+                                        <div className="inline-flex items-center justify-center h-20 w-20 bg-zinc-900 rounded-3xl mb-6 shadow-xl shadow-zinc-900/10">
+                                            <Store className="h-10 w-10 text-white" />
                                         </div>
-                                        <h2 className="text-2xl font-bold text-slate-900">
-                                            Comment s'appelle votre boutique ?
+                                        <h2 className="text-3xl font-serif font-bold text-zinc-900 italic">
+                                            Nommait votre boutique
                                         </h2>
-                                        <p className="text-slate-500 mt-2">
-                                            Ce nom sera votre adresse unique sur Elena
+                                        <p className="text-zinc-500 mt-3 font-medium">
+                                            Ce nom sera votre identité unique sur Elena
                                         </p>
                                     </div>
 
@@ -294,38 +295,38 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
                                             Nom de boutique
                                         </Label>
                                         <div className="relative">
-                                            <div className="absolute left-0 top-0 bottom-0 flex items-center pl-4 pointer-events-none">
-                                                <span className="text-slate-400 text-sm">elenashop.tn/</span>
+                                            <div className="absolute left-0 top-0 bottom-0 flex items-center pl-6 pointer-events-none">
+                                                <span className="text-zinc-400 font-medium font-serif italic text-lg">elenashop.tn/</span>
                                             </div>
                                             <Input
                                                 type="text"
                                                 placeholder="maboutique"
                                                 value={storeName}
                                                 onChange={handleStoreNameChange}
-                                                className={`h-14 pl-28 pr-12 rounded-xl text-lg font-medium border-2 transition-colors ${isAvailable === true
-                                                    ? "border-emerald-500 bg-emerald-50/50"
+                                                className={`h-16 pl-40 pr-12 rounded-2xl text-xl font-bold border transition-all duration-300 ${isAvailable === true
+                                                    ? "border-emerald-200 bg-emerald-50/30 ring-4 ring-emerald-50"
                                                     : isAvailable === false
-                                                        ? "border-red-500 bg-red-50/50"
-                                                        : "border-slate-200"
+                                                        ? "border-red-200 bg-red-50/30 ring-4 ring-red-50"
+                                                        : "border-zinc-200 focus:border-zinc-900 focus:ring-4 focus:ring-zinc-100"
                                                     }`}
                                             />
-                                            <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                                                {isChecking && <Loader2 className="h-5 w-5 text-slate-400 animate-spin" />}
-                                                {!isChecking && isAvailable === true && <Check className="h-5 w-5 text-emerald-500" />}
-                                                {!isChecking && isAvailable === false && <X className="h-5 w-5 text-red-500" />}
+                                            <div className="absolute right-6 top-1/2 -translate-y-1/2">
+                                                {isChecking && <Loader2 className="h-5 w-5 text-zinc-400 animate-spin" />}
+                                                {!isChecking && isAvailable === true && <div className="bg-emerald-100 p-1.5 rounded-full"><Check className="h-4 w-4 text-emerald-600" /></div>}
+                                                {!isChecking && isAvailable === false && <div className="bg-red-100 p-1.5 rounded-full"><X className="h-4 w-4 text-red-600" /></div>}
                                             </div>
                                         </div>
-                                        <p className={`text-sm ${isAvailable === true ? "text-emerald-600" :
-                                            isAvailable === false ? "text-red-600" : "text-slate-500"
+                                        <p className={`text-sm font-medium text-center ${isAvailable === true ? "text-emerald-600" :
+                                            isAvailable === false ? "text-red-600" : "text-zinc-400"
                                             }`}>
                                             {storeName.length < 3
                                                 ? "Minimum 3 caractères (lettres et chiffres uniquement)"
                                                 : isChecking
                                                     ? "Vérification..."
                                                     : isAvailable === true
-                                                        ? "✓ Ce nom est disponible !"
+                                                        ? "✓ Ce nom est parfait !"
                                                         : isAvailable === false
-                                                            ? "✗ Ce nom est déjà pris"
+                                                            ? "✗ Ce nom est déjà pris, essayez-en un autre"
                                                             : ""
                                             }
                                         </p>
@@ -335,17 +336,17 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
 
                             {/* Step 2: Category */}
                             {currentStep === 2 && (
-                                <div className="space-y-6">
-                                    <div className="text-center mb-8">
-                                        <h2 className="text-2xl font-bold text-slate-900">
+                                <div className="space-y-8">
+                                    <div className="text-center mb-10">
+                                        <h2 className="text-3xl font-serif font-bold text-zinc-900 italic">
                                             Que vendez-vous ?
                                         </h2>
-                                        <p className="text-slate-500 mt-2">
-                                            Cela nous aide à personnaliser votre boutique
+                                        <p className="text-zinc-500 mt-3 font-medium">
+                                            Cela nous aide à personnaliser votre expérience
                                         </p>
                                     </div>
 
-                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                                         {STORE_CATEGORIES.map((cat) => (
                                             <motion.button
                                                 key={cat.id}
@@ -353,14 +354,14 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
                                                 whileHover={{ scale: 1.02 }}
                                                 whileTap={{ scale: 0.98 }}
                                                 onClick={() => setCategory(cat.id)}
-                                                className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all ${category === cat.id
-                                                    ? "border-emerald-500 bg-emerald-50 shadow-lg shadow-emerald-500/10"
-                                                    : "border-slate-200 hover:border-slate-300"
+                                                className={`flex flex-col items-center gap-3 p-6 rounded-2xl border transition-all duration-300 ${category === cat.id
+                                                    ? "border-zinc-900 bg-zinc-900 text-white shadow-xl shadow-zinc-900/20"
+                                                    : "border-zinc-100 bg-white hover:border-zinc-300 hover:shadow-lg hover:shadow-zinc-200/50"
                                                     }`}
                                             >
-                                                <span className="text-3xl">{cat.emoji}</span>
-                                                <span className="text-sm font-semibold text-slate-700">{cat.label}</span>
-                                                <span className="text-xs text-slate-400">{cat.description}</span>
+                                                <span className="text-4xl">{cat.emoji}</span>
+                                                <span className={`text-sm font-bold ${category === cat.id ? "text-white" : "text-zinc-700"}`}>{cat.label}</span>
+                                                <span className={`text-[10px] uppercase tracking-wider ${category === cat.id ? "text-zinc-400" : "text-zinc-400"}`}>{cat.description}</span>
                                             </motion.button>
                                         ))}
                                     </div>
@@ -369,17 +370,17 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
 
                             {/* Step 3: Visual Style */}
                             {currentStep === 3 && (
-                                <div className="space-y-6">
-                                    <div className="text-center mb-8">
-                                        <h2 className="text-2xl font-bold text-slate-900">
+                                <div className="space-y-8">
+                                    <div className="text-center mb-10">
+                                        <h2 className="text-3xl font-serif font-bold text-zinc-900 italic">
                                             Quel style vous représente ?
                                         </h2>
-                                        <p className="text-slate-500 mt-2">
-                                            Définissez l'ambiance de votre boutique
+                                        <p className="text-zinc-500 mt-3 font-medium">
+                                            Définissez l'atmosphère visuelle de votre marque
                                         </p>
                                     </div>
 
-                                    <div className="grid grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-2 gap-6">
                                         {VISUAL_STYLES.map((s) => (
                                             <motion.button
                                                 key={s.id}
@@ -387,29 +388,29 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
                                                 whileHover={{ scale: 1.02 }}
                                                 whileTap={{ scale: 0.98 }}
                                                 onClick={() => setStyle(s.id)}
-                                                className={`relative flex flex-col items-center gap-3 p-5 rounded-2xl border-2 transition-all overflow-hidden ${style === s.id
-                                                    ? "border-emerald-500 shadow-lg"
-                                                    : "border-slate-200 hover:border-slate-300"
+                                                className={`relative flex flex-col items-center gap-4 p-6 rounded-[2rem] border transition-all duration-300 overflow-hidden ${style === s.id
+                                                    ? "border-zinc-900 bg-zinc-50 shadow-xl shadow-zinc-900/5 group"
+                                                    : "border-zinc-100 hover:border-zinc-300 hover:shadow-lg hover:shadow-zinc-200/50"
                                                     }`}
                                             >
                                                 {/* Color Preview */}
-                                                <div className="flex gap-1">
+                                                <div className="flex -space-x-3">
                                                     {s.colors.map((color, i) => (
                                                         <div
                                                             key={i}
-                                                            className="h-8 w-8 rounded-full border-2 border-white shadow-md"
+                                                            className="h-10 w-10 rounded-full border-4 border-white shadow-lg z-10"
                                                             style={{ backgroundColor: color }}
                                                         />
                                                     ))}
                                                 </div>
                                                 <div className="text-center">
-                                                    <span className="text-2xl mb-1 block">{s.emoji}</span>
-                                                    <span className="text-sm font-bold text-slate-800">{s.label}</span>
-                                                    <span className="text-xs text-slate-400 block mt-1">{s.description}</span>
+                                                    <span className="text-3xl mb-2 block filter drop-shadow-md">{s.emoji}</span>
+                                                    <span className="text-base font-bold text-zinc-900">{s.label}</span>
+                                                    <span className="text-xs text-zinc-500 block mt-1 font-medium">{s.description}</span>
                                                 </div>
                                                 {style === s.id && (
-                                                    <div className="absolute top-2 right-2">
-                                                        <Check className="h-5 w-5 text-emerald-500" />
+                                                    <div className="absolute top-4 right-4 bg-zinc-900 text-white p-1.5 rounded-full">
+                                                        <Check className="h-3 w-3" />
                                                     </div>
                                                 )}
                                             </motion.button>
@@ -420,13 +421,13 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
 
                             {/* Step 4: Template Selection */}
                             {currentStep === 4 && (
-                                <div className="space-y-6">
-                                    <div className="text-center mb-6">
-                                        <h2 className="text-2xl font-bold text-slate-900">
+                                <div className="space-y-8">
+                                    <div className="text-center mb-8">
+                                        <h2 className="text-3xl font-serif font-bold text-zinc-900 italic">
                                             Choisissez votre template
                                         </h2>
-                                        <p className="text-slate-500 mt-2">
-                                            Basé sur vos choix, nous vous recommandons le template idéal
+                                        <p className="text-zinc-500 mt-3 font-medium">
+                                            Nous avons sélectionné le meilleur design pour vous
                                         </p>
                                     </div>
 
@@ -443,14 +444,16 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
                                     </div>
 
                                     {/* Smart Matching Info */}
-                                    <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
-                                        <Sparkles className="h-5 w-5 text-amber-500 flex-shrink-0 mt-0.5" />
+                                    <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-100 rounded-2xl p-5 flex items-start gap-4 shadow-sm">
+                                        <div className="bg-white p-2 rounded-lg shadow-sm border border-amber-100">
+                                            <Sparkles className="h-4 w-4 text-amber-500" />
+                                        </div>
                                         <div>
-                                            <p className="text-sm font-medium text-amber-800">
-                                                Recommandation intelligente
+                                            <p className="text-sm font-bold text-amber-900 mb-1">
+                                                Recommandation IA
                                             </p>
-                                            <p className="text-xs text-amber-600 mt-1">
-                                                Le template <strong>{TEMPLATE_OPTIONS.find(t => t.id === recommendedTemplate)?.name}</strong> est parfait pour une boutique <strong>{STORE_CATEGORIES.find(c => c.id === category)?.label}</strong> avec un style <strong>{VISUAL_STYLES.find(s => s.id === style)?.label}</strong>.
+                                            <p className="text-xs text-amber-700/80 leading-relaxed">
+                                                Le template <strong>{TEMPLATE_OPTIONS.find(t => t.id === recommendedTemplate)?.name}</strong> est optimisé pour les boutiques <strong>{STORE_CATEGORIES.find(c => c.id === category)?.label}</strong> au style <strong>{VISUAL_STYLES.find(s => s.id === style)?.label}</strong>.
                                             </p>
                                         </div>
                                     </div>
@@ -471,13 +474,13 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
                     )}
 
                     {/* Navigation Buttons */}
-                    <div className="flex justify-between mt-8 pt-6 border-t border-slate-100">
+                    <div className="flex justify-between mt-10 pt-8 border-t border-zinc-100">
                         <Button
                             type="button"
                             variant="ghost"
                             onClick={prevStep}
                             disabled={currentStep === 1}
-                            className="gap-2"
+                            className="gap-2 text-zinc-400 hover:text-zinc-900 hover:bg-zinc-50"
                         >
                             <ArrowLeft className="h-4 w-4" />
                             Retour
@@ -488,7 +491,7 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
                                 type="button"
                                 onClick={nextStep}
                                 disabled={!canProceed()}
-                                className="gap-2 bg-emerald-600 hover:bg-emerald-700"
+                                className="gap-2 bg-zinc-900 hover:bg-zinc-800 text-white px-8 rounded-xl font-bold shadow-lg shadow-zinc-200"
                             >
                                 Continuer
                                 <ArrowRight className="h-4 w-4" />
@@ -498,14 +501,14 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
                                 type="button"
                                 onClick={handleSubmit}
                                 disabled={!canProceed() || isLoading}
-                                className="gap-2 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 shadow-lg shadow-emerald-500/25"
+                                className="gap-2 bg-zinc-900 hover:bg-zinc-800 text-white px-8 rounded-xl font-bold shadow-lg shadow-zinc-900/20"
                             >
                                 {isLoading ? (
                                     <Loader2 className="h-5 w-5 animate-spin" />
                                 ) : (
                                     <>
-                                        <Sparkles className="h-5 w-5" />
-                                        Créer ma boutique
+                                        <Sparkles className="h-4 w-4 text-amber-200" />
+                                        Lancer ma boutique
                                     </>
                                 )}
                             </Button>

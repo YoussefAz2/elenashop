@@ -54,7 +54,7 @@ export function AnimatedCounter({ target, duration = 2000 }: AnimatedCounterProp
     }, [isVisible, target, duration]);
 
     return (
-        <span ref={ref} className="font-bold text-emerald-600 tabular-nums">
+        <span ref={ref} className="font-bold text-indigo-600 tabular-nums">
             +{count}
         </span>
     );

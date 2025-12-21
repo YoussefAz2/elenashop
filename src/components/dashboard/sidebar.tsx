@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
 import {
     LayoutDashboard,
     Package,
@@ -15,6 +16,7 @@ import {
     Tag,
     Sparkles,
     LogOut,
+    Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/utils/supabase/client";
@@ -50,7 +52,7 @@ function LogoutButton() {
     return (
         <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-red-500 hover:text-red-700 hover:bg-red-50 transition-all duration-200 border border-transparent hover:border-red-100"
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-red-500 hover:text-red-600 hover:bg-red-50 transition-all duration-200"
         >
             <LogOut className="h-4 w-4" />
             Se déconnecter
@@ -65,6 +67,13 @@ interface SidebarProps {
 
 export function Sidebar({ storeName, storeSlug }: SidebarProps) {
     const pathname = usePathname();
+    const router = useRouter();
+    const [isSwitching, setIsSwitching] = useState(false);
+
+    const handleSwitchStore = () => {
+        setIsSwitching(true);
+        router.push("/api/clear-store");
+    };
 
     const isActive = (href: string) => {
         if (href === "/dashboard") {
@@ -74,33 +83,48 @@ export function Sidebar({ storeName, storeSlug }: SidebarProps) {
     };
 
     return (
-        <aside className="hidden lg:flex flex-col w-[260px] h-screen bg-white/80 backdrop-blur-xl border-r border-slate-200/50 fixed left-0 top-0 z-40">
+        <aside className="hidden lg:flex flex-col w-[260px] h-screen bg-white/80 backdrop-blur-xl border-r border-zinc-100 fixed left-0 top-0 z-40">
             {/* Store Header */}
-            <div className="p-5">
-                <div className="flex items-center gap-3 mb-6">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-900 to-slate-700 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-slate-200 ring-2 ring-white">
-                        {storeName.charAt(0).toUpperCase()}
+            <div className="p-8 pb-4">
+                {/* Store Selector - Clickable Card */}
+                <button
+                    onClick={handleSwitchStore}
+                    disabled={isSwitching}
+                    className="group flex items-center gap-2.5 p-3 -mx-2 rounded-xl hover:bg-zinc-50 transition-all duration-200 mb-6 border border-transparent hover:border-zinc-100 w-full text-left disabled:opacity-70"
+                >
+                    <div className="w-9 h-9 rounded-xl bg-zinc-900 flex items-center justify-center text-white font-serif font-bold text-base italic shrink-0">
+                        {isSwitching ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                            storeName.charAt(0).toUpperCase()
+                        )}
                     </div>
                     <div className="flex-1 min-w-0">
-                        <p className="font-bold text-slate-900 truncate tracking-tight">{storeName}</p>
-                        <p className="text-xs text-slate-400 truncate font-medium">/{storeSlug}</p>
+                        <p className="font-bold text-zinc-900 truncate tracking-tight text-sm">{storeName}</p>
+                        <p className="text-[9px] text-zinc-400 font-medium uppercase tracking-normal">
+                            {isSwitching ? "Chargement..." : "Changer de boutique"}
+                        </p>
                     </div>
-                </div>
+                    <div className="shrink-0 text-zinc-300 group-hover:text-zinc-500 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="m7 15 5 5 5-5" /><path d="m7 9 5-5 5 5" />
+                        </svg>
+                    </div>
+                </button>
 
                 {/* HERO CTA BUTTON */}
                 <Link
                     href="/editor"
-                    className="group relative flex items-center justify-center gap-2 w-full p-3 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-semibold shadow-lg shadow-indigo-200 transition-all duration-200 hover:shadow-xl hover:shadow-indigo-300 hover:-translate-y-0.5"
+                    className="group relative flex items-center justify-center gap-2 w-full p-3 rounded-xl bg-zinc-900 text-white font-medium shadow-xl shadow-zinc-200/50 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] overflow-hidden border border-zinc-800"
                 >
-                    <div className="absolute inset-0 rounded-xl bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    <Sparkles className="h-4 w-4 text-indigo-100" />
-                    <span>Éditeur Magic</span>
+                    <Sparkles className="h-4 w-4 text-amber-200" />
+                    <span className="tracking-wide text-sm">Éditeur</span>
                 </Link>
             </div>
 
             {/* Navigation */}
-            <nav className="flex-1 px-4 pb-4 space-y-1 overflow-y-auto">
-                <p className="px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 mt-2">Menu</p>
+            <nav className="flex-1 px-6 space-y-2 overflow-y-auto mt-4">
+                <p className="px-2 text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-4">Navigation</p>
                 {navItems.map((item) => {
                     const Icon = item.icon;
                     const active = isActive(item.href);
@@ -109,41 +133,45 @@ export function Sidebar({ storeName, storeSlug }: SidebarProps) {
                             key={item.href}
                             href={item.href}
                             className={cn(
-                                "flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 group relative",
+                                "flex items-center gap-3 px-2 py-3 text-sm font-medium transition-all duration-300 group relative",
                                 active
-                                    ? "bg-slate-50 text-slate-900 shadow-sm ring-1 ring-slate-200"
-                                    : "text-slate-500 hover:text-slate-900 hover:bg-slate-50/50"
+                                    ? "text-zinc-900"
+                                    : "text-zinc-400 hover:text-zinc-700"
                             )}
                         >
-                            <Icon className={cn(
-                                "h-5 w-5 transition-colors duration-200",
-                                active ? "text-violet-600" : "text-slate-400 group-hover:text-slate-600"
-                            )} />
-                            {item.label}
+                            {/* Active Indicator Line */}
                             {active && (
-                                <div className="absolute right-2 w-1.5 h-1.5 rounded-full bg-violet-600 shadow-sm" />
+                                <div className="absolute left-[-24px] top-1/2 -translate-y-1/2 w-1 h-6 bg-zinc-900 rounded-r-full" />
                             )}
+
+                            <Icon className={cn(
+                                "h-[18px] w-[18px] transition-colors duration-200",
+                                active ? "text-zinc-900 stroke-[2.5px]" : "text-zinc-400 group-hover:text-zinc-600"
+                            )} />
+                            <span className={cn("tracking-tight", active && "font-bold")}>
+                                {item.label}
+                            </span>
                         </Link>
                     );
                 })}
             </nav>
 
             {/* Footer Actions */}
-            <div className="p-4 border-t border-slate-100/50 bg-slate-50/30 space-y-2">
+            <div className="p-6 border-t border-zinc-100 space-y-1">
                 <a
                     href={`/${storeSlug}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-slate-500 hover:text-slate-800 hover:bg-white transition-all duration-200 border border-transparent hover:border-slate-200/50"
+                    className="flex items-center justify-between px-2 py-3 text-xs font-bold text-zinc-500 hover:text-zinc-900 transition-all duration-200 uppercase tracking-wider"
                 >
                     <div className="flex items-center gap-2">
                         <ExternalLink className="h-4 w-4" />
                         Voir la boutique
                     </div>
-                    <span className="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
                 </a>
                 <LogoutButton />
             </div>
         </aside>
     );
 }
+

@@ -3,11 +3,11 @@
 import { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Store, Loader2, Mail, Lock, Sparkles, ArrowRight, User } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 type Mode = "login" | "signup";
 
@@ -158,40 +158,51 @@ export function LoginForm({ defaultMode = "login" }: LoginFormProps) {
     };
 
     return (
-        <Card className="w-full max-w-md border-slate-200/50 shadow-2xl">
-            <CardHeader className="text-center pb-2">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-lg shadow-emerald-600/25">
-                    <Store className="h-8 w-8 text-white" />
-                </div>
-                <CardTitle className="text-2xl font-bold text-slate-900">
+        <div className="w-full backdrop-blur-3xl bg-white/60 shadow-2xl shadow-indigo-500/10 rounded-[2.5rem] border border-white/50 p-8 sm:p-12 relative overflow-hidden group hover:shadow-indigo-500/20 transition-all duration-500">
+
+            {/* Ambient Glow inside card */}
+            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-60"></div>
+
+            <div className="text-center mb-10">
+                <h2 className="text-3xl font-bold text-slate-900 tracking-tight mb-2">
                     {mode === "login" ? "Bon retour ! 👋" : "Créez votre boutique"}
-                </CardTitle>
-                <CardDescription className="text-slate-600">
+                </h2>
+                <p className="text-slate-500 text-lg">
                     {mode === "login"
-                        ? "Connectez-vous à votre espace vendeur"
-                        : "Rejoignez +150 vendeurs en Tunisie"
+                        ? "Heureux de vous revoir"
+                        : "L'aventure commence ici"
                     }
-                </CardDescription>
-            </CardHeader>
-            <CardContent>
-                <div className="space-y-4">
+                </p>
+            </div>
+
+            <AnimatePresence mode="wait">
+                <motion.div
+                    key={mode}
+                    initial={{ opacity: 0, scale: 0.98 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.98 }}
+                    transition={{ duration: 0.3 }}
+                    className="space-y-6"
+                >
                     {error && (
-                        <div className="rounded-xl bg-red-50 p-4 text-sm text-red-600 border border-red-100">
+                        <div className="rounded-2xl bg-red-50/50 p-4 text-sm text-red-600 border border-red-100 flex items-center gap-2 backdrop-blur-sm">
+                            <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse"></div>
                             {error}
                         </div>
                     )}
 
                     {success && (
-                        <div className="rounded-xl bg-emerald-50 p-4 text-sm text-emerald-600 border border-emerald-100">
+                        <div className="rounded-2xl bg-emerald-50/50 p-4 text-sm text-emerald-600 border border-emerald-100 flex items-center gap-2 backdrop-blur-sm">
+                            <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></div>
                             {success}
                         </div>
                     )}
 
-                    {/* Google Login Button */}
+                    {/* Google Login Button (Primary Action) */}
                     <Button
                         type="button"
                         variant="outline"
-                        className="w-full h-14 rounded-xl border-2 border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-medium text-base"
+                        className="w-full h-14 rounded-2xl border-2 border-slate-100 hover:border-indigo-200 bg-white hover:bg-indigo-50/50 text-slate-700 font-bold text-base transition-all shadow-sm hover:shadow-md group/google"
                         onClick={handleGoogleLogin}
                         disabled={isGoogleLoading || isLoading}
                     >
@@ -199,99 +210,81 @@ export function LoginForm({ defaultMode = "login" }: LoginFormProps) {
                             <Loader2 className="h-5 w-5 animate-spin" />
                         ) : (
                             <>
-                                <GoogleIcon className="h-5 w-5 mr-3" />
+                                <GoogleIcon className="h-5 w-5 mr-3 group-hover/google:scale-110 transition-transform" />
                                 Continuer avec Google
                             </>
                         )}
                     </Button>
 
-                    {/* Divider */}
-                    <div className="relative">
+                    <div className="relative py-2">
                         <div className="absolute inset-0 flex items-center">
-                            <span className="w-full border-t border-slate-200" />
+                            <span className="w-full border-t border-slate-200/60" />
                         </div>
-                        <div className="relative flex justify-center text-xs uppercase">
-                            <span className="bg-white px-4 text-slate-500">ou</span>
+                        <div className="relative flex justify-center text-xs uppercase tracking-wider">
+                            <span className="bg-transparent px-4 text-slate-400 font-medium backdrop-blur-sm">ou par email</span>
                         </div>
                     </div>
 
-                    {/* Email Form */}
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        {/* Name fields - only show in signup mode */}
+                    <form onSubmit={handleSubmit} className="space-y-5">
                         {mode === "signup" && (
-                            <div className="grid grid-cols-2 gap-3">
+                            <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <Label htmlFor="firstName" className="text-sm font-medium">Prénom</Label>
-                                    <div className="relative">
-                                        <User className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-                                        <Input
-                                            id="firstName"
-                                            type="text"
-                                            placeholder="Jean"
-                                            value={firstName}
-                                            onChange={(e) => setFirstName(e.target.value)}
-                                            className="h-14 pl-12 rounded-xl border-2 border-slate-200 bg-slate-50/50 focus:border-emerald-500"
-                                            required
-                                        />
-                                    </div>
+                                    <Label htmlFor="firstName" className="text-sm font-semibold text-slate-700 ml-1">Prénom</Label>
+                                    <Input
+                                        id="firstName"
+                                        type="text"
+                                        placeholder="Jean"
+                                        value={firstName}
+                                        onChange={(e) => setFirstName(e.target.value)}
+                                        className="h-14 px-5 rounded-2xl border-0 bg-slate-100/50 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 transition-all font-medium placeholder:text-slate-400"
+                                        required
+                                    />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="lastName" className="text-sm font-medium">Nom</Label>
-                                    <div className="relative">
-                                        <User className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-                                        <Input
-                                            id="lastName"
-                                            type="text"
-                                            placeholder="Dupont"
-                                            value={lastName}
-                                            onChange={(e) => setLastName(e.target.value)}
-                                            className="h-14 pl-12 rounded-xl border-2 border-slate-200 bg-slate-50/50 focus:border-emerald-500"
-                                            required
-                                        />
-                                    </div>
+                                    <Label htmlFor="lastName" className="text-sm font-semibold text-slate-700 ml-1">Nom</Label>
+                                    <Input
+                                        id="lastName"
+                                        type="text"
+                                        placeholder="Dupont"
+                                        value={lastName}
+                                        onChange={(e) => setLastName(e.target.value)}
+                                        className="h-14 px-5 rounded-2xl border-0 bg-slate-100/50 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 transition-all font-medium placeholder:text-slate-400"
+                                        required
+                                    />
                                 </div>
                             </div>
                         )}
 
                         <div className="space-y-2">
-                            <Label htmlFor="email" className="text-sm font-medium">Email</Label>
-                            <div className="relative">
-                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    placeholder="votre@email.com"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    className="h-14 pl-12 rounded-xl border-2 border-slate-200 bg-slate-50/50 focus:border-emerald-500 text-lg"
-                                    required
-                                />
-                            </div>
+                            <Label htmlFor="email" className="text-sm font-semibold text-slate-700 ml-1">Email</Label>
+                            <Input
+                                id="email"
+                                type="email"
+                                placeholder="hello@exemple.com"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="h-14 px-5 rounded-2xl border-0 bg-slate-100/50 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 transition-all font-medium placeholder:text-slate-400 text-base"
+                                required
+                            />
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="password" className="text-sm font-medium">Mot de passe</Label>
-                            <div className="relative">
-                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-                                <Input
-                                    id="password"
-                                    type="password"
-                                    placeholder="••••••••"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    className="h-14 pl-12 rounded-xl border-2 border-slate-200 bg-slate-50/50 focus:border-emerald-500 text-lg"
-                                    required
-                                    minLength={6}
-                                />
-                            </div>
-                            {mode === "signup" && (
-                                <p className="text-xs text-slate-500">Minimum 6 caractères</p>
-                            )}
+                            <Label htmlFor="password" className="text-sm font-semibold text-slate-700 ml-1">Mot de passe</Label>
+                            <Input
+                                id="password"
+                                type="password"
+                                placeholder="••••••••"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="h-14 px-5 rounded-2xl border-0 bg-slate-100/50 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 transition-all font-medium placeholder:text-slate-400 text-base"
+                                required
+                                minLength={6}
+                            />
                         </div>
 
                         <Button
                             type="submit"
-                            className="w-full h-14 rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 font-semibold text-lg shadow-lg shadow-emerald-600/25"
+                            className="w-full h-14 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-lg shadow-xl shadow-indigo-600/30 hover:shadow-indigo-600/50 hover:-translate-y-0.5 transition-all duration-300 active:scale-[0.98]"
                             disabled={isLoading || isGoogleLoading}
                         >
                             {isLoading ? (
@@ -304,27 +297,27 @@ export function LoginForm({ defaultMode = "login" }: LoginFormProps) {
                             ) : (
                                 <>
                                     <Sparkles className="h-5 w-5 mr-2" />
-                                    Créer mon compte
+                                    Créer un compte
                                 </>
                             )}
                         </Button>
 
-                        <div className="text-center pt-2">
+                        <div className="text-center">
                             <button
                                 type="button"
                                 onClick={toggleMode}
-                                className="text-sm text-slate-500 hover:text-emerald-600 transition-colors"
+                                className="text-sm font-medium text-slate-500 hover:text-indigo-600 transition-colors py-2"
                             >
                                 {mode === "login" ? (
-                                    <>Pas encore de compte ? <span className="font-semibold text-emerald-600">S&apos;inscrire</span></>
+                                    <>Pas encore de compte ? <span className="text-indigo-600 ml-1">S&apos;inscrire</span></>
                                 ) : (
-                                    <>Déjà un compte ? <span className="font-semibold text-emerald-600">Se connecter</span></>
+                                    <>Déjà inscrit ? <span className="text-indigo-600 ml-1">Se connecter</span></>
                                 )}
                             </button>
                         </div>
                     </form>
-                </div>
-            </CardContent>
-        </Card>
+                </motion.div>
+            </AnimatePresence>
+        </div>
     );
 }

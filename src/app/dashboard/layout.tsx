@@ -57,10 +57,11 @@ export default async function DashboardLayout({
     const storeSlug = store?.slug || "";
 
     return (
-        <div className="min-h-screen bg-[#FDFDFD] relative overflow-hidden">
-            {/* Subtle Premium Background - No noisy AI gradients */}
-            <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-slate-50/50 via-transparent to-transparent opacity-50 pointer-events-none" />
-            <div className="fixed inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.015] pointer-events-none mix-blend-multiply" />
+        <div className="min-h-screen bg-slate-50/50 relative overflow-hidden font-sans selection:bg-indigo-100 selection:text-indigo-900">
+            {/* Spotlight Effect - Ultra Subtle */}
+            <div className="fixed inset-0 overflow-hidden pointer-events-none">
+                <div className="absolute top-[-50%] left-[-50%] w-[200%] h-[200%] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-indigo-50/30 via-transparent to-transparent blur-[100px] opacity-60"></div>
+            </div>
 
             {/* Desktop Sidebar */}
             <Sidebar storeName={storeName} storeSlug={storeSlug} />
