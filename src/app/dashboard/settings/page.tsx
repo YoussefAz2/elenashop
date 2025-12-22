@@ -113,81 +113,98 @@ export default async function SettingsPage() {
     ];
 
     return (
-        <div className="max-w-4xl mx-auto space-y-8">
+        <div className="max-w-4xl mx-auto space-y-12">
             {/* Header */}
-            <div>
-                <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 leading-tight">Réglages</h1>
-                <p className="text-slate-500 mt-2 text-lg">Configurez votre boutique et vos préférences.</p>
+            <div className="border-b border-zinc-100 pb-8">
+                <h1 className="text-4xl font-serif font-bold italic tracking-tight text-zinc-900 leading-tight">Réglages</h1>
+                <p className="text-zinc-500 mt-2 text-lg font-medium">Configurez votre boutique et vos préférences.</p>
             </div>
 
             {/* Settings Sections */}
-            {settingsSections.map((section) => (
-                <div key={section.title} className="space-y-4">
-                    <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-widest px-1">
-                        {section.title}
-                    </h2>
-                    <div className="bg-white rounded-xl border border-slate-200/60 shadow-sm overflow-hidden divide-y divide-slate-50">
-                        {section.items.map((item) => {
-                            const Icon = item.icon;
-                            const content = (
-                                <div className="flex items-center gap-4 p-4 hover:bg-slate-50 transition-colors">
-                                    <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center">
-                                        <Icon className="h-5 w-5 text-slate-600" />
-                                    </div>
-                                    <div className="flex-1">
-                                        <div className="flex items-center gap-2">
-                                            <p className="font-medium text-slate-900">{item.label}</p>
-                                            {item.comingSoon && (
-                                                <span className="px-2 py-0.5 bg-slate-100 text-slate-500 text-xs rounded-full">
-                                                    Bientôt
-                                                </span>
-                                            )}
+            <div className="grid gap-10">
+                {settingsSections.map((section) => (
+                    <div key={section.title} className="space-y-6">
+                        <h2 className="text-sm font-bold text-zinc-400 uppercase tracking-widest px-2">
+                            {section.title}
+                        </h2>
+                        <div className="bg-white rounded-3xl border border-zinc-100 shadow-sm overflow-hidden divide-y divide-zinc-50">
+                            {section.items.map((item) => {
+                                const Icon = item.icon;
+                                const content = (
+                                    <div className="flex items-center gap-6 p-6 hover:bg-zinc-50/80 transition-all group">
+                                        <div className="w-12 h-12 bg-zinc-50 rounded-2xl flex items-center justify-center border border-zinc-100 group-hover:bg-zinc-900 group-hover:border-zinc-900 transition-colors shadow-sm">
+                                            <Icon className="h-6 w-6 text-zinc-500 group-hover:text-white transition-colors" />
                                         </div>
-                                        <p className="text-sm text-slate-500">{item.description}</p>
-                                    </div>
-                                    {item.external ? (
-                                        <ExternalLink className="h-4 w-4 text-slate-400" />
-                                    ) : (
-                                        <span className="text-slate-400">→</span>
-                                    )}
-                                </div>
-                            );
-
-                            if (item.comingSoon) {
-                                return (
-                                    <div key={item.label} className="opacity-60 cursor-not-allowed">
-                                        {content}
+                                        <div className="flex-1">
+                                            <div className="flex items-center gap-3">
+                                                <p className="font-bold text-lg text-zinc-900">{item.label}</p>
+                                                {item.comingSoon && (
+                                                    <span className="px-2.5 py-0.5 bg-zinc-100 text-zinc-500 text-xs font-bold uppercase tracking-wide rounded-full border border-zinc-200">
+                                                        Bientôt
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <p className="text-base text-zinc-500 font-medium">{item.description}</p>
+                                        </div>
+                                        {item.external ? (
+                                            <div className="w-10 h-10 rounded-full bg-zinc-50 flex items-center justify-center group-hover:bg-white group-hover:shadow-md transition-all">
+                                                <ExternalLink className="h-4 w-4 text-zinc-400 group-hover:text-zinc-900" />
+                                            </div>
+                                        ) : (
+                                            <div className="w-10 h-10 rounded-full bg-zinc-50 flex items-center justify-center group-hover:bg-white group-hover:shadow-md transition-all">
+                                                <span className="text-zinc-400 group-hover:text-zinc-900 text-lg">→</span>
+                                            </div>
+                                        )}
                                     </div>
                                 );
-                            }
 
-                            if (item.external) {
+                                if (item.comingSoon) {
+                                    return (
+                                        <div key={item.label} className="opacity-60 cursor-not-allowed grayscale">
+                                            {content}
+                                        </div>
+                                    );
+                                }
+
+                                if (item.external) {
+                                    return (
+                                        <a
+                                            key={item.label}
+                                            href={item.href}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            {content}
+                                        </a>
+                                    );
+                                }
+
                                 return (
-                                    <a
-                                        key={item.label}
-                                        href={item.href}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >
+                                    <Link key={item.label} href={item.href}>
                                         {content}
-                                    </a>
+                                    </Link>
                                 );
-                            }
-
-                            return (
-                                <Link key={item.label} href={item.href}>
-                                    {content}
-                                </Link>
-                            );
-                        })}
+                            })}
+                        </div>
                     </div>
-                </div>
-            ))}
+                ))}
+            </div>
 
             {/* Store Info */}
-            <div className="bg-slate-50 rounded-xl p-4 text-center text-sm text-slate-500">
-                <p>Boutique: <span className="font-medium text-slate-700">{currentStore.name}</span></p>
-                <p>URL: <span className="font-mono text-slate-600">elenashop.vercel.app/{currentStore.slug}</span></p>
+            <div className="bg-zinc-900 rounded-3xl p-8 text-center text-zinc-400 shadow-xl shadow-zinc-900/10">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-zinc-800 mb-4 border border-zinc-700 shadow-inner">
+                    <Settings className="h-8 w-8 text-zinc-100" />
+                </div>
+                <h3 className="text-white font-serif font-bold italic text-xl mb-1">{currentStore.name}</h3>
+                <p className="text-zinc-500 font-mono text-sm mb-4">ID: {currentStore.id}</p>
+                <div className="inline-block bg-zinc-800 rounded-xl px-4 py-2 border border-zinc-700">
+                    <p className="text-sm">
+                        <span className="text-zinc-500">URL Publique: </span>
+                        <a href={`https://elenashop.vercel.app/${currentStore.slug}`} target="_blank" className="font-bold text-zinc-200 hover:text-white transition-colors">
+                            elenashop.vercel.app/{currentStore.slug}
+                        </a>
+                    </p>
+                </div>
             </div>
         </div>
     );

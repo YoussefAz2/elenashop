@@ -109,19 +109,40 @@ export interface ElementStyleOverride {
     fontSize?: string;
     fontWeight?: string;
     fontFamily?: string;
-    textAlign?: "left" | "center" | "right";
+    textAlign?: "left" | "center" | "right" | "justify";
     lineHeight?: string;
     letterSpacing?: string;
     textTransform?: "none" | "uppercase" | "lowercase" | "capitalize";
+    fontStyle?: "normal" | "italic";
+    textDecoration?: "none" | "underline" | "line-through";
+    textShadow?: string;
 
     // Background & borders
     backgroundColor?: string;
+    backgroundImage?: string;
     borderRadius?: string;
     borderColor?: string;
     borderWidth?: string;
+    borderStyle?: "none" | "solid" | "dashed" | "dotted" | "double";
+
+    // Hover states (for buttons)
+    hoverBackgroundColor?: string;
+    hoverColor?: string;
+    hoverBorderColor?: string;
 
     // Spacing
     padding?: string;
+    paddingX?: string; // horizontal padding
+    paddingY?: string; // vertical padding
+
+    // Dimensions
+    width?: string; // "auto", "100%", or specific value
+
+    // Flex alignment (for containers)
+    display?: "block" | "flex";
+    flexDirection?: "row" | "column";
+    alignItems?: "flex-start" | "center" | "flex-end" | "stretch";
+    justifyContent?: "flex-start" | "center" | "flex-end" | "space-between";
 
     // Effects
     boxShadow?: string;
@@ -149,7 +170,7 @@ export interface ElementStyleOverride {
     buttonTextColor?: string;
 
     // Divider width (for section dividers)
-    width?: string;
+    dividerWidth?: string;
 
     // Divider alignment (left, center, right)
     dividerAlign?: "left" | "center" | "right";

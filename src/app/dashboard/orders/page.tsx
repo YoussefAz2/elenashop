@@ -59,23 +59,23 @@ export default async function OrdersPage() {
 
     const getStatusIcon = (status: string) => {
         switch (status) {
-            case "new": return <Clock className="h-4 w-4" />;
-            case "confirmed": return <CheckCircle className="h-4 w-4" />;
-            case "shipped": return <Truck className="h-4 w-4" />;
-            case "delivered": return <Package className="h-4 w-4" />;
-            case "cancelled": return <XCircle className="h-4 w-4" />;
-            default: return <Clock className="h-4 w-4" />;
+            case "new": return <Clock className="h-3.5 w-3.5" />;
+            case "confirmed": return <CheckCircle className="h-3.5 w-3.5" />;
+            case "shipped": return <Truck className="h-3.5 w-3.5" />;
+            case "delivered": return <Package className="h-3.5 w-3.5" />;
+            case "cancelled": return <XCircle className="h-3.5 w-3.5" />;
+            default: return <Clock className="h-3.5 w-3.5" />;
         }
     };
 
     const getStatusColor = (status: string) => {
         switch (status) {
-            case "new": return "bg-blue-100 text-blue-700";
-            case "confirmed": return "bg-amber-100 text-amber-700";
-            case "shipped": return "bg-purple-100 text-purple-700";
-            case "delivered": return "bg-emerald-100 text-emerald-700";
-            case "cancelled": return "bg-red-100 text-red-700";
-            default: return "bg-slate-100 text-slate-700";
+            case "new": return "bg-blue-50 text-blue-700 border-blue-100";
+            case "confirmed": return "bg-amber-50 text-amber-700 border-amber-100";
+            case "shipped": return "bg-violet-50 text-violet-700 border-violet-100";
+            case "delivered": return "bg-emerald-50 text-emerald-700 border-emerald-100";
+            case "cancelled": return "bg-red-50 text-red-700 border-red-100";
+            default: return "bg-zinc-50 text-zinc-700 border-zinc-100";
         }
     };
 
@@ -109,77 +109,91 @@ export default async function OrdersPage() {
     return (
         <div className="max-w-6xl mx-auto space-y-8">
             {/* Header */}
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between border-b border-zinc-100 pb-8">
                 <div>
-                    <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 leading-tight">
+                    <h1 className="text-4xl font-serif font-bold italic tracking-tight text-zinc-900 leading-tight">
                         Commandes
                     </h1>
-                    <p className="text-slate-500 mt-2 text-lg">
-                        Gérez vos commandes et leur avancement.
+                    <p className="text-zinc-500 mt-2 text-lg font-medium">
+                        Suivez et gérez l&apos;activité de votre boutique.
                     </p>
                 </div>
-                <div className="hidden md:block px-4 py-2 bg-white/60 backdrop-blur-md rounded-full border border-white/50 text-sm font-semibold text-slate-600 shadow-sm">
-                    🗓️ {currentDate.replace(".", "")}
+                <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-white rounded-full border border-zinc-200 text-sm font-bold text-zinc-600 shadow-sm">
+                    <Clock className="h-4 w-4 text-zinc-400" />
+                    {currentDate.replace(".", "")}
                 </div>
             </div>
 
             {/* Orders List */}
             {allOrders.length === 0 ? (
-                <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
-                    <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <ShoppingBag className="h-8 w-8 text-slate-300" />
+                <div className="bg-white/50 backdrop-blur-sm rounded-3xl border border-dashed border-zinc-200 p-16 text-center">
+                    <div className="w-20 h-20 bg-zinc-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
+                        <ShoppingBag className="h-8 w-8 text-zinc-300" />
                     </div>
-                    <h3 className="font-semibold text-slate-900 mb-2">Aucune commande</h3>
-                    <p className="text-slate-500 mb-6">Les commandes de vos clients apparaîtront ici</p>
+                    <h3 className="font-serif font-bold text-xl text-zinc-900 mb-2 italic">Aucune commande pour le moment</h3>
+                    <p className="text-zinc-500 mb-8 max-w-sm mx-auto">
+                        Partagez le lien de votre boutique pour recevoir vos premières commandes.
+                    </p>
                     <a
                         href={`/${currentStore.slug}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium"
+                        className="inline-flex items-center gap-2 px-6 py-3 bg-zinc-900 text-white rounded-xl hover:bg-zinc-800 transition-all font-bold shadow-lg shadow-zinc-900/20"
                     >
+                        <ShoppingBag className="h-4 w-4" />
                         Voir ma boutique
                     </a>
                 </div>
             ) : (
-                <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-                    <div className="divide-y divide-slate-100">
+                <div className="bg-white rounded-3xl border border-zinc-100 overflow-hidden shadow-sm">
+                    <div className="divide-y divide-zinc-50">
                         {allOrders.map((order) => (
-                            <div key={order.id} className="p-4 hover:bg-slate-50 transition-colors">
-                                <div className="flex items-start justify-between gap-4">
-                                    <div className="flex items-start gap-4 flex-1">
-                                        <div className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                            <span className="text-sm font-medium text-slate-600">
+                            <div key={order.id} className="p-5 hover:bg-zinc-50/80 transition-all group cursor-default">
+                                <div className="flex items-start justify-between gap-6">
+                                    <div className="flex items-start gap-5 flex-1">
+                                        {/* Avatar */}
+                                        <div className="w-12 h-12 bg-zinc-100 rounded-2xl flex items-center justify-center flex-shrink-0 border border-zinc-100 shadow-sm group-hover:scale-105 transition-transform">
+                                            <span className="text-lg font-serif font-bold italic text-zinc-600">
                                                 {order.customer_name.charAt(0).toUpperCase()}
                                             </span>
                                         </div>
-                                        <div className="flex-1 min-w-0">
-                                            <div className="flex items-center gap-2 mb-1">
-                                                <p className="font-semibold text-slate-900">{order.customer_name}</p>
-                                                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
+
+                                        {/* Content */}
+                                        <div className="flex-1 min-w-0 pt-0.5">
+                                            <div className="flex items-center gap-3 mb-2">
+                                                <p className="font-bold text-zinc-900 text-lg">{order.customer_name}</p>
+                                                <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] uppercase font-bold tracking-wider border ${getStatusColor(order.status)}`}>
                                                     {getStatusIcon(order.status)}
                                                     {getStatusLabel(order.status)}
                                                 </span>
                                             </div>
-                                            <div className="flex items-center gap-4 text-sm text-slate-500">
-                                                <span className="flex items-center gap-1">
-                                                    <Phone className="h-3 w-3" />
+
+                                            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-zinc-500 font-medium">
+                                                <span className="flex items-center gap-1.5">
+                                                    <Phone className="h-3.5 w-3.5 text-zinc-400" />
                                                     {order.customer_phone}
                                                 </span>
-                                                <span className="flex items-center gap-1">
-                                                    <MapPin className="h-3 w-3" />
+                                                <span className="flex items-center gap-1.5">
+                                                    <MapPin className="h-3.5 w-3.5 text-zinc-400" />
                                                     {order.customer_governorate}
                                                 </span>
                                             </div>
+
                                             {order.product_details && (
-                                                <p className="text-sm text-slate-600 mt-1">
-                                                    {(order.product_details as { title?: string }).title || "Produit"}
-                                                </p>
+                                                <div className="mt-3 flex items-center gap-2 text-sm text-zinc-600">
+                                                    <div className="w-1 h-1 rounded-full bg-zinc-300" />
+                                                    <span className="font-medium">{(order.product_details as { title?: string }).title || "Produit"}</span>
+                                                </div>
                                             )}
                                         </div>
                                     </div>
+
+                                    {/* Action/Price */}
                                     <div className="text-right flex-shrink-0">
-                                        <p className="font-bold text-slate-900">{Number(order.total_price).toFixed(0)} TND</p>
-                                        <p className="text-xs text-slate-400">{formatDate(order.created_at)}</p>
+                                        <p className="font-serif font-bold italic text-2xl text-zinc-900 mb-1">
+                                            {Number(order.total_price).toFixed(0)} <span className="text-sm font-sans font-normal text-zinc-400 not-italic">TND</span>
+                                        </p>
+                                        <p className="text-xs font-medium text-zinc-400">{formatDate(order.created_at)}</p>
                                     </div>
                                 </div>
                             </div>

@@ -26,39 +26,39 @@ export function LeadsClient({ seller, leads, totalLeads }: LeadsClientProps) {
     return (
         <div className="space-y-6">
             {/* Metric Cards - Solid Premium Look */}
-            <div className="grid grid-cols-2 gap-4">
-                <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-                    <div className="flex items-start justify-between">
-                        <div>
-                            <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1">Abandons</p>
-                            <p className="text-3xl font-bold text-slate-900">{leads.length}</p>
-                            <p className="text-sm text-slate-400 mt-1">paniers non finalisés</p>
-                        </div>
-                        <div className="p-3 rounded-xl bg-slate-50 text-slate-900 border border-slate-100">
-                            <TrendingDown className="h-5 w-5" />
+            <div className="grid grid-cols-2 gap-6">
+                <div className="bg-white rounded-3xl border border-zinc-100 p-8 shadow-sm hover:shadow-md transition-all group">
+                    <div className="flex items-start justify-between mb-4">
+                        <div className="p-4 rounded-2xl bg-zinc-50 text-zinc-900 border border-zinc-100 group-hover:bg-zinc-900 group-hover:text-white transition-colors">
+                            <TrendingDown className="h-6 w-6" />
                         </div>
                     </div>
+                    <div>
+                        <p className="text-sm font-bold text-zinc-500 uppercase tracking-wider mb-2">Abandons</p>
+                        <p className="text-4xl font-serif font-bold italic text-zinc-900 mb-1">{leads.length}</p>
+                        <p className="text-sm font-medium text-zinc-400">paniers non finalisés</p>
+                    </div>
                 </div>
-                <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-                    <div className="flex items-start justify-between">
-                        <div>
-                            <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1">Conversion</p>
-                            <p className="text-3xl font-bold text-slate-900">{conversionRate}%</p>
-                            <p className="text-sm text-slate-400 mt-1">{convertedCount} convertis</p>
+                <div className="bg-white rounded-3xl border border-zinc-100 p-8 shadow-sm hover:shadow-md transition-all group">
+                    <div className="flex items-start justify-between mb-4">
+                        <div className="p-4 rounded-2xl bg-zinc-50 text-zinc-900 border border-zinc-100 group-hover:bg-zinc-900 group-hover:text-white transition-colors">
+                            <Users className="h-6 w-6" />
                         </div>
-                        <div className="p-3 rounded-xl bg-slate-50 text-slate-900 border border-slate-100">
-                            <Users className="h-5 w-5" />
-                        </div>
+                    </div>
+                    <div>
+                        <p className="text-sm font-bold text-zinc-500 uppercase tracking-wider mb-2">Conversion</p>
+                        <p className="text-4xl font-serif font-bold italic text-zinc-900 mb-1">{conversionRate}%</p>
+                        <p className="text-sm font-medium text-zinc-400">{convertedCount} convertis</p>
                     </div>
                 </div>
             </div>
 
             {leads.length > 0 && (
-                <div className="flex items-start gap-3 rounded-xl bg-amber-50 border border-amber-200 p-4">
+                <div className="flex items-start gap-4 rounded-2xl bg-amber-50/50 border border-amber-100 p-4">
                     <AlertTriangle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
                     <div>
-                        <p className="text-sm font-medium text-amber-800">💰 Opportunité de récupération</p>
-                        <p className="text-xs text-amber-700 mt-1">
+                        <p className="text-sm font-bold text-amber-900">💰 Opportunité de récupération</p>
+                        <p className="text-sm text-amber-700 mt-1 font-medium">
                             Ces clients ont montré de l&apos;intérêt mais n&apos;ont pas finalisé. Un simple message WhatsApp peut les convertir !
                         </p>
                     </div>
@@ -67,18 +67,20 @@ export function LeadsClient({ seller, leads, totalLeads }: LeadsClientProps) {
 
             {/* Leads List */}
             {leads.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-16 text-center bg-white rounded-2xl border border-slate-200">
-                    <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-50 border border-emerald-100">
-                        <Users className="h-10 w-10 text-emerald-500" />
+                <div className="flex flex-col items-center justify-center py-20 text-center bg-white/50 backdrop-blur-sm rounded-3xl border border-dashed border-zinc-200">
+                    <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-zinc-50 shadow-sm border border-zinc-100">
+                        <Users className="h-8 w-8 text-zinc-400" />
                     </div>
-                    <h2 className="text-lg font-semibold text-slate-900">Aucun panier abandonné</h2>
-                    <p className="mt-1 text-sm text-slate-500">Tous vos leads ont finalisé leur commande 🎉</p>
+                    <h2 className="text-xl font-serif font-bold italic text-zinc-900 mb-2">Aucun panier abandonné</h2>
+                    <p className="text-zinc-500 font-medium max-w-sm">Tous vos leads ont finalisé leur commande. Excellent travail ! 🎉</p>
                 </div>
             ) : (
-                <div className="bg-white rounded-2xl border border-slate-200 divide-y divide-slate-50 overflow-hidden">
-                    {leads.map((lead) => (
-                        <LeadCard key={lead.id} lead={lead} storeName={seller.store_name} />
-                    ))}
+                <div className="bg-white rounded-3xl border border-zinc-100 overflow-hidden shadow-sm">
+                    <div className="divide-y divide-zinc-50">
+                        {leads.map((lead) => (
+                            <LeadCard key={lead.id} lead={lead} storeName={seller.store_name} />
+                        ))}
+                    </div>
                 </div>
             )}
         </div>
@@ -109,34 +111,38 @@ function LeadCard({ lead, storeName }: { lead: Lead; storeName: string }) {
     const whatsappUrl = `https://wa.me/${cleanPhone}?text=${whatsappMessage}`;
 
     return (
-        <Card className="border-0 shadow-sm overflow-hidden">
-            <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                    <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100">
-                                <Phone className="h-5 w-5 text-slate-500" />
-                            </div>
-                            <div>
-                                <p className="font-medium text-slate-900">{lead.customer_name || "Anonyme"}</p>
-                                <p className="text-sm text-slate-500">{lead.customer_phone}</p>
+        <div className="p-6 hover:bg-zinc-50/50 transition-colors">
+            <div className="flex items-center justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-4">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-zinc-100 border border-zinc-200 text-zinc-500 font-serif font-bold italic text-lg shadow-sm">
+                            {(lead.customer_name?.[0] || "A").toUpperCase()}
+                        </div>
+                        <div>
+                            <p className="font-bold text-zinc-900 text-lg mb-0.5">{lead.customer_name || "Anonyme"}</p>
+                            <div className="flex items-center gap-2 text-sm text-zinc-500 font-medium">
+                                <Phone className="h-3.5 w-3.5" />
+                                {lead.customer_phone}
                             </div>
                         </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-1 text-xs text-slate-400">
-                            <Clock className="h-3 w-3" />
-                            {getRelativeTime(lead.created_at)}
-                        </div>
-                        <Button asChild size="sm" className="bg-green-500 hover:bg-green-600 text-white rounded-full px-4 shadow-lg shadow-green-500/25">
-                            <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-                                <MessageCircle className="h-4 w-4 mr-1" />
-                                Relancer
-                            </a>
-                        </Button>
                     </div>
                 </div>
-            </CardContent>
-        </Card>
+                <div className="flex flex-col md:flex-row items-end md:items-center gap-4">
+                    <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-zinc-400 bg-zinc-50 px-3 py-1.5 rounded-lg border border-zinc-100">
+                        <Clock className="h-3.5 w-3.5" />
+                        {getRelativeTime(lead.created_at)}
+                    </div>
+                    <a
+                        href={whatsappUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold px-6 py-2.5 rounded-xl shadow-lg shadow-[#25D366]/20 transition-all hover:scale-105 active:scale-95"
+                    >
+                        <MessageCircle className="h-5 w-5" />
+                        Relancer
+                    </a>
+                </div>
+            </div>
+        </div>
     );
 }

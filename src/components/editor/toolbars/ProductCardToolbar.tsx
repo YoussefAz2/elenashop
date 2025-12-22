@@ -82,19 +82,25 @@ export function ProductCardToolbar({
                     <Palette className="w-3 h-3" />
                     Fond de carte
                 </Label>
-                <div className="flex gap-2">
-                    <input
-                        type="color"
-                        value={styles.backgroundColor || "#ffffff"}
-                        onChange={(e) => updateStyle("backgroundColor", e.target.value)}
-                        className="w-10 h-10 rounded-lg cursor-pointer border-2 border-slate-200"
-                    />
+                <div className="flex gap-2 items-center">
+                    <div className="relative">
+                        <div
+                            className="w-10 h-10 rounded-lg border-2 border-slate-200 cursor-pointer"
+                            style={{ backgroundColor: styles.backgroundColor || "#ffffff" }}
+                        />
+                        <input
+                            type="color"
+                            value={styles.backgroundColor || "#ffffff"}
+                            onChange={(e) => updateStyle("backgroundColor", e.target.value)}
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        />
+                    </div>
                     <input
                         type="text"
                         value={styles.backgroundColor || ""}
                         onChange={(e) => updateStyle("backgroundColor", e.target.value)}
                         placeholder="#ffffff"
-                        className="flex-1 border rounded-lg px-3 text-sm"
+                        className="flex-1 border rounded-lg px-3 py-2 text-sm"
                     />
                 </div>
             </div>
@@ -176,19 +182,25 @@ export function ProductCardToolbar({
                     <Palette className="w-3 h-3" />
                     Fond zone d'infos
                 </Label>
-                <div className="flex gap-2">
-                    <input
-                        type="color"
-                        value={styles.infoBoxBackgroundColor || "#1e1e1e"}
-                        onChange={(e) => updateStyle("infoBoxBackgroundColor", e.target.value)}
-                        className="w-10 h-10 rounded-lg cursor-pointer border-2 border-slate-200"
-                    />
+                <div className="flex gap-2 items-center">
+                    <div className="relative">
+                        <div
+                            className="w-10 h-10 rounded-lg border-2 border-slate-200 cursor-pointer"
+                            style={{ backgroundColor: styles.infoBoxBackgroundColor || "#1e1e1e" }}
+                        />
+                        <input
+                            type="color"
+                            value={styles.infoBoxBackgroundColor || "#1e1e1e"}
+                            onChange={(e) => updateStyle("infoBoxBackgroundColor", e.target.value)}
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        />
+                    </div>
                     <input
                         type="text"
                         value={styles.infoBoxBackgroundColor || ""}
                         onChange={(e) => updateStyle("infoBoxBackgroundColor", e.target.value)}
                         placeholder="#1e1e1e"
-                        className="flex-1 border rounded-lg px-3 text-sm"
+                        className="flex-1 border rounded-lg px-3 py-2 text-sm"
                     />
                 </div>
             </div>
@@ -255,19 +267,25 @@ export function ProductCardToolbar({
             {/* Title Color */}
             <div className="space-y-2">
                 <Label className="text-xs">Couleur du titre</Label>
-                <div className="flex gap-2">
-                    <input
-                        type="color"
-                        value={styles.titleColor || "#1e293b"}
-                        onChange={(e) => updateStyle("titleColor", e.target.value)}
-                        className="w-10 h-8 rounded cursor-pointer border border-slate-200"
-                    />
+                <div className="flex gap-2 items-center">
+                    <div className="relative">
+                        <div
+                            className="w-10 h-8 rounded border border-slate-200 cursor-pointer"
+                            style={{ backgroundColor: styles.titleColor || "#1e293b" }}
+                        />
+                        <input
+                            type="color"
+                            value={styles.titleColor || "#1e293b"}
+                            onChange={(e) => updateStyle("titleColor", e.target.value)}
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        />
+                    </div>
                     <input
                         type="text"
                         value={styles.titleColor || ""}
                         onChange={(e) => updateStyle("titleColor", e.target.value)}
                         placeholder="#1e293b"
-                        className="flex-1 border rounded px-2 text-xs"
+                        className="flex-1 border rounded px-2 py-1 text-xs"
                     />
                 </div>
             </div>
@@ -275,19 +293,25 @@ export function ProductCardToolbar({
             {/* Description Color */}
             <div className="space-y-2">
                 <Label className="text-xs">Couleur de la description</Label>
-                <div className="flex gap-2">
-                    <input
-                        type="color"
-                        value={styles.descriptionColor || "#64748b"}
-                        onChange={(e) => updateStyle("descriptionColor", e.target.value)}
-                        className="w-10 h-8 rounded cursor-pointer border border-slate-200"
-                    />
+                <div className="flex gap-2 items-center">
+                    <div className="relative">
+                        <div
+                            className="w-10 h-8 rounded border border-slate-200 cursor-pointer"
+                            style={{ backgroundColor: styles.descriptionColor || "#64748b" }}
+                        />
+                        <input
+                            type="color"
+                            value={styles.descriptionColor || "#64748b"}
+                            onChange={(e) => updateStyle("descriptionColor", e.target.value)}
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        />
+                    </div>
                     <input
                         type="text"
                         value={styles.descriptionColor || ""}
                         onChange={(e) => updateStyle("descriptionColor", e.target.value)}
                         placeholder="#64748b"
-                        className="flex-1 border rounded px-2 text-xs"
+                        className="flex-1 border rounded px-2 py-1 text-xs"
                     />
                 </div>
             </div>
@@ -295,19 +319,25 @@ export function ProductCardToolbar({
             {/* Price Color */}
             <div className="space-y-2">
                 <Label className="text-xs">Couleur du prix</Label>
-                <div className="flex gap-2">
-                    <input
-                        type="color"
-                        value={styles.priceColor || "#ea580c"}
-                        onChange={(e) => updateStyle("priceColor", e.target.value)}
-                        className="w-10 h-8 rounded cursor-pointer border border-slate-200"
-                    />
+                <div className="flex gap-2 items-center">
+                    <div className="relative">
+                        <div
+                            className="w-10 h-8 rounded border border-slate-200 cursor-pointer"
+                            style={{ backgroundColor: styles.priceColor || "#ea580c" }}
+                        />
+                        <input
+                            type="color"
+                            value={styles.priceColor || "#ea580c"}
+                            onChange={(e) => updateStyle("priceColor", e.target.value)}
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        />
+                    </div>
                     <input
                         type="text"
                         value={styles.priceColor || ""}
                         onChange={(e) => updateStyle("priceColor", e.target.value)}
                         placeholder="#ea580c"
-                        className="flex-1 border rounded px-2 text-xs"
+                        className="flex-1 border rounded px-2 py-1 text-xs"
                     />
                 </div>
             </div>
@@ -320,19 +350,25 @@ export function ProductCardToolbar({
             {/* Button Background Color */}
             <div className="space-y-2">
                 <Label className="text-xs">Couleur du bouton</Label>
-                <div className="flex gap-2">
-                    <input
-                        type="color"
-                        value={styles.buttonBgColor || "#8b5cf6"}
-                        onChange={(e) => updateStyle("buttonBgColor", e.target.value)}
-                        className="w-10 h-8 rounded cursor-pointer border border-slate-200"
-                    />
+                <div className="flex gap-2 items-center">
+                    <div className="relative">
+                        <div
+                            className="w-10 h-8 rounded border border-slate-200 cursor-pointer"
+                            style={{ backgroundColor: styles.buttonBgColor || "#8b5cf6" }}
+                        />
+                        <input
+                            type="color"
+                            value={styles.buttonBgColor || "#8b5cf6"}
+                            onChange={(e) => updateStyle("buttonBgColor", e.target.value)}
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        />
+                    </div>
                     <input
                         type="text"
                         value={styles.buttonBgColor || ""}
                         onChange={(e) => updateStyle("buttonBgColor", e.target.value)}
                         placeholder="#8b5cf6"
-                        className="flex-1 border rounded px-2 text-xs"
+                        className="flex-1 border rounded px-2 py-1 text-xs"
                     />
                 </div>
             </div>
@@ -340,19 +376,25 @@ export function ProductCardToolbar({
             {/* Button Text Color */}
             <div className="space-y-2">
                 <Label className="text-xs">Couleur texte bouton</Label>
-                <div className="flex gap-2">
-                    <input
-                        type="color"
-                        value={styles.buttonTextColor || "#ffffff"}
-                        onChange={(e) => updateStyle("buttonTextColor", e.target.value)}
-                        className="w-10 h-8 rounded cursor-pointer border border-slate-200"
-                    />
+                <div className="flex gap-2 items-center">
+                    <div className="relative">
+                        <div
+                            className="w-10 h-8 rounded border border-slate-200 cursor-pointer"
+                            style={{ backgroundColor: styles.buttonTextColor || "#ffffff" }}
+                        />
+                        <input
+                            type="color"
+                            value={styles.buttonTextColor || "#ffffff"}
+                            onChange={(e) => updateStyle("buttonTextColor", e.target.value)}
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        />
+                    </div>
                     <input
                         type="text"
                         value={styles.buttonTextColor || ""}
                         onChange={(e) => updateStyle("buttonTextColor", e.target.value)}
                         placeholder="#ffffff"
-                        className="flex-1 border rounded px-2 text-xs"
+                        className="flex-1 border rounded px-2 py-1 text-xs"
                     />
                 </div>
             </div>

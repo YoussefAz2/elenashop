@@ -1,7 +1,11 @@
 "use client";
 
 import React from "react";
-import { Type, Palette, AlignLeft, AlignCenter, AlignRight, RotateCcw, CaseSensitive } from "lucide-react";
+import {
+    Type, Palette, RotateCcw,
+    AlignLeft, AlignCenter, AlignRight, AlignJustify,
+    Italic, Underline, Strikethrough
+} from "lucide-react";
 import type { ElementStyleOverride } from "@/types";
 import { Label } from "@/components/ui/label";
 
@@ -18,47 +22,84 @@ interface TitleToolbarProps {
 
 // ---------- CONSTANTS ----------
 
-const FONT_SIZES = [
-    { value: "1.5rem", label: "S" },
-    { value: "2rem", label: "M" },
-    { value: "2.5rem", label: "L" },
-    { value: "3rem", label: "XL" },
-    { value: "3.5rem", label: "2XL" },
-    { value: "4rem", label: "3XL" },
-    { value: "5rem", label: "4XL" },
+const FONT_FAMILIES = [
+    { value: "inherit", label: "Par défaut", category: "default" },
+    // Sans-Serif
+    { value: "'Inter', sans-serif", label: "Inter", category: "sans" },
+    { value: "'Poppins', sans-serif", label: "Poppins", category: "sans" },
+    { value: "'Montserrat', sans-serif", label: "Montserrat", category: "sans" },
+    { value: "'Roboto', sans-serif", label: "Roboto", category: "sans" },
+    { value: "'Open Sans', sans-serif", label: "Open Sans", category: "sans" },
+    // Serif
+    { value: "'Playfair Display', serif", label: "Playfair", category: "serif" },
+    { value: "'Cormorant Garamond', serif", label: "Cormorant", category: "serif" },
+    { value: "'Lora', serif", label: "Lora", category: "serif" },
+    { value: "'Merriweather', serif", label: "Merriweather", category: "serif" },
+    // Mono
+    { value: "'JetBrains Mono', monospace", label: "JetBrains", category: "mono" },
+    { value: "'Fira Code', monospace", label: "Fira Code", category: "mono" },
+    // Handwritten
+    { value: "'Dancing Script', cursive", label: "Dancing Script", category: "hand" },
+    { value: "'Pacifico', cursive", label: "Pacifico", category: "hand" },
 ];
 
 const FONT_WEIGHTS = [
+    { value: "100", label: "Thin" },
+    { value: "200", label: "ExtraLight" },
     { value: "300", label: "Light" },
-    { value: "400", label: "Normal" },
+    { value: "400", label: "Regular" },
     { value: "500", label: "Medium" },
-    { value: "600", label: "Semi" },
+    { value: "600", label: "SemiBold" },
     { value: "700", label: "Bold" },
-    { value: "800", label: "Extra" },
+    { value: "800", label: "ExtraBold" },
+    { value: "900", label: "Black" },
 ];
 
-const TEXT_TRANSFORMS = [
-    { value: "none", label: "Normal" },
-    { value: "uppercase", label: "MAJUSCULES" },
-    { value: "capitalize", label: "Capitalize" },
+const FONT_SIZES = [
+    { value: "0.875rem", label: "14" },
+    { value: "1rem", label: "16" },
+    { value: "1.25rem", label: "20" },
+    { value: "1.5rem", label: "24" },
+    { value: "2rem", label: "32" },
+    { value: "2.5rem", label: "40" },
+    { value: "3rem", label: "48" },
+    { value: "4rem", label: "64" },
+    { value: "5rem", label: "80" },
+];
+
+const LINE_HEIGHTS = [
+    { value: "1", label: "1.0" },
+    { value: "1.2", label: "1.2" },
+    { value: "1.4", label: "1.4" },
+    { value: "1.6", label: "1.6" },
+    { value: "1.8", label: "1.8" },
+    { value: "2", label: "2.0" },
 ];
 
 const LETTER_SPACINGS = [
-    { value: "normal", label: "Normal" },
-    { value: "0.05em", label: "Léger" },
-    { value: "0.1em", label: "Large" },
-    { value: "0.2em", label: "Très large" },
+    { value: "-0.05em", label: "-5%" },
+    { value: "0", label: "0" },
+    { value: "0.05em", label: "+5%" },
+    { value: "0.1em", label: "+10%" },
+    { value: "0.2em", label: "+20%" },
+    { value: "0.3em", label: "+30%" },
 ];
 
-const FONT_FAMILIES = [
-    { value: "inherit", label: "Par défaut" },
-    { value: "'Inter', sans-serif", label: "Inter" },
-    { value: "'Playfair Display', serif", label: "Playfair" },
-    { value: "'Montserrat', sans-serif", label: "Montserrat" },
-    { value: "'Roboto', sans-serif", label: "Roboto" },
-    { value: "'Poppins', sans-serif", label: "Poppins" },
-    { value: "'Cormorant Garamond', serif", label: "Cormorant" },
-    { value: "'Oswald', sans-serif", label: "Oswald" },
+const OPACITY_OPTIONS = [
+    { value: 1, label: "100%" },
+    { value: 0.8, label: "80%" },
+    { value: 0.6, label: "60%" },
+    { value: 0.4, label: "40%" },
+    { value: 0.2, label: "20%" },
+];
+
+const TEXT_SHADOW_PRESETS = [
+    { value: "none", label: "Aucune" },
+    { value: "1px 1px 2px rgba(0,0,0,0.3)", label: "Subtile" },
+    { value: "2px 2px 4px rgba(0,0,0,0.4)", label: "Douce" },
+    { value: "3px 3px 6px rgba(0,0,0,0.5)", label: "Moyenne" },
+    { value: "4px 4px 8px rgba(0,0,0,0.6)", label: "Forte" },
+    { value: "0 0 8px currentColor, 0 0 12px currentColor", label: "Glow" },
 ];
 
 // ---------- COMPONENT ----------
@@ -97,155 +138,209 @@ export function TitleToolbar({
                 </button>
             </div>
 
-            {/* Color */}
-            <div className="space-y-2">
-                <Label className="flex items-center gap-2 text-xs">
-                    <Palette className="w-3 h-3" />
-                    Couleur
-                </Label>
-                <div className="flex gap-2">
-                    <input
-                        type="color"
-                        value={styles.color || "#000000"}
-                        onChange={(e) => updateStyle("color", e.target.value)}
-                        className="w-10 h-10 rounded-lg cursor-pointer border-2 border-slate-200"
-                    />
-                    <input
-                        type="text"
-                        value={styles.color || ""}
-                        onChange={(e) => updateStyle("color", e.target.value)}
-                        placeholder="#000000"
-                        className="flex-1 border rounded-lg px-3 text-sm"
-                    />
+            {/* ========== POLICE ========== */}
+            <div className="space-y-3 p-3 bg-slate-50 rounded-lg">
+                <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">🔤 Police</p>
+
+                {/* Font Family */}
+                <div className="space-y-1">
+                    <Label className="text-xs text-slate-500">Famille</Label>
+                    <select
+                        value={styles.fontFamily || "inherit"}
+                        onChange={(e) => updateStyle("fontFamily", e.target.value)}
+                        className="w-full border rounded-lg px-3 py-2 text-sm bg-white"
+                    >
+                        <optgroup label="Par défaut">
+                            <option value="inherit">Par défaut</option>
+                        </optgroup>
+                        <optgroup label="Sans-Serif">
+                            {FONT_FAMILIES.filter(f => f.category === "sans").map(({ value, label }) => (
+                                <option key={value} value={value}>{label}</option>
+                            ))}
+                        </optgroup>
+                        <optgroup label="Serif">
+                            {FONT_FAMILIES.filter(f => f.category === "serif").map(({ value, label }) => (
+                                <option key={value} value={value}>{label}</option>
+                            ))}
+                        </optgroup>
+                        <optgroup label="Monospace">
+                            {FONT_FAMILIES.filter(f => f.category === "mono").map(({ value, label }) => (
+                                <option key={value} value={value}>{label}</option>
+                            ))}
+                        </optgroup>
+                        <optgroup label="Handwritten">
+                            {FONT_FAMILIES.filter(f => f.category === "hand").map(({ value, label }) => (
+                                <option key={value} value={value}>{label}</option>
+                            ))}
+                        </optgroup>
+                    </select>
+                </div>
+
+                {/* Font Weight */}
+                <div className="space-y-1">
+                    <Label className="text-xs text-slate-500">Graisse</Label>
+                    <select
+                        value={styles.fontWeight || "400"}
+                        onChange={(e) => updateStyle("fontWeight", e.target.value)}
+                        className="w-full border rounded-lg px-3 py-2 text-sm bg-white"
+                    >
+                        {FONT_WEIGHTS.map(({ value, label }) => (
+                            <option key={value} value={value}>{value} - {label}</option>
+                        ))}
+                    </select>
                 </div>
             </div>
 
-            {/* Font Family */}
-            <div className="space-y-2">
-                <Label className="text-xs">🔤 Police</Label>
-                <select
-                    value={styles.fontFamily || "inherit"}
-                    onChange={(e) => updateStyle("fontFamily", e.target.value)}
-                    className="w-full border rounded-lg px-3 py-2 text-sm bg-white"
-                >
-                    {FONT_FAMILIES.map(({ value, label }) => (
-                        <option key={value} value={value} style={{ fontFamily: value }}>
-                            {label}
-                        </option>
-                    ))}
-                </select>
-            </div>
+            {/* ========== TAILLE ========== */}
+            <div className="space-y-3 p-3 bg-slate-50 rounded-lg">
+                <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">📏 Taille</p>
 
-            {/* Font Size */}
-            <div className="space-y-2">
-                <Label className="text-xs">📏 Taille</Label>
-                <div className="flex flex-wrap gap-1">
-                    {FONT_SIZES.map(({ value, label }) => (
-                        <button
-                            key={value}
-                            onClick={() => updateStyle("fontSize", value)}
-                            className={`
-                                px-2 py-1 text-xs rounded transition-all
-                                ${styles.fontSize === value
-                                    ? "bg-blue-600 text-white"
-                                    : "bg-slate-100 hover:bg-slate-200 text-slate-700"
-                                }
-                            `}
-                        >
-                            {label}
-                        </button>
-                    ))}
+                <div className="space-y-1">
+                    <Label className="text-xs text-slate-500">Taille du texte</Label>
+                    <div className="flex flex-wrap gap-1">
+                        {FONT_SIZES.map(({ value, label }) => (
+                            <button
+                                key={value}
+                                onClick={() => updateStyle("fontSize", value)}
+                                className={`
+                                    px-2 py-1 text-xs rounded transition-all
+                                    ${styles.fontSize === value
+                                        ? "bg-blue-600 text-white"
+                                        : "bg-white hover:bg-slate-100 text-slate-700 border"
+                                    }
+                                `}
+                            >
+                                {label}
+                            </button>
+                        ))}
+                    </div>
                 </div>
             </div>
 
-            {/* Font Weight */}
-            <div className="space-y-2">
-                <Label className="text-xs">💪 Épaisseur</Label>
-                <div className="flex flex-wrap gap-1">
-                    {FONT_WEIGHTS.map(({ value, label }) => (
-                        <button
-                            key={value}
-                            onClick={() => updateStyle("fontWeight", value)}
-                            className={`
-                                px-2 py-1 text-xs rounded transition-all
-                                ${styles.fontWeight === value
-                                    ? "bg-blue-600 text-white"
-                                    : "bg-slate-100 hover:bg-slate-200 text-slate-700"
-                                }
-                            `}
-                        >
-                            {label}
-                        </button>
-                    ))}
+            {/* ========== COULEUR ========== */}
+            <div className="space-y-3 p-3 bg-slate-50 rounded-lg">
+                <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">🎨 Couleur</p>
+
+                {/* Color Picker */}
+                <div className="space-y-1">
+                    <Label className="text-xs text-slate-500">Couleur du texte</Label>
+                    <div className="flex gap-2 items-center">
+                        <div className="relative">
+                            <div
+                                className="w-10 h-10 rounded-lg border-2 border-slate-200 cursor-pointer"
+                                style={{ backgroundColor: styles.color || "#000000" }}
+                            />
+                            <input
+                                type="color"
+                                value={styles.color || "#000000"}
+                                onChange={(e) => updateStyle("color", e.target.value)}
+                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                            />
+                        </div>
+                        <input
+                            type="text"
+                            value={styles.color || ""}
+                            onChange={(e) => updateStyle("color", e.target.value)}
+                            placeholder="#000000"
+                            className="flex-1 border rounded-lg px-3 py-2 text-sm bg-white"
+                        />
+                    </div>
+                </div>
+
+                {/* Opacity */}
+                <div className="space-y-1">
+                    <Label className="text-xs text-slate-500">Opacité</Label>
+                    <div className="flex gap-1">
+                        {OPACITY_OPTIONS.map(({ value, label }) => (
+                            <button
+                                key={value}
+                                onClick={() => updateStyle("opacity", value)}
+                                className={`
+                                    flex-1 py-1.5 text-xs rounded transition-all
+                                    ${styles.opacity === value
+                                        ? "bg-blue-600 text-white"
+                                        : "bg-white hover:bg-slate-100 text-slate-700 border"
+                                    }
+                                `}
+                            >
+                                {label}
+                            </button>
+                        ))}
+                    </div>
                 </div>
             </div>
 
-            {/* Text Transform */}
-            <div className="space-y-2">
-                <Label className="flex items-center gap-2 text-xs">
-                    <CaseSensitive className="w-3 h-3" />
-                    Casse
-                </Label>
-                <div className="flex gap-1">
-                    {TEXT_TRANSFORMS.map(({ value, label }) => (
-                        <button
-                            key={value}
-                            onClick={() => updateStyle("textTransform", value as ElementStyleOverride["textTransform"])}
-                            className={`
-                                flex-1 py-1.5 text-xs rounded transition-all
-                                ${styles.textTransform === value
-                                    ? "bg-blue-600 text-white"
-                                    : "bg-slate-100 hover:bg-slate-200 text-slate-700"
-                                }
-                            `}
-                        >
-                            {label}
-                        </button>
-                    ))}
+            {/* ========== ESPACEMENT ========== */}
+            <div className="space-y-3 p-3 bg-slate-50 rounded-lg">
+                <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">↔️ Espacement</p>
+
+                {/* Line Height */}
+                <div className="space-y-1">
+                    <Label className="text-xs text-slate-500">Hauteur de ligne</Label>
+                    <div className="flex gap-1">
+                        {LINE_HEIGHTS.map(({ value, label }) => (
+                            <button
+                                key={value}
+                                onClick={() => updateStyle("lineHeight", value)}
+                                className={`
+                                    flex-1 py-1.5 text-xs rounded transition-all
+                                    ${styles.lineHeight === value
+                                        ? "bg-blue-600 text-white"
+                                        : "bg-white hover:bg-slate-100 text-slate-700 border"
+                                    }
+                                `}
+                            >
+                                {label}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Letter Spacing */}
+                <div className="space-y-1">
+                    <Label className="text-xs text-slate-500">Espacement lettres</Label>
+                    <div className="flex gap-1">
+                        {LETTER_SPACINGS.map(({ value, label }) => (
+                            <button
+                                key={value}
+                                onClick={() => updateStyle("letterSpacing", value)}
+                                className={`
+                                    flex-1 py-1.5 text-xs rounded transition-all
+                                    ${styles.letterSpacing === value
+                                        ? "bg-blue-600 text-white"
+                                        : "bg-white hover:bg-slate-100 text-slate-700 border"
+                                    }
+                                `}
+                            >
+                                {label}
+                            </button>
+                        ))}
+                    </div>
                 </div>
             </div>
 
-            {/* Letter Spacing */}
-            <div className="space-y-2">
-                <Label className="text-xs">↔️ Espacement lettres</Label>
-                <div className="flex gap-1">
-                    {LETTER_SPACINGS.map(({ value, label }) => (
-                        <button
-                            key={value}
-                            onClick={() => updateStyle("letterSpacing", value)}
-                            className={`
-                                flex-1 py-1.5 text-xs rounded transition-all
-                                ${styles.letterSpacing === value
-                                    ? "bg-blue-600 text-white"
-                                    : "bg-slate-100 hover:bg-slate-200 text-slate-700"
-                                }
-                            `}
-                        >
-                            {label}
-                        </button>
-                    ))}
-                </div>
-            </div>
+            {/* ========== ALIGNEMENT ========== */}
+            <div className="space-y-3 p-3 bg-slate-50 rounded-lg">
+                <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">📐 Alignement</p>
 
-            {/* Alignment */}
-            <div className="space-y-2">
-                <Label className="text-xs">📐 Alignement</Label>
                 <div className="flex gap-1">
                     {[
-                        { icon: AlignLeft, value: "left" as const },
-                        { icon: AlignCenter, value: "center" as const },
-                        { icon: AlignRight, value: "right" as const },
-                    ].map(({ icon: Icon, value }) => (
+                        { icon: AlignLeft, value: "left" as const, label: "Gauche" },
+                        { icon: AlignCenter, value: "center" as const, label: "Centre" },
+                        { icon: AlignRight, value: "right" as const, label: "Droite" },
+                        { icon: AlignJustify, value: "justify" as const, label: "Justifié" },
+                    ].map(({ icon: Icon, value, label }) => (
                         <button
                             key={value}
                             onClick={() => updateStyle("textAlign", value)}
                             className={`
-                                p-2 rounded transition-colors
+                                flex-1 p-2 rounded transition-colors flex items-center justify-center gap-1
                                 ${styles.textAlign === value
                                     ? "bg-blue-600 text-white"
-                                    : "bg-slate-100 hover:bg-slate-200 text-slate-700"
+                                    : "bg-white hover:bg-slate-100 text-slate-700 border"
                                 }
                             `}
+                            title={label}
                         >
                             <Icon className="w-4 h-4" />
                         </button>
@@ -253,18 +348,128 @@ export function TitleToolbar({
                 </div>
             </div>
 
-            {/* Preview */}
-            <div className="p-3 bg-slate-50 rounded-lg mt-4">
-                <p className="text-[10px] text-slate-400 mb-1">Aperçu</p>
+            {/* ========== STYLE ========== */}
+            <div className="space-y-3 p-3 bg-slate-50 rounded-lg">
+                <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">✨ Style</p>
+
+                {/* Text Styles (Italic, Underline, Strikethrough) */}
+                <div className="space-y-1">
+                    <Label className="text-xs text-slate-500">Décoration</Label>
+                    <div className="flex gap-1">
+                        <button
+                            onClick={() => updateStyle("fontStyle", styles.fontStyle === "italic" ? "normal" : "italic")}
+                            className={`
+                                flex-1 p-2 rounded transition-colors flex items-center justify-center gap-1
+                                ${styles.fontStyle === "italic"
+                                    ? "bg-blue-600 text-white"
+                                    : "bg-white hover:bg-slate-100 text-slate-700 border"
+                                }
+                            `}
+                            title="Italique"
+                        >
+                            <Italic className="w-4 h-4" />
+                        </button>
+                        <button
+                            onClick={() => updateStyle("textDecoration", styles.textDecoration === "underline" ? "none" : "underline")}
+                            className={`
+                                flex-1 p-2 rounded transition-colors flex items-center justify-center gap-1
+                                ${styles.textDecoration === "underline"
+                                    ? "bg-blue-600 text-white"
+                                    : "bg-white hover:bg-slate-100 text-slate-700 border"
+                                }
+                            `}
+                            title="Souligné"
+                        >
+                            <Underline className="w-4 h-4" />
+                        </button>
+                        <button
+                            onClick={() => updateStyle("textDecoration", styles.textDecoration === "line-through" ? "none" : "line-through")}
+                            className={`
+                                flex-1 p-2 rounded transition-colors flex items-center justify-center gap-1
+                                ${styles.textDecoration === "line-through"
+                                    ? "bg-blue-600 text-white"
+                                    : "bg-white hover:bg-slate-100 text-slate-700 border"
+                                }
+                            `}
+                            title="Barré"
+                        >
+                            <Strikethrough className="w-4 h-4" />
+                        </button>
+                    </div>
+                </div>
+
+                {/* Text Transform */}
+                <div className="space-y-1">
+                    <Label className="text-xs text-slate-500">Casse</Label>
+                    <div className="flex gap-1">
+                        {[
+                            { value: "none" as const, label: "Normal" },
+                            { value: "uppercase" as const, label: "MAJUSCULES" },
+                            { value: "capitalize" as const, label: "Capitalize" },
+                            { value: "lowercase" as const, label: "minuscules" },
+                        ].map(({ value, label }) => (
+                            <button
+                                key={value}
+                                onClick={() => updateStyle("textTransform", value)}
+                                className={`
+                                    flex-1 py-1.5 text-xs rounded transition-all
+                                    ${styles.textTransform === value
+                                        ? "bg-blue-600 text-white"
+                                        : "bg-white hover:bg-slate-100 text-slate-700 border"
+                                    }
+                                `}
+                            >
+                                {label}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            {/* ========== OMBRE ========== */}
+            <div className="space-y-3 p-3 bg-slate-50 rounded-lg">
+                <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">🌑 Ombre</p>
+
+                <div className="space-y-1">
+                    <Label className="text-xs text-slate-500">Ombre portée</Label>
+                    <div className="grid grid-cols-3 gap-1">
+                        {TEXT_SHADOW_PRESETS.map(({ value, label }) => (
+                            <button
+                                key={value}
+                                onClick={() => updateStyle("textShadow", value)}
+                                className={`
+                                    py-1.5 text-xs rounded transition-all
+                                    ${styles.textShadow === value
+                                        ? "bg-blue-600 text-white"
+                                        : "bg-white hover:bg-slate-100 text-slate-700 border"
+                                    }
+                                `}
+                            >
+                                {label}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            {/* ========== PREVIEW ========== */}
+            <div className="p-3 bg-slate-100 rounded-lg">
+                <p className="text-[10px] text-slate-400 mb-2">Aperçu</p>
                 <div
-                    className="p-2 bg-white rounded border overflow-hidden"
+                    className="p-3 bg-white rounded border overflow-hidden"
                     style={{
-                        color: styles.color,
-                        fontSize: styles.fontSize ? `min(${styles.fontSize}, 1.5rem)` : "1.5rem",
-                        fontWeight: styles.fontWeight,
-                        textAlign: styles.textAlign,
-                        textTransform: styles.textTransform,
-                        letterSpacing: styles.letterSpacing,
+                        color: styles.color || "#000000",
+                        fontSize: styles.fontSize ? `min(${styles.fontSize}, 1.5rem)` : "1.25rem",
+                        fontWeight: styles.fontWeight || "400",
+                        fontFamily: styles.fontFamily || "inherit",
+                        textAlign: styles.textAlign || "left",
+                        lineHeight: styles.lineHeight || "1.4",
+                        letterSpacing: styles.letterSpacing || "0",
+                        textTransform: styles.textTransform || "none",
+                        fontStyle: styles.fontStyle || "normal",
+                        textDecoration: styles.textDecoration || "none",
+                        textShadow: styles.textShadow || "none",
+                        opacity: styles.opacity ?? 1,
                     }}
                 >
                     Titre d&apos;exemple

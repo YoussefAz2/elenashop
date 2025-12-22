@@ -55,92 +55,94 @@ export function UpgradeModal({ isOpen, onClose, templateName, price }: UpgradeMo
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="sm:max-w-lg p-0 overflow-hidden border-0">
+            <DialogContent className="sm:max-w-lg p-0 overflow-hidden border-0 rounded-[2.5rem] shadow-2xl shadow-zinc-900/40">
                 {/* Animated gradient header */}
-                <div className="bg-gradient-to-br from-violet-600 via-purple-600 to-fuchsia-600 px-6 py-6 text-center relative overflow-hidden">
+                <div className="bg-zinc-900 px-8 py-8 text-center relative overflow-hidden group">
                     {/* Shine animation overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-pulse" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-zinc-800/50 to-black/50" />
+                    <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20" />
 
                     <button
                         onClick={onClose}
-                        className="absolute top-3 right-3 text-white/70 hover:text-white transition-colors z-10"
+                        className="absolute top-4 right-4 text-white/40 hover:text-white transition-colors z-10 p-2 hover:bg-white/10 rounded-full"
                     >
                         <X className="h-5 w-5" />
                     </button>
 
                     {/* Crown with pulse */}
-                    <div className="relative inline-flex items-center justify-center h-16 w-16 bg-white/20 backdrop-blur-sm rounded-2xl mb-3">
-                        <Crown className="h-8 w-8 text-yellow-300 animate-pulse" />
-                        <div className="absolute -top-1 -right-1 h-4 w-4 bg-yellow-400 rounded-full animate-ping" />
+                    <div className="relative inline-flex items-center justify-center h-20 w-20 bg-gradient-to-br from-amber-200 to-yellow-500 rounded-3xl mb-6 shadow-xl shadow-amber-900/20 transform group-hover:scale-105 transition-transform duration-500">
+                        <Crown className="h-10 w-10 text-zinc-900 drop-shadow-sm" />
+                        <div className="absolute -top-1.5 -right-1.5 h-5 w-5 bg-white rounded-full flex items-center justify-center shadow-lg">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                            <div className="h-2 w-2 bg-amber-500 rounded-full"></div>
+                        </div>
                     </div>
 
-                    <DialogHeader className="space-y-1">
-                        <DialogTitle className="text-2xl font-black text-white tracking-tight">
-                            🔥 Offre Spéciale Pro
+                    <DialogHeader className="space-y-2 relative z-10">
+                        <DialogTitle className="text-3xl font-serif font-bold italic text-white tracking-wide">
+                            L'Expérience Premium
                         </DialogTitle>
-                        <DialogDescription className="text-white/90 text-sm">
-                            Pour débloquer <span className="font-bold text-yellow-300">{templateName}</span>
+                        <DialogDescription className="text-zinc-400 text-base font-medium">
+                            Débloquez <span className="text-white font-bold border-b border-amber-500/50 pb-0.5">{templateName}</span> et boostez votre image
                         </DialogDescription>
                     </DialogHeader>
 
                     {/* Urgency countdown */}
-                    <div className="mt-4 inline-flex items-center gap-2 bg-black/30 backdrop-blur-sm rounded-full px-4 py-2">
-                        <Clock className="h-4 w-4 text-yellow-300" />
-                        <span className="text-white font-mono font-bold">
+                    <div className="mt-6 inline-flex items-center gap-3 bg-white/5 backdrop-blur-md border border-white/10 rounded-full px-5 py-2.5">
+                        <Clock className="h-4 w-4 text-amber-400" />
+                        <span className="text-white font-mono font-bold tracking-widest text-lg">
                             {String(timeLeft.hours).padStart(2, '0')}:{String(timeLeft.minutes).padStart(2, '0')}:{String(timeLeft.seconds).padStart(2, '0')}
                         </span>
-                        <span className="text-white/70 text-xs">restantes</span>
+                        <span className="text-zinc-500 text-xs font-bold uppercase tracking-wider">restant</span>
                     </div>
                 </div>
 
                 {/* Content */}
-                <div className="px-6 py-5 space-y-4 bg-gradient-to-b from-slate-50 to-white">
+                <div className="px-8 py-8 space-y-6 bg-white">
                     {/* Social proof banner */}
-                    <div className="flex items-center justify-center gap-2 text-sm text-slate-600 bg-amber-50 rounded-lg py-2 border border-amber-100">
-                        <Users className="h-4 w-4 text-amber-600" />
-                        <span><span className="font-bold text-amber-700">+500</span> boutiques utilisent Pro</span>
-                        <div className="flex -space-x-1">
-                            {["🇹🇳", "🇩🇿", "🇲🇦"].map((flag, i) => (
-                                <span key={i} className="text-sm">{flag}</span>
+                    <div className="flex items-center justify-center gap-3 text-sm text-zinc-600 bg-zinc-50 rounded-2xl py-3 px-4 border border-zinc-100">
+                        <div className="flex -space-x-2">
+                            {[1, 2, 3].map((_, i) => (
+                                <div key={i} className="h-6 w-6 rounded-full bg-zinc-200 border-2 border-white" />
                             ))}
                         </div>
+                        <span className="font-medium"><span className="font-bold text-zinc-900">+500</span> boutiques Elite</span>
                     </div>
 
                     {/* Comparison table */}
-                    <div className="border rounded-xl overflow-hidden">
-                        <div className="grid grid-cols-3 text-xs font-semibold bg-slate-100">
-                            <div className="px-3 py-2"></div>
-                            <div className="px-3 py-2 text-center text-slate-500">Gratuit</div>
-                            <div className="px-3 py-2 text-center text-purple-600 bg-purple-50">PRO ⭐</div>
+                    <div className="border border-zinc-100 rounded-2xl overflow-hidden shadow-sm">
+                        <div className="grid grid-cols-3 text-[10px] font-bold uppercase tracking-widest bg-zinc-50/50">
+                            <div className="px-4 py-3 text-zinc-400">Fonctionnalité</div>
+                            <div className="px-4 py-3 text-center text-zinc-400">Gratuit</div>
+                            <div className="px-4 py-3 text-center text-zinc-900 bg-amber-50/30">Premium ⭐</div>
                         </div>
                         {freeVsPro.map((row, i) => (
-                            <div key={i} className="grid grid-cols-3 text-xs border-t">
-                                <div className="px-3 py-2 text-slate-700">{row.feature}</div>
-                                <div className="px-3 py-2 text-center">
-                                    {row.free ? <Check className="h-4 w-4 text-slate-400 mx-auto" /> : <X className="h-4 w-4 text-slate-300 mx-auto" />}
+                            <div key={i} className="grid grid-cols-3 text-xs border-t border-zinc-100 items-center">
+                                <div className="px-4 py-3 text-zinc-600 font-medium">{row.feature}</div>
+                                <div className="px-4 py-3 text-center">
+                                    {row.free ? <Check className="h-4 w-4 text-zinc-400 mx-auto" /> : <div className="h-1 w-1 bg-zinc-200 rounded-full mx-auto" />}
                                 </div>
-                                <div className="px-3 py-2 text-center bg-purple-50/50">
-                                    <Check className="h-4 w-4 text-purple-600 mx-auto" />
+                                <div className="px-4 py-3 text-center bg-amber-50/10 h-full flex items-center justify-center">
+                                    <Check className="h-4 w-4 text-amber-600 font-bold mx-auto" />
                                 </div>
                             </div>
                         ))}
                     </div>
 
                     {/* Pricing with savings */}
-                    <div className="relative bg-gradient-to-br from-purple-600 to-fuchsia-600 rounded-2xl p-4 text-center text-white overflow-hidden">
-                        <div className="absolute top-0 right-0 bg-yellow-400 text-purple-900 text-[10px] font-black px-3 py-1 rounded-bl-lg">
-                            -40%
+                    <div className="relative bg-zinc-900 rounded-3xl p-6 text-center text-white overflow-hidden shadow-xl shadow-zinc-200">
+                        <div className="absolute top-0 right-0 bg-white text-zinc-900 text-[10px] font-black px-4 py-1.5 rounded-bl-2xl">
+                            -40% LIMITED
                         </div>
-                        <p className="text-white/70 text-sm line-through">99 TND/mois</p>
-                        <div className="flex items-baseline justify-center gap-1">
-                            <span className="text-5xl font-black">{price}</span>
-                            <span className="text-lg font-medium">TND</span>
-                            <span className="text-white/70">/mois</span>
+                        <p className="text-zinc-500 text-sm line-through font-medium mb-1">99 TND/mois</p>
+                        <div className="flex items-baseline justify-center gap-1 mb-2">
+                            <span className="text-5xl font-serif italic font-bold text-white">{price}</span>
+                            <span className="text-xl font-bold text-zinc-400">TND</span>
                         </div>
-                        <p className="text-xs text-white/80 mt-1 flex items-center justify-center gap-1">
+                        <div className="flex items-center justify-center gap-2 text-[10px] font-bold text-amber-500 uppercase tracking-widest bg-amber-500/10 rounded-full py-1.5 px-3 w-fit mx-auto">
                             <Shield className="h-3 w-3" />
-                            Satisfait ou remboursé 14 jours
-                        </p>
+                            Garantie 14 jours
+                        </div>
                     </div>
 
                     {/* CTA Button with shine */}

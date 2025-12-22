@@ -80,7 +80,8 @@ export function SidebarSectionList({ onSelectSection }: SidebarSectionListProps)
 
                 return (
                     <div key={category.key}>
-                        <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider px-1 mb-3">
+                        <h3 className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest pl-3 mb-3 flex items-center gap-2">
+                            <span className="w-1 h-1 rounded-full bg-zinc-200"></span>
                             {category.label}
                         </h3>
                         <div className="space-y-1">
@@ -88,17 +89,17 @@ export function SidebarSectionList({ onSelectSection }: SidebarSectionListProps)
                                 <button
                                     key={section.id}
                                     onClick={() => onSelectSection(section.id)}
-                                    className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg border border-transparent hover:border-slate-200 dark:hover:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all duration-150 group"
+                                    className="w-full flex items-center justify-between px-3 py-3 rounded-xl border border-transparent hover:border-zinc-200 hover:bg-white hover:shadow-sm transition-all duration-200 group"
                                 >
                                     <div className="flex items-center gap-3">
-                                        <div className="text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors">
+                                        <div className="p-1.5 rounded-lg bg-zinc-50 text-zinc-400 group-hover:text-zinc-900 group-hover:bg-zinc-100 transition-colors">
                                             {section.icon}
                                         </div>
-                                        <span className="text-sm font-medium text-slate-700 dark:text-slate-200">
+                                        <span className="text-sm font-medium text-zinc-600 group-hover:text-zinc-900 transition-colors">
                                             {section.label}
                                         </span>
                                     </div>
-                                    <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-slate-500 dark:group-hover:text-slate-400 transition-colors" />
+                                    <ChevronRight className="h-4 w-4 text-zinc-300 group-hover:text-zinc-900 group-hover:translate-x-0.5 transition-all" />
                                 </button>
                             ))}
                         </div>

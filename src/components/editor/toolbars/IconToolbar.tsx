@@ -72,19 +72,25 @@ export function IconToolbar({
                     <Palette className="w-3 h-3" />
                     Couleur de l'icône
                 </Label>
-                <div className="flex gap-2">
-                    <input
-                        type="color"
-                        value={styles.iconColor || styles.color || "#18181b"}
-                        onChange={(e) => updateStyle("iconColor", e.target.value)}
-                        className="w-10 h-10 rounded-lg cursor-pointer border-2 border-slate-200"
-                    />
+                <div className="flex gap-2 items-center">
+                    <div className="relative">
+                        <div
+                            className="w-10 h-10 rounded-lg border-2 border-slate-200 cursor-pointer"
+                            style={{ backgroundColor: styles.iconColor || styles.color || "#18181b" }}
+                        />
+                        <input
+                            type="color"
+                            value={styles.iconColor || styles.color || "#18181b"}
+                            onChange={(e) => updateStyle("iconColor", e.target.value)}
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        />
+                    </div>
                     <input
                         type="text"
                         value={styles.iconColor || styles.color || ""}
                         onChange={(e) => updateStyle("iconColor", e.target.value)}
                         placeholder="#18181b"
-                        className="flex-1 border rounded-lg px-3 text-sm"
+                        className="flex-1 border rounded-lg px-3 py-2 text-sm"
                     />
                 </div>
             </div>
@@ -107,6 +113,61 @@ export function IconToolbar({
                             style={{ backgroundColor: value }}
                             title={label}
                         />
+                    ))}
+                </div>
+            </div>
+
+            {/* Icon Size */}
+            <div className="space-y-2">
+                <Label className="text-xs">📏 Taille</Label>
+                <div className="flex gap-1">
+                    {[
+                        { value: "0.875rem", label: "S" },
+                        { value: "1rem", label: "M" },
+                        { value: "1.25rem", label: "L" },
+                        { value: "1.5rem", label: "XL" },
+                        { value: "2rem", label: "2XL" },
+                    ].map(({ value, label }) => (
+                        <button
+                            key={value}
+                            onClick={() => updateStyle("fontSize", value)}
+                            className={`
+                                flex-1 py-1.5 text-xs rounded transition-all
+                                ${styles.fontSize === value
+                                    ? "bg-pink-600 text-white"
+                                    : "bg-slate-100 hover:bg-slate-200 text-slate-700"
+                                }
+                            `}
+                        >
+                            {label}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            {/* Opacity */}
+            <div className="space-y-2">
+                <Label className="text-xs">🌗 Opacité</Label>
+                <div className="flex gap-1">
+                    {[
+                        { value: 1, label: "100%" },
+                        { value: 0.75, label: "75%" },
+                        { value: 0.5, label: "50%" },
+                        { value: 0.25, label: "25%" },
+                    ].map(({ value, label }) => (
+                        <button
+                            key={value}
+                            onClick={() => updateStyle("opacity", value)}
+                            className={`
+                                flex-1 py-1.5 text-xs rounded transition-all
+                                ${styles.opacity === value
+                                    ? "bg-pink-600 text-white"
+                                    : "bg-slate-100 hover:bg-slate-200 text-slate-700"
+                                }
+                            `}
+                        >
+                            {label}
+                        </button>
                     ))}
                 </div>
             </div>

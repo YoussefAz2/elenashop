@@ -103,19 +103,25 @@ export function DividerToolbar({
                     <Palette className="w-3 h-3" />
                     Couleur
                 </Label>
-                <div className="flex gap-2">
-                    <input
-                        type="color"
-                        value={styles.backgroundColor || "#8b5cf6"}
-                        onChange={(e) => updateStyle("backgroundColor", e.target.value)}
-                        className="w-10 h-10 rounded-lg cursor-pointer border-2 border-slate-200"
-                    />
+                <div className="flex gap-2 items-center">
+                    <div className="relative">
+                        <div
+                            className="w-10 h-10 rounded-lg border-2 border-slate-200 cursor-pointer"
+                            style={{ backgroundColor: styles.backgroundColor || "#8b5cf6" }}
+                        />
+                        <input
+                            type="color"
+                            value={styles.backgroundColor || "#8b5cf6"}
+                            onChange={(e) => updateStyle("backgroundColor", e.target.value)}
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        />
+                    </div>
                     <input
                         type="text"
                         value={styles.backgroundColor || ""}
                         onChange={(e) => updateStyle("backgroundColor", e.target.value)}
                         placeholder="#8b5cf6"
-                        className="flex-1 border rounded-lg px-3 text-sm"
+                        className="flex-1 border rounded-lg px-3 py-2 text-sm"
                     />
                 </div>
             </div>

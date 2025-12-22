@@ -75,7 +75,7 @@ export default async function EditorPage() {
 
     return (
         <EditorClient
-            seller={currentStore as any}
+            seller={currentStore}
             themeConfig={themeConfig}
             products={(products as Product[]) || []}
             pages={(pages as Page[]) || []}

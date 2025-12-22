@@ -225,21 +225,23 @@ export function SidebarSectionEditor({
     const resetFn = getResetFunction();
 
     return (
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full bg-white/50">
             {/* Back Button */}
-            <button
-                onClick={onBack}
-                className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 mb-4 -ml-1 transition-colors"
-            >
-                <ChevronLeft className="h-4 w-4" />
-                <span>Retour</span>
-            </button>
+            <div className="px-1 pt-2">
+                <button
+                    onClick={onBack}
+                    className="group flex items-center gap-2 text-xs font-bold text-zinc-400 hover:text-zinc-900 px-3 py-2 rounded-xl hover:bg-zinc-50 transition-all w-fit mb-2"
+                >
+                    <ChevronLeft className="h-4 w-4 group-hover:-translate-x-0.5 transition-transform" />
+                    <span>Retour</span>
+                </button>
+            </div>
 
             {/* Section Header */}
-            <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-200 dark:border-slate-700">
-                <div className="flex items-center gap-2">
-                    <div className="text-slate-500">{currentSection?.icon}</div>
-                    <h2 className="font-semibold text-slate-900 dark:text-slate-100">
+            <div className="flex items-center justify-between mb-6 pb-4 border-b border-zinc-100 px-1">
+                <div className="flex items-center gap-3">
+                    <div className="p-2 bg-zinc-50 rounded-xl text-zinc-900 shadow-sm border border-zinc-100">{currentSection?.icon}</div>
+                    <h2 className="font-bold text-lg text-zinc-900 tracking-tight">
                         {currentSection?.label}
                     </h2>
                 </div>
@@ -248,10 +250,10 @@ export function SidebarSectionEditor({
                         variant="ghost"
                         size="sm"
                         onClick={resetFn}
-                        className="text-slate-400 hover:text-slate-600"
+                        className="text-xs text-zinc-400 hover:text-red-600 hover:bg-red-50 h-8 rounded-lg"
                     >
-                        <RotateCcw className="h-3.5 w-3.5 mr-1" />
-                        Réinitialiser
+                        <RotateCcw className="h-3 w-3 mr-1.5" />
+                        Reset
                     </Button>
                 )}
             </div>
@@ -262,24 +264,27 @@ export function SidebarSectionEditor({
                 {activeSection === "header" && (
                     <div className="space-y-4">
                         <div className="flex items-center justify-between">
-                            <Label className="text-sm">Afficher l'en-tête</Label>
+                            <Label className="text-sm font-bold text-zinc-700">Afficher l'en-tête</Label>
                             <Switch
                                 checked={config.homeContent.header.visible}
                                 onCheckedChange={(v) => updateHeader({ visible: v })}
+                                className="data-[state=checked]:bg-zinc-900"
                             />
                         </div>
                         <div className="flex items-center justify-between">
-                            <Label className="text-sm">Fixé en haut (sticky)</Label>
+                            <Label className="text-sm font-bold text-zinc-700">Fixé en haut (sticky)</Label>
                             <Switch
                                 checked={config.homeContent.header.sticky}
                                 onCheckedChange={(v) => updateHeader({ sticky: v })}
+                                className="data-[state=checked]:bg-zinc-900"
                             />
                         </div>
                         <div className="flex items-center justify-between">
-                            <Label className="text-sm">Afficher le nom</Label>
+                            <Label className="text-sm font-bold text-zinc-700">Afficher le nom</Label>
                             <Switch
                                 checked={config.homeContent.header.showStoreName}
                                 onCheckedChange={(v) => updateHeader({ showStoreName: v })}
+                                className="data-[state=checked]:bg-zinc-900"
                             />
                         </div>
                         <div className="space-y-2 border-t pt-4 mt-2">
@@ -297,10 +302,11 @@ export function SidebarSectionEditor({
                 {activeSection === "announcement" && (
                     <div className="space-y-4">
                         <div className="flex items-center justify-between">
-                            <Label className="text-sm">Activer le bandeau</Label>
+                            <Label className="text-sm font-bold text-zinc-700">Activer le bandeau</Label>
                             <Switch
                                 checked={config.homeContent.announcement.enabled}
                                 onCheckedChange={(v) => updateAnnouncement({ enabled: v })}
+                                className="data-[state=checked]:bg-zinc-900"
                             />
                         </div>
                         <div className="space-y-2">
@@ -318,10 +324,10 @@ export function SidebarSectionEditor({
                 {/* ======================== HERO ======================== */}
                 {activeSection === "hero" && (
                     <Tabs defaultValue="content" className="flex-1">
-                        <TabsList className="grid w-full grid-cols-3 mb-4">
-                            <TabsTrigger value="content" className="text-xs">✏️ Contenu</TabsTrigger>
-                            <TabsTrigger value="style" className="text-xs">🎨 Style</TabsTrigger>
-                            <TabsTrigger value="settings" className="text-xs">⚙️ Réglages</TabsTrigger>
+                        <TabsList className="grid w-full grid-cols-3 mb-6 bg-zinc-100/80 p-1 rounded-xl gap-1">
+                            <TabsTrigger value="content" className="text-xs font-bold rounded-lg data-[state=active]:shadow-sm">✏️ Contenu</TabsTrigger>
+                            <TabsTrigger value="style" className="text-xs font-bold rounded-lg data-[state=active]:shadow-sm">🎨 Style</TabsTrigger>
+                            <TabsTrigger value="settings" className="text-xs font-bold rounded-lg data-[state=active]:shadow-sm">⚙️ Réglages</TabsTrigger>
                         </TabsList>
 
                         <TabsContent value="content" className="space-y-4 mt-0">
@@ -436,14 +442,15 @@ export function SidebarSectionEditor({
                         <TabsContent value="settings" className="space-y-4 mt-0">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <Label className="text-sm">Afficher la bannière</Label>
-                                    <p className="text-xs text-slate-400 mt-0.5">
+                                    <Label className="text-sm font-bold text-zinc-700">Afficher la bannière</Label>
+                                    <p className="text-xs text-zinc-400 mt-0.5">
                                         Masquer la section Hero de la page
                                     </p>
                                 </div>
                                 <Switch
                                     checked={config.homeContent.hero.visible}
                                     onCheckedChange={(v) => updateHero({ visible: v })}
+                                    className="data-[state=checked]:bg-zinc-900"
                                 />
                             </div>
                         </TabsContent>
@@ -453,10 +460,10 @@ export function SidebarSectionEditor({
                 {/* ======================== PRODUCTS ======================== */}
                 {activeSection === "products" && (
                     <Tabs defaultValue="content" className="flex-1">
-                        <TabsList className="grid w-full grid-cols-3 mb-4">
-                            <TabsTrigger value="content" className="text-xs">✏️ Contenu</TabsTrigger>
-                            <TabsTrigger value="style" className="text-xs">🎨 Style</TabsTrigger>
-                            <TabsTrigger value="settings" className="text-xs">⚙️ Réglages</TabsTrigger>
+                        <TabsList className="grid w-full grid-cols-3 mb-6 bg-zinc-100/80 p-1 rounded-xl gap-1">
+                            <TabsTrigger value="content" className="text-xs font-bold rounded-lg data-[state=active]:shadow-sm">✏️ Contenu</TabsTrigger>
+                            <TabsTrigger value="style" className="text-xs font-bold rounded-lg data-[state=active]:shadow-sm">🎨 Style</TabsTrigger>
+                            <TabsTrigger value="settings" className="text-xs font-bold rounded-lg data-[state=active]:shadow-sm">⚙️ Réglages</TabsTrigger>
                         </TabsList>
 
                         <TabsContent value="content" className="space-y-4 mt-0">
@@ -518,9 +525,9 @@ export function SidebarSectionEditor({
                 {/* ======================== TESTIMONIALS ======================== */}
                 {activeSection === "testimonials" && (
                     <Tabs defaultValue="content" className="flex-1">
-                        <TabsList className="grid w-full grid-cols-2 mb-4">
-                            <TabsTrigger value="content" className="text-xs">✏️ Contenu</TabsTrigger>
-                            <TabsTrigger value="settings" className="text-xs">⚙️ Réglages</TabsTrigger>
+                        <TabsList className="grid w-full grid-cols-2 mb-6 bg-zinc-100/80 p-1 rounded-xl gap-1">
+                            <TabsTrigger value="content" className="text-xs font-bold rounded-lg data-[state=active]:shadow-sm">✏️ Contenu</TabsTrigger>
+                            <TabsTrigger value="settings" className="text-xs font-bold rounded-lg data-[state=active]:shadow-sm">⚙️ Réglages</TabsTrigger>
                         </TabsList>
 
                         <TabsContent value="content" className="space-y-4 mt-0">
@@ -647,9 +654,9 @@ export function SidebarSectionEditor({
                 {/* ======================== FOOTER ======================== */}
                 {activeSection === "footer" && (
                     <Tabs defaultValue="content" className="flex-1">
-                        <TabsList className="grid w-full grid-cols-2 mb-4">
-                            <TabsTrigger value="content" className="text-xs">✏️ Contenu</TabsTrigger>
-                            <TabsTrigger value="settings" className="text-xs">⚙️ Réglages</TabsTrigger>
+                        <TabsList className="grid w-full grid-cols-2 mb-6 bg-zinc-100/80 p-1 rounded-xl gap-1">
+                            <TabsTrigger value="content" className="text-xs font-bold rounded-lg data-[state=active]:shadow-sm">✏️ Contenu</TabsTrigger>
+                            <TabsTrigger value="settings" className="text-xs font-bold rounded-lg data-[state=active]:shadow-sm">⚙️ Réglages</TabsTrigger>
                         </TabsList>
 
                         <TabsContent value="content" className="space-y-4 mt-0">
@@ -679,9 +686,9 @@ export function SidebarSectionEditor({
                 {/* ======================== ABOUT PAGE ======================== */}
                 {activeSection === "about-page" && (
                     <Tabs defaultValue="content" className="flex-1">
-                        <TabsList className="grid w-full grid-cols-2 mb-4">
-                            <TabsTrigger value="content" className="text-xs">✏️ Contenu</TabsTrigger>
-                            <TabsTrigger value="settings" className="text-xs">⚙️ Réglages</TabsTrigger>
+                        <TabsList className="grid w-full grid-cols-2 mb-6 bg-zinc-100/80 p-1 rounded-xl gap-1">
+                            <TabsTrigger value="content" className="text-xs font-bold rounded-lg data-[state=active]:shadow-sm">✏️ Contenu</TabsTrigger>
+                            <TabsTrigger value="settings" className="text-xs font-bold rounded-lg data-[state=active]:shadow-sm">⚙️ Réglages</TabsTrigger>
                         </TabsList>
 
                         <TabsContent value="content" className="space-y-4 mt-0">
@@ -735,9 +742,9 @@ export function SidebarSectionEditor({
                 {/* ======================== CONTACT PAGE ======================== */}
                 {activeSection === "contact-page" && (
                     <Tabs defaultValue="content" className="flex-1">
-                        <TabsList className="grid w-full grid-cols-2 mb-4">
-                            <TabsTrigger value="content" className="text-xs">✏️ Contenu</TabsTrigger>
-                            <TabsTrigger value="settings" className="text-xs">⚙️ Réglages</TabsTrigger>
+                        <TabsList className="grid w-full grid-cols-2 mb-6 bg-zinc-100/80 p-1 rounded-xl gap-1">
+                            <TabsTrigger value="content" className="text-xs font-bold rounded-lg data-[state=active]:shadow-sm">✏️ Contenu</TabsTrigger>
+                            <TabsTrigger value="settings" className="text-xs font-bold rounded-lg data-[state=active]:shadow-sm">⚙️ Réglages</TabsTrigger>
                         </TabsList>
 
                         <TabsContent value="content" className="space-y-4 mt-0">
@@ -942,9 +949,9 @@ export function SidebarSectionEditor({
                 {/* ======================== ABOUT SECTION (home) ======================== */}
                 {activeSection === "about" && (
                     <Tabs defaultValue="content" className="flex-1">
-                        <TabsList className="grid w-full grid-cols-2 mb-4">
-                            <TabsTrigger value="content" className="text-xs">✏️ Contenu</TabsTrigger>
-                            <TabsTrigger value="settings" className="text-xs">⚙️ Réglages</TabsTrigger>
+                        <TabsList className="grid w-full grid-cols-2 mb-6 bg-zinc-100/80 p-1 rounded-xl gap-1">
+                            <TabsTrigger value="content" className="text-xs font-bold rounded-lg data-[state=active]:shadow-sm">✏️ Contenu</TabsTrigger>
+                            <TabsTrigger value="settings" className="text-xs font-bold rounded-lg data-[state=active]:shadow-sm">⚙️ Réglages</TabsTrigger>
                         </TabsList>
 
                         <TabsContent value="content" className="space-y-4 mt-0">

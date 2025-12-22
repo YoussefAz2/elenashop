@@ -187,45 +187,62 @@ export function PromosClient({ seller, promos: initialPromos, categories, produc
             <div className="flex justify-end">
                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                     <DialogTrigger asChild>
-                        <Button onClick={openNewDialog} className="bg-slate-900 hover:bg-slate-800 rounded-xl px-4">
+                        <Button onClick={openNewDialog} className="bg-zinc-900 hover:bg-zinc-800 rounded-xl px-4 font-bold shadow-lg shadow-zinc-900/20">
                             <Plus className="h-4 w-4 mr-2" />
                             Nouvelle promo
                         </Button>
                     </DialogTrigger>
-                    <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
-                        <DialogHeader>
-                            <DialogTitle>{editingPromo ? "Modifier la promo" : "Nouvelle promotion"}</DialogTitle>
-                        </DialogHeader>
-                        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-                            {error && <div className="rounded-lg bg-red-50 p-3 text-sm text-red-600">{error}</div>}
+                    <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto bg-white rounded-3xl border-zinc-100 shadow-2xl p-0 gap-0">
+                        <div className="p-6 pb-0">
+                            <DialogHeader>
+                                <DialogTitle className="font-serif font-bold italic text-2xl text-zinc-900">
+                                    {editingPromo ? "Modifier la promo" : "Nouvelle promotion"}
+                                </DialogTitle>
+                            </DialogHeader>
+                        </div>
+                        <form onSubmit={handleSubmit} className="space-y-6 p-6">
+                            {error && <div className="rounded-xl bg-red-50 p-4 text-sm font-medium text-red-600 border border-red-100 flex items-center gap-2">{error}</div>}
 
-                            <div className="space-y-2">
-                                <Label>Nom de la promo</Label>
-                                <Input value={name} onChange={e => setName(e.target.value)} placeholder="Ex: Soldes d'été" required />
+                            <div className="space-y-3">
+                                <Label className="text-zinc-700 font-medium">Nom de la promo</Label>
+                                <Input
+                                    value={name}
+                                    onChange={e => setName(e.target.value)}
+                                    placeholder="Ex: Soldes d'été"
+                                    className="h-12 rounded-xl border-zinc-200 focus:border-zinc-900 focus:ring-zinc-900/10"
+                                    required
+                                />
                             </div>
 
-                            <div className="grid grid-cols-2 gap-3">
-                                <div className="space-y-2">
-                                    <Label>Type de réduction</Label>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-3">
+                                    <Label className="text-zinc-700 font-medium">Type de réduction</Label>
                                     <Select value={discountType} onValueChange={(v) => setDiscountType(v as "percentage" | "fixed")}>
-                                        <SelectTrigger><SelectValue /></SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="percentage"><Percent className="h-3 w-3 inline mr-1" />Pourcentage</SelectItem>
-                                            <SelectItem value="fixed"><BadgeDollarSign className="h-3 w-3 inline mr-1" />Montant fixe</SelectItem>
+                                        <SelectTrigger className="h-12 rounded-xl border-zinc-200 focus:border-zinc-900 focus:ring-zinc-900/10"><SelectValue /></SelectTrigger>
+                                        <SelectContent className="rounded-xl border-zinc-100">
+                                            <SelectItem value="percentage"><Percent className="h-4 w-4 inline mr-2 text-zinc-400" />Pourcentage</SelectItem>
+                                            <SelectItem value="fixed"><BadgeDollarSign className="h-4 w-4 inline mr-2 text-zinc-400" />Montant fixe</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>
-                                <div className="space-y-2">
-                                    <Label>Valeur</Label>
-                                    <Input type="number" value={discountValue} onChange={e => setDiscountValue(e.target.value)} placeholder={discountType === "percentage" ? "10" : "5"} required />
+                                <div className="space-y-3">
+                                    <Label className="text-zinc-700 font-medium">Valeur</Label>
+                                    <Input
+                                        type="number"
+                                        value={discountValue}
+                                        onChange={e => setDiscountValue(e.target.value)}
+                                        placeholder={discountType === "percentage" ? "10" : "5"}
+                                        className="h-12 rounded-xl border-zinc-200 focus:border-zinc-900 focus:ring-zinc-900/10 font-bold"
+                                        required
+                                    />
                                 </div>
                             </div>
 
-                            <div className="space-y-2">
-                                <Label>S'applique à</Label>
+                            <div className="space-y-3">
+                                <Label className="text-zinc-700 font-medium">S&apos;applique à</Label>
                                 <Select value={scope} onValueChange={(v) => setScope(v as "global" | "category" | "product")}>
-                                    <SelectTrigger><SelectValue /></SelectTrigger>
-                                    <SelectContent>
+                                    <SelectTrigger className="h-12 rounded-xl border-zinc-200 focus:border-zinc-900 focus:ring-zinc-900/10"><SelectValue /></SelectTrigger>
+                                    <SelectContent className="rounded-xl border-zinc-100">
                                         <SelectItem value="global">🌍 Tous les produits</SelectItem>
                                         <SelectItem value="category">📂 Une catégorie</SelectItem>
                                         <SelectItem value="product">🎯 Produits spécifiques</SelectItem>
@@ -234,11 +251,11 @@ export function PromosClient({ seller, promos: initialPromos, categories, produc
                             </div>
 
                             {scope === "category" && (
-                                <div className="space-y-2">
-                                    <Label>Catégorie</Label>
+                                <div className="space-y-3">
+                                    <Label className="text-zinc-700 font-medium">Catégorie</Label>
                                     <Select value={categoryId} onValueChange={setCategoryId}>
-                                        <SelectTrigger><SelectValue placeholder="Choisir..." /></SelectTrigger>
-                                        <SelectContent>
+                                        <SelectTrigger className="h-12 rounded-xl border-zinc-200 focus:border-zinc-900 focus:ring-zinc-900/10"><SelectValue placeholder="Choisir..." /></SelectTrigger>
+                                        <SelectContent className="rounded-xl border-zinc-100">
                                             {categories.map(c => (
                                                 <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
                                             ))}
@@ -248,11 +265,11 @@ export function PromosClient({ seller, promos: initialPromos, categories, produc
                             )}
 
                             {scope === "product" && (
-                                <div className="space-y-2">
-                                    <Label>Produits ({selectedProducts.length} sélectionnés)</Label>
-                                    <div className="max-h-40 overflow-y-auto border rounded-lg p-2 space-y-1">
+                                <div className="space-y-3">
+                                    <Label className="text-zinc-700 font-medium">Produits ({selectedProducts.length} sélectionnés)</Label>
+                                    <div className="max-h-40 overflow-y-auto border border-zinc-200 rounded-xl p-2 space-y-1">
                                         {products.map(p => (
-                                            <label key={p.id} className="flex items-center gap-2 p-2 hover:bg-slate-50 rounded cursor-pointer">
+                                            <label key={p.id} className="flex items-center gap-3 p-2 hover:bg-zinc-50 rounded-lg cursor-pointer transition-colors">
                                                 <input
                                                     type="checkbox"
                                                     checked={selectedProducts.includes(p.id)}
@@ -260,46 +277,70 @@ export function PromosClient({ seller, promos: initialPromos, categories, produc
                                                         if (e.target.checked) setSelectedProducts([...selectedProducts, p.id]);
                                                         else setSelectedProducts(selectedProducts.filter(id => id !== p.id));
                                                     }}
-                                                    className="rounded"
+                                                    className="rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900"
                                                 />
-                                                <span className="text-sm">{p.title} - {p.price} TND</span>
+                                                <div className="flex-1">
+                                                    <p className="text-sm font-medium text-zinc-900">{p.title}</p>
+                                                    <p className="text-xs text-zinc-500">{p.price} TND</p>
+                                                </div>
                                             </label>
                                         ))}
                                     </div>
                                 </div>
                             )}
 
-                            <div className="border-t pt-4 space-y-4">
+                            <div className="border-t border-zinc-100 pt-6 space-y-6">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <Label>Afficher une popup</Label>
-                                        <p className="text-xs text-slate-400">Popup d'annonce sur la boutique</p>
+                                        <Label className="text-base font-bold text-zinc-900">Afficher une popup</Label>
+                                        <p className="text-xs text-zinc-500 font-medium">Annoncez la promo aux visiteurs de la boutique</p>
                                     </div>
-                                    <Switch checked={showPopup} onCheckedChange={setShowPopup} />
+                                    <Switch checked={showPopup} onCheckedChange={setShowPopup} className="data-[state=checked]:bg-zinc-900" />
                                 </div>
 
                                 {showPopup && (
                                     <>
-                                        <div className="space-y-2">
-                                            <Label>Titre de la popup</Label>
-                                            <Input value={popupTitle} onChange={e => setPopupTitle(e.target.value)} placeholder="🎉 Offre spéciale !" />
+                                        <div className="space-y-3">
+                                            <Label className="text-zinc-700 font-medium">Titre de la popup</Label>
+                                            <Input
+                                                value={popupTitle}
+                                                onChange={e => setPopupTitle(e.target.value)}
+                                                placeholder="🎉 Offre spéciale !"
+                                                className="h-12 rounded-xl border-zinc-200 focus:border-zinc-900 focus:ring-zinc-900/10"
+                                            />
                                         </div>
-                                        <div className="space-y-2">
-                                            <Label>Message</Label>
-                                            <Input value={popupMessage} onChange={e => setPopupMessage(e.target.value)} placeholder="Profitez de -10% aujourd'hui !" />
+                                        <div className="space-y-3">
+                                            <Label className="text-zinc-700 font-medium">Message</Label>
+                                            <Input
+                                                value={popupMessage}
+                                                onChange={e => setPopupMessage(e.target.value)}
+                                                placeholder="Profitez de -10% aujourd'hui !"
+                                                className="h-12 rounded-xl border-zinc-200 focus:border-zinc-900 focus:ring-zinc-900/10"
+                                            />
                                         </div>
                                     </>
                                 )}
                             </div>
 
-                            <div className="flex items-center justify-between border-t pt-4">
-                                <Label>Promo active</Label>
-                                <Switch checked={isActive} onCheckedChange={setIsActive} />
+                            <div className="flex items-center justify-between border-t border-zinc-100 pt-6">
+                                <Label className="text-base font-bold text-zinc-900">Promo active</Label>
+                                <Switch checked={isActive} onCheckedChange={setIsActive} className="data-[state=checked]:bg-zinc-900" />
                             </div>
 
-                            <div className="flex gap-3 pt-2">
-                                <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)} className="flex-1">Annuler</Button>
-                                <Button type="submit" disabled={isLoading} className="flex-1 bg-slate-900 hover:bg-slate-800">
+                            <div className="flex gap-3 pt-4">
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={() => setIsDialogOpen(false)}
+                                    className="flex-1 h-12 rounded-xl border-zinc-200 text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900"
+                                >
+                                    Annuler
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    disabled={isLoading}
+                                    className="flex-1 h-12 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-white font-medium shadow-lg shadow-zinc-900/20"
+                                >
                                     {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Enregistrer"}
                                 </Button>
                             </div>
@@ -310,53 +351,76 @@ export function PromosClient({ seller, promos: initialPromos, categories, produc
 
             {/* Promos List */}
             {promos.length === 0 ? (
-                <div className="text-center py-16 bg-white rounded-2xl border border-slate-200">
-                    <Gift className="h-12 w-12 text-slate-300 mx-auto mb-4" />
-                    <h2 className="text-lg font-medium text-slate-600 mb-2">Aucune promotion</h2>
-                    <p className="text-sm text-slate-400 mb-6">Créez des promotions pour attirer plus de clients</p>
-                    <Button onClick={openNewDialog} className="bg-slate-900 hover:bg-slate-800">
-                        <Plus className="h-4 w-4 mr-2" />
+                <div className="bg-white/50 backdrop-blur-sm rounded-3xl border border-dashed border-zinc-200 p-16 text-center">
+                    <div className="w-20 h-20 bg-zinc-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
+                        <Gift className="h-8 w-8 text-zinc-300" />
+                    </div>
+                    <h3 className="font-serif font-bold text-xl text-zinc-900 mb-2 italic">Aucune promotion</h3>
+                    <p className="text-zinc-500 mb-8 max-w-sm mx-auto">Créez des promotions pour attirer plus de clients</p>
+                    <Button onClick={openNewDialog} className="bg-zinc-900 hover:bg-zinc-800 rounded-xl px-6 py-6 font-bold text-lg shadow-lg shadow-zinc-900/20">
+                        <Plus className="h-5 w-5 mr-2" />
                         Créer une promotion
                     </Button>
                 </div>
             ) : (
-                <div className="bg-white rounded-2xl border border-slate-200 divide-y divide-slate-50 overflow-hidden">
-                    {promos.map(promo => (
-                        <div key={promo.id} className={`p-4 ${!promo.is_active ? "opacity-60" : ""}`}>
-                            <div className="flex items-start justify-between">
-                                <div className="flex items-center gap-3">
-                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center border ${promo.is_active ? "bg-emerald-50 border-emerald-100" : "bg-slate-50 border-slate-100"}`}>
-                                        <Tag className={`h-5 w-5 ${promo.is_active ? "text-emerald-600" : "text-slate-400"}`} />
+                <div className="bg-white rounded-3xl border border-zinc-100 overflow-hidden shadow-sm">
+                    <div className="divide-y divide-zinc-50">
+                        {promos.map(promo => (
+                            <div key={promo.id} className={`p-6 hover:bg-zinc-50/50 transition-colors ${!promo.is_active ? "opacity-60 grayscale" : ""}`}>
+                                <div className="flex items-start justify-between gap-6">
+                                    <div className="flex items-center gap-5">
+                                        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center border shadow-sm ${promo.is_active ? "bg-zinc-900 border-zinc-900 text-white" : "bg-zinc-50 border-zinc-100 text-zinc-300"}`}>
+                                            <Tag className="h-6 w-6" />
+                                        </div>
+                                        <div>
+                                            <h3 className="font-bold text-zinc-900 text-lg mb-1">{promo.name}</h3>
+                                            <div className="flex flex-wrap items-center gap-2 text-sm text-zinc-500">
+                                                <span className="font-bold text-zinc-900 bg-zinc-100 px-2 py-0.5 rounded-lg border border-zinc-200">{formatDiscount(promo)}</span>
+                                                <span className="w-1 h-1 rounded-full bg-zinc-300" />
+                                                <span>
+                                                    {promo.scope === "global" && "Tous les produits"}
+                                                    {promo.scope === "category" && `Catégorie: ${getCategoryName(promo.category_id)}`}
+                                                    {promo.scope === "product" && `${promo.product_ids?.length || 0} produit(s)`}
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <h3 className="font-medium text-slate-900">{promo.name}</h3>
-                                        <p className="text-sm text-slate-500">
-                                            <span className="font-semibold text-emerald-600">{formatDiscount(promo)}</span>
-                                            {" • "}
-                                            {promo.scope === "global" && "Tous les produits"}
-                                            {promo.scope === "category" && `Catégorie: ${getCategoryName(promo.category_id)}`}
-                                            {promo.scope === "product" && `${promo.product_ids?.length || 0} produit(s)`}
-                                        </p>
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex items-center gap-2 px-3 py-1.5 bg-zinc-50 rounded-lg border border-zinc-100">
+                                            <span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">{promo.is_active ? "Active" : "Inactive"}</span>
+                                            <Switch
+                                                checked={promo.is_active}
+                                                onCheckedChange={() => toggleActive(promo)}
+                                                className="data-[state=checked]:bg-zinc-900 scale-90"
+                                            />
+                                        </div>
+                                        <div className="flex gap-1 pl-2 border-l border-zinc-100">
+                                            <button
+                                                onClick={() => openEditDialog(promo)}
+                                                className="p-2 hover:bg-zinc-100 rounded-xl text-zinc-400 hover:text-zinc-900 transition-colors"
+                                                title="Modifier"
+                                            >
+                                                <Pencil className="h-4 w-4" />
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(promo.id)}
+                                                className="p-2 hover:bg-red-50 rounded-xl text-zinc-300 hover:text-red-500 transition-colors"
+                                                title="Supprimer"
+                                            >
+                                                <Trash2 className="h-4 w-4" />
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-2">
-                                    <Switch checked={promo.is_active} onCheckedChange={() => toggleActive(promo)} />
-                                    <button onClick={() => openEditDialog(promo)} className="p-2 hover:bg-slate-100 rounded-lg">
-                                        <Pencil className="h-4 w-4 text-slate-500" />
-                                    </button>
-                                    <button onClick={() => handleDelete(promo.id)} className="p-2 hover:bg-red-50 rounded-lg">
-                                        <Trash2 className="h-4 w-4 text-red-500" />
-                                    </button>
-                                </div>
+                                {promo.show_popup && (
+                                    <div className="mt-4 pt-4 border-t border-zinc-50 flex items-center gap-2 text-xs font-medium text-zinc-500">
+                                        <Gift className="h-3.5 w-3.5 text-zinc-400" />
+                                        Popup active: <span className="text-zinc-900">&quot;{promo.popup_title}&quot;</span>
+                                    </div>
+                                )}
                             </div>
-                            {promo.show_popup && (
-                                <div className="mt-3 pt-3 border-t flex items-center gap-2 text-xs text-slate-500">
-                                    <Gift className="h-3 w-3" />
-                                    Popup active: "{promo.popup_title}"
-                                </div>
-                            )}
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
             )}
         </div>

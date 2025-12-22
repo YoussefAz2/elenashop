@@ -370,71 +370,73 @@ export function CatalogueClient({ seller, products: initialProducts, categories:
         <div className="flex gap-6">
             {/* Categories Sidebar */}
             <div className="w-64 flex-shrink-0">
-                <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                    <div className="p-4 border-b border-slate-100">
+                <div className="bg-white/50 backdrop-blur-xl rounded-3xl border border-zinc-200/50 shadow-sm overflow-hidden sticky top-8">
+                    <div className="p-6 border-b border-zinc-100">
                         <div className="flex items-center justify-between">
-                            <h3 className="font-semibold text-slate-900 flex items-center gap-2">
+                            <h3 className="font-serif font-bold italic text-zinc-900 flex items-center gap-2 text-lg">
                                 <Layers className="h-4 w-4" />
                                 Catégories
                             </h3>
                             <button
                                 onClick={openNewCategoryDialog}
-                                className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors"
+                                className="p-2 hover:bg-zinc-100 rounded-full transition-colors text-zinc-400 hover:text-zinc-900"
                                 title="Ajouter une catégorie"
                             >
-                                <Plus className="h-4 w-4 text-slate-500" />
+                                <Plus className="h-4 w-4" />
                             </button>
                         </div>
                     </div>
-                    <div className="divide-y divide-slate-50">
+                    <div className="divide-y divide-zinc-50 p-2">
                         {/* All products */}
                         <button
                             onClick={() => setSelectedCategoryId(null)}
-                            className={`w-full flex items-center justify-between px-4 py-3 text-left transition-colors ${selectedCategoryId === null ? "bg-slate-50 text-slate-900 font-medium" : "text-slate-600 hover:bg-slate-50"
+                            className={`w-full flex items-center justify-between px-4 py-3 text-left transition-all rounded-xl mb-1 ${selectedCategoryId === null ? "bg-zinc-900 text-white shadow-md shadow-zinc-900/10" : "text-zinc-600 hover:bg-zinc-50"
                                 }`}
                         >
-                            <span>Tous les produits</span>
-                            <span className="text-xs bg-slate-100 px-2 py-0.5 rounded-full">{products.length}</span>
+                            <span className="font-medium">Tous les produits</span>
+                            <span className={`text-xs px-2 py-0.5 rounded-full ${selectedCategoryId === null ? "bg-white/20 text-white" : "bg-zinc-100 text-zinc-500"}`}>{products.length}</span>
                         </button>
 
                         {/* Category list */}
                         {categories.map(category => (
                             <div
                                 key={category.id}
-                                className={`flex items-center justify-between px-4 py-3 transition-colors group ${selectedCategoryId === category.id ? "bg-slate-50" : "hover:bg-slate-50"
+                                className={`flex items-center justify-between px-4 py-3 transition-all rounded-xl group mb-1 ${selectedCategoryId === category.id ? "bg-zinc-100 text-zinc-900" : "hover:bg-zinc-50"
                                     }`}
                             >
                                 <button
                                     onClick={() => setSelectedCategoryId(category.id)}
-                                    className={`flex-1 text-left ${selectedCategoryId === category.id ? "text-slate-900 font-medium" : "text-slate-600"
+                                    className={`flex-1 text-left ${selectedCategoryId === category.id ? "font-bold" : "text-zinc-600"
                                         }`}
                                 >
                                     {category.name}
                                 </button>
                                 <div className="flex items-center gap-1">
-                                    <span className="text-xs bg-slate-100 px-2 py-0.5 rounded-full">
+                                    <span className={`text-xs px-2 py-0.5 rounded-full transition-colors ${selectedCategoryId === category.id ? "bg-zinc-200 text-zinc-900" : "bg-zinc-50 text-zinc-400 group-hover:bg-zinc-100"}`}>
                                         {getProductCountForCategory(category.id)}
                                     </span>
                                     <button
                                         onClick={() => openEditCategoryDialog(category)}
-                                        className="p-1 hover:bg-slate-200 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                                        className="p-1.5 hover:bg-white rounded-md opacity-0 group-hover:opacity-100 transition-opacity shadow-sm"
                                     >
-                                        <Pencil className="h-3 w-3 text-slate-400" />
+                                        <Pencil className="h-3 w-3 text-zinc-400 hover:text-zinc-900" />
                                     </button>
                                     <button
                                         onClick={() => handleDeleteCategory(category.id)}
-                                        className="p-1 hover:bg-red-100 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                                        className="p-1.5 hover:bg-red-50 rounded-md opacity-0 group-hover:opacity-100 transition-opacity"
                                     >
-                                        <Trash2 className="h-3 w-3 text-red-400" />
+                                        <Trash2 className="h-3 w-3 text-red-300 hover:text-red-500" />
                                     </button>
                                 </div>
                             </div>
                         ))}
 
                         {categories.length === 0 && (
-                            <div className="p-4 text-center">
-                                <FolderOpen className="h-8 w-8 text-slate-200 mx-auto mb-2" />
-                                <p className="text-xs text-slate-400">Aucune catégorie</p>
+                            <div className="p-8 text-center">
+                                <div className="w-12 h-12 bg-zinc-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <FolderOpen className="h-5 w-5 text-zinc-300" />
+                                </div>
+                                <p className="text-xs text-zinc-400 font-medium">Aucune catégorie</p>
                             </div>
                         )}
                     </div>
@@ -444,14 +446,14 @@ export function CatalogueClient({ seller, products: initialProducts, categories:
             {/* Products Grid */}
             <div className="flex-1">
                 {/* Products header */}
-                <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center justify-between mb-8">
                     <div>
-                        <h2 className="text-xl font-semibold text-slate-900">
+                        <h2 className="text-2xl font-serif font-bold italic text-zinc-900">
                             {selectedCategoryId ? getCategoryName(selectedCategoryId) : "Tous les produits"}
                         </h2>
-                        <p className="text-sm text-slate-500">{filteredProducts.length} produit{filteredProducts.length !== 1 ? "s" : ""}</p>
+                        <p className="text-sm text-zinc-500 font-medium mt-1">{filteredProducts.length} produit{filteredProducts.length !== 1 ? "s" : ""}</p>
                     </div>
-                    <Button onClick={openNewProductDialog} className="bg-slate-900 hover:bg-slate-800 text-white rounded-xl">
+                    <Button onClick={openNewProductDialog} className="bg-zinc-900 hover:bg-zinc-800 text-white rounded-xl shadow-lg shadow-zinc-900/20 px-6">
                         <Plus className="h-4 w-4 mr-2" />
                         Nouveau produit
                     </Button>
@@ -459,15 +461,15 @@ export function CatalogueClient({ seller, products: initialProducts, categories:
 
                 {/* Products list */}
                 {filteredProducts.length === 0 ? (
-                    <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center">
-                        <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <ShoppingBag className="h-8 w-8 text-slate-300" />
+                    <div className="bg-white/50 backdrop-blur-sm rounded-3xl border border-dashed border-zinc-200 p-16 text-center">
+                        <div className="w-20 h-20 bg-zinc-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
+                            <ShoppingBag className="h-8 w-8 text-zinc-300" />
                         </div>
-                        <h3 className="font-semibold text-slate-900 mb-2">Aucun produit</h3>
-                        <p className="text-slate-500 mb-6">
-                            {selectedCategoryId ? "Aucun produit dans cette catégorie" : "Ajoutez votre premier produit"}
+                        <h3 className="font-serif font-bold text-xl text-zinc-900 mb-2 italic">Votre catalogue est vide</h3>
+                        <p className="text-zinc-500 mb-8 max-w-sm mx-auto">
+                            {selectedCategoryId ? "Aucun produit ne correspond à cette catégorie pour le moment." : "Commencez par ajouter votre premier produit pour lancer votre boutique."}
                         </p>
-                        <Button onClick={openNewProductDialog} className="bg-slate-900 hover:bg-slate-800 text-white">
+                        <Button onClick={openNewProductDialog} className="bg-zinc-900 hover:bg-zinc-800 text-white px-8 rounded-xl h-12">
                             <Plus className="h-4 w-4 mr-2" />
                             Ajouter un produit
                         </Button>
@@ -491,20 +493,21 @@ export function CatalogueClient({ seller, products: initialProducts, categories:
 
             {/* Category Dialog */}
             <Dialog open={isCategoryDialogOpen} onOpenChange={setIsCategoryDialogOpen}>
-                <DialogContent className="sm:max-w-md">
+                <DialogContent className="sm:max-w-md bg-white rounded-3xl border-zinc-100 shadow-2xl">
                     <DialogHeader>
-                        <DialogTitle>
+                        <DialogTitle className="font-serif font-bold italic text-2xl text-zinc-900">
                             {editingCategory ? "Modifier la catégorie" : "Nouvelle catégorie"}
                         </DialogTitle>
                     </DialogHeader>
-                    <form onSubmit={handleCategorySubmit} className="space-y-4 mt-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="categoryName">Nom de la catégorie</Label>
+                    <form onSubmit={handleCategorySubmit} className="space-y-6 mt-4">
+                        <div className="space-y-3">
+                            <Label htmlFor="categoryName" className="text-zinc-700 font-medium">Nom de la catégorie</Label>
                             <Input
                                 id="categoryName"
                                 value={categoryName}
                                 onChange={(e) => setCategoryName(e.target.value)}
                                 placeholder="Ex: Robes, Accessoires..."
+                                className="h-12 rounded-xl border-zinc-200 focus:border-zinc-900 focus:ring-zinc-900/10"
                                 required
                             />
                         </div>
@@ -513,14 +516,14 @@ export function CatalogueClient({ seller, products: initialProducts, categories:
                                 type="button"
                                 variant="outline"
                                 onClick={() => setIsCategoryDialogOpen(false)}
-                                className="flex-1"
+                                className="flex-1 h-12 rounded-xl border-zinc-200 text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900"
                             >
                                 Annuler
                             </Button>
                             <Button
                                 type="submit"
                                 disabled={isCategoryLoading || !categoryName.trim()}
-                                className="flex-1 bg-slate-900 hover:bg-slate-800"
+                                className="flex-1 h-12 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-white font-medium shadow-lg shadow-zinc-900/20"
                             >
                                 {isCategoryLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Enregistrer"}
                             </Button>
@@ -531,28 +534,32 @@ export function CatalogueClient({ seller, products: initialProducts, categories:
 
             {/* Product Dialog */}
             <Dialog open={isProductDialogOpen} onOpenChange={setIsProductDialogOpen}>
-                <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
-                    <DialogHeader>
-                        <DialogTitle>{editingProduct ? "Modifier le produit" : "Ajouter un produit"}</DialogTitle>
-                        <DialogDescription>
-                            {editingProduct ? "Modifiez les informations du produit" : "Remplissez les informations de votre produit"}
-                        </DialogDescription>
-                    </DialogHeader>
-                    <form onSubmit={handleProductSubmit} className="space-y-4 mt-4">
-                        {error && <div className="rounded-xl bg-red-50 p-3 text-sm text-red-600">{error}</div>}
+                <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto bg-white rounded-3xl border-zinc-100 shadow-2xl p-0 gap-0">
+                    <div className="p-6 pb-0">
+                        <DialogHeader>
+                            <DialogTitle className="font-serif font-bold italic text-2xl text-zinc-900">
+                                {editingProduct ? "Modifier le produit" : "Ajouter un produit"}
+                            </DialogTitle>
+                            <DialogDescription className="text-zinc-500">
+                                {editingProduct ? "Modifiez les informations du produit" : "Remplissez les informations de votre produit"}
+                            </DialogDescription>
+                        </DialogHeader>
+                    </div>
+                    <form onSubmit={handleProductSubmit} className="space-y-6 p-6">
+                        {error && <div className="rounded-xl bg-red-50 p-4 text-sm font-medium text-red-600 border border-red-100 flex items-center gap-2"><X className="h-4 w-4" />{error}</div>}
 
                         {/* Images Gallery */}
-                        <div className="space-y-2">
+                        <div className="space-y-3">
                             <div className="flex items-center justify-between">
-                                <Label>Images du produit</Label>
-                                <span className="text-xs text-slate-400">{allPreviews.length}/5</span>
+                                <Label className="text-zinc-700 font-medium">Images du produit</Label>
+                                <span className="text-xs font-medium bg-zinc-100 text-zinc-500 px-2 py-0.5 rounded-full">{allPreviews.length}/5</span>
                             </div>
 
-                            <div className="grid grid-cols-3 gap-2">
+                            <div className="grid grid-cols-3 gap-3">
                                 {existingImages.map((url, idx) => (
                                     <div
                                         key={`existing-${idx}`}
-                                        className={`relative aspect-square rounded-lg overflow-hidden bg-slate-100 cursor-pointer transition-all ${idx === 0 ? "ring-2 ring-emerald-500" : "hover:ring-2 hover:ring-blue-400"}`}
+                                        className={`relative aspect-square rounded-2xl overflow-hidden bg-zinc-50 cursor-pointer transition-all ${idx === 0 ? "ring-2 ring-zinc-900 shadow-md" : "hover:ring-2 hover:ring-zinc-200"}`}
                                         onClick={() => setAsMainImage(idx)}
                                         title={idx === 0 ? "Image principale" : "Cliquez pour définir comme principale"}
                                     >
@@ -560,29 +567,29 @@ export function CatalogueClient({ seller, products: initialProducts, categories:
                                         <button
                                             type="button"
                                             onClick={(e) => { e.stopPropagation(); removeExistingImage(idx); }}
-                                            className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 z-10"
+                                            className="absolute top-2 right-2 w-7 h-7 bg-white/90 backdrop-blur-sm text-zinc-900 rounded-full flex items-center justify-center hover:bg-red-50 hover:text-red-500 z-10 shadow-sm transition-colors"
                                         >
-                                            <X className="h-3 w-3" />
+                                            <X className="h-3.5 w-3.5" />
                                         </button>
                                         {idx === 0 && (
-                                            <span className="absolute bottom-1 left-1 text-[10px] bg-emerald-500 text-white px-1.5 py-0.5 rounded">
-                                                ⭐ Principal
+                                            <span className="absolute bottom-2 left-2 text-[10px] font-bold bg-zinc-900/90 backdrop-blur-sm text-white px-2 py-1 rounded-lg shadow-sm">
+                                                Principal
                                             </span>
                                         )}
                                     </div>
                                 ))}
 
                                 {imagePreviews.map((url, idx) => (
-                                    <div key={`new-${idx}`} className="relative aspect-square rounded-lg overflow-hidden bg-slate-100 ring-2 ring-emerald-400">
+                                    <div key={`new-${idx}`} className="relative aspect-square rounded-2xl overflow-hidden bg-zinc-50 ring-2 ring-emerald-500/50">
                                         <Image src={url} alt={`Nouvelle ${idx + 1}`} fill className="object-cover" />
                                         <button
                                             type="button"
                                             onClick={() => removeNewImage(idx)}
-                                            className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600"
+                                            className="absolute top-2 right-2 w-7 h-7 bg-white/90 backdrop-blur-sm text-zinc-900 rounded-full flex items-center justify-center hover:bg-red-50 hover:text-red-500 shadow-sm transition-colors"
                                         >
-                                            <X className="h-3 w-3" />
+                                            <X className="h-3.5 w-3.5" />
                                         </button>
-                                        <span className="absolute bottom-1 left-1 text-[10px] bg-blue-500 text-white px-1.5 py-0.5 rounded">
+                                        <span className="absolute bottom-2 left-2 text-[10px] font-bold bg-emerald-500 text-white px-2 py-1 rounded-lg shadow-sm">
                                             Nouveau
                                         </span>
                                     </div>
@@ -590,11 +597,13 @@ export function CatalogueClient({ seller, products: initialProducts, categories:
 
                                 {allPreviews.length < 5 && (
                                     <div
-                                        className="aspect-square border-2 border-dashed border-slate-200 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-emerald-400 transition-colors"
+                                        className="aspect-square border-2 border-dashed border-zinc-200 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:border-zinc-400 hover:bg-zinc-50 transition-all group"
                                         onClick={() => document.getElementById("image-input-catalogue")?.click()}
                                     >
-                                        <ImagePlus className="h-6 w-6 text-slate-300" />
-                                        <span className="text-xs text-slate-400 mt-1">Ajouter</span>
+                                        <div className="w-10 h-10 rounded-full bg-zinc-100 flex items-center justify-center mb-2 group-hover:bg-zinc-200 transition-colors">
+                                            <ImagePlus className="h-5 w-5 text-zinc-400 group-hover:text-zinc-600" />
+                                        </div>
+                                        <span className="text-xs font-semibold text-zinc-500">Ajouter</span>
                                     </div>
                                 )}
                             </div>
@@ -606,11 +615,11 @@ export function CatalogueClient({ seller, products: initialProducts, categories:
                                 onChange={handleAddImages}
                                 className="hidden"
                             />
-                            <p className="text-xs text-slate-400">La première image sera l&apos;image principale</p>
+                            <p className="text-xs text-zinc-400">La première image sera l&apos;image principale de la fiche produit.</p>
 
                             {/* Image Position */}
-                            <div className="space-y-2 mt-3">
-                                <Label>Position de l&apos;image</Label>
+                            <div className="space-y-3 mt-3">
+                                <Label className="text-zinc-700 font-medium">Alignement de l&apos;image</Label>
                                 <div className="flex gap-2">
                                     {[
                                         { value: "top", icon: AlignVerticalJustifyStart, label: "Haut" },
@@ -621,13 +630,13 @@ export function CatalogueClient({ seller, products: initialProducts, categories:
                                             key={value}
                                             type="button"
                                             onClick={() => setImagePosition(value as "center" | "top" | "bottom")}
-                                            className={`flex-1 flex flex-col items-center gap-1 p-3 rounded-lg border-2 transition-colors ${imagePosition === value
-                                                ? "border-emerald-500 bg-emerald-50 text-emerald-700"
-                                                : "border-slate-200 hover:border-slate-300"
+                                            className={`flex-1 flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-all ${imagePosition === value
+                                                ? "border-zinc-900 bg-zinc-900 text-white shadow-md"
+                                                : "border-zinc-100 text-zinc-500 hover:border-zinc-300 hover:bg-zinc-50"
                                                 }`}
                                         >
                                             <Icon className="h-5 w-5" />
-                                            <span className="text-xs">{label}</span>
+                                            <span className="text-xs font-medium">{label}</span>
                                         </button>
                                     ))}
                                 </div>
@@ -636,44 +645,70 @@ export function CatalogueClient({ seller, products: initialProducts, categories:
 
                         {/* Title */}
                         <div className="space-y-2">
-                            <Label htmlFor="title">Titre du produit *</Label>
-                            <Input id="title" placeholder="Ex: Robe d'été fleurie" value={title} onChange={(e) => setTitle(e.target.value)} className="h-12 rounded-xl" required />
+                            <Label htmlFor="title" className="text-zinc-700 font-medium">Titre du produit *</Label>
+                            <Input
+                                id="title"
+                                placeholder="Ex: Robe d'été fleurie"
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                                className="h-12 rounded-xl border-zinc-200 focus:border-zinc-900 focus:ring-zinc-900/10"
+                                required
+                            />
                         </div>
 
                         {/* Description */}
                         <div className="space-y-2">
-                            <Label htmlFor="description">Description</Label>
+                            <Label htmlFor="description" className="text-zinc-700 font-medium">Description</Label>
                             <Textarea
                                 id="description"
                                 placeholder="Décrivez votre produit..."
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                                 rows={3}
-                                className="rounded-xl"
+                                className="rounded-xl border-zinc-200 focus:border-zinc-900 focus:ring-zinc-900/10 min-h-[100px]"
                             />
                         </div>
 
                         {/* Price & Stock */}
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <Label htmlFor="price">Prix (TND) *</Label>
-                                <Input id="price" type="number" placeholder="99" value={price} onChange={(e) => setPrice(e.target.value)} className="h-12 rounded-xl" min="0" step="0.01" required />
+                                <Label htmlFor="price" className="text-zinc-700 font-medium">Prix (TND) *</Label>
+                                <Input
+                                    id="price"
+                                    type="number"
+                                    placeholder="99"
+                                    value={price}
+                                    onChange={(e) => setPrice(e.target.value)}
+                                    className="h-12 rounded-xl border-zinc-200 focus:border-zinc-900 focus:ring-zinc-900/10 font-bold"
+                                    min="0"
+                                    step="0.01"
+                                    required
+                                />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="stock">Stock *</Label>
-                                <Input id="stock" type="number" placeholder="1" value={stock} onChange={(e) => setStock(e.target.value)} className="h-12 rounded-xl" min="0" required />
+                                <Label htmlFor="stock" className="text-zinc-700 font-medium">Stock *</Label>
+                                <Input
+                                    id="stock"
+                                    type="number"
+                                    placeholder="1"
+                                    value={stock}
+                                    onChange={(e) => setStock(e.target.value)}
+                                    className="h-12 rounded-xl border-zinc-200 focus:border-zinc-900 focus:ring-zinc-900/10"
+                                    min="0"
+                                    required
+                                />
                             </div>
                         </div>
 
                         {/* Category */}
                         {categories.length > 0 && (
                             <div className="space-y-2">
-                                <Label>Catégorie</Label>
+                                <Label className="text-zinc-700 font-medium">Catégorie</Label>
                                 <Select value={categoryId} onValueChange={setCategoryId}>
-                                    <SelectTrigger className="h-12 rounded-xl">
+                                    <SelectTrigger className="h-12 rounded-xl border-zinc-200 focus:border-zinc-900 focus:ring-zinc-900/10">
                                         <SelectValue placeholder="Choisir une catégorie..." />
                                     </SelectTrigger>
-                                    <SelectContent>
+                                    <SelectContent className="rounded-xl border-zinc-100">
                                         {categories.map(cat => (
                                             <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
                                         ))}
@@ -683,17 +718,17 @@ export function CatalogueClient({ seller, products: initialProducts, categories:
                         )}
 
                         {/* Visibility */}
-                        <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+                        <div className="flex items-center justify-between p-4 bg-zinc-50 rounded-xl border border-zinc-100">
                             <div>
-                                <Label className="text-sm font-medium">Visible sur la boutique</Label>
-                                <p className="text-xs text-slate-500">Les visiteurs peuvent voir ce produit</p>
+                                <Label className="text-sm font-bold text-zinc-900">Catalogue en ligne</Label>
+                                <p className="text-xs text-zinc-500 font-medium">Ce produit sera visible par vos clients</p>
                             </div>
-                            <Switch checked={isActive} onCheckedChange={setIsActive} />
+                            <Switch checked={isActive} onCheckedChange={setIsActive} className="data-[state=checked]:bg-zinc-900" />
                         </div>
 
                         {/* Submit */}
-                        <Button type="submit" className="w-full h-12 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold" disabled={isProductLoading}>
-                            {isProductLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : editingProduct ? "Enregistrer les modifications" : "Ajouter le produit"}
+                        <Button type="submit" className="w-full h-14 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-white font-bold text-lg shadow-lg shadow-zinc-900/20 mt-4" disabled={isProductLoading}>
+                            {isProductLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : editingProduct ? "Mettre à jour" : "Créer le produit"}
                         </Button>
                     </form>
                 </DialogContent>
@@ -737,36 +772,37 @@ function ProductCard({
     };
 
     return (
-        <Card className={`bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-all ${!product.is_active ? "opacity-60" : ""}`}>
+        <Card className={`group bg-white rounded-3xl border border-zinc-100 overflow-hidden shadow-sm hover:shadow-xl hover:shadow-zinc-200/50 hover:-translate-y-1 transition-all duration-300 ${!product.is_active ? "opacity-60 grayscale" : ""}`}>
             {/* Image */}
-            <div className="relative aspect-square bg-slate-100 group">
+            <div className="relative aspect-[4/5] bg-zinc-50 overflow-hidden">
                 {allImages.length > 0 ? (
                     <>
                         <Image
                             src={allImages[currentImageIndex]}
                             alt={product.title}
                             fill
-                            className="object-cover"
+                            className="object-cover transition-transform duration-700 group-hover:scale-105"
                         />
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300" />
                         {allImages.length > 1 && (
                             <>
                                 <button
                                     onClick={prevImage}
-                                    className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow"
+                                    className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all transform -translate-x-2 group-hover:translate-x-0 shadow-lg border border-white/20"
                                 >
-                                    <ChevronLeft className="h-4 w-4" />
+                                    <ChevronLeft className="h-4 w-4 text-zinc-900" />
                                 </button>
                                 <button
                                     onClick={nextImage}
-                                    className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0 shadow-lg border border-white/20"
                                 >
-                                    <ChevronRight className="h-4 w-4" />
+                                    <ChevronRight className="h-4 w-4 text-zinc-900" />
                                 </button>
-                                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
+                                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 p-1 px-2 rounded-full bg-black/20 backdrop-blur-md">
                                     {allImages.map((_, idx) => (
                                         <div
                                             key={idx}
-                                            className={`w-1.5 h-1.5 rounded-full ${idx === currentImageIndex ? "bg-white" : "bg-white/50"}`}
+                                            className={`w-1.5 h-1.5 rounded-full transition-all ${idx === currentImageIndex ? "bg-white scale-125" : "bg-white/50"}`}
                                         />
                                     ))}
                                 </div>
@@ -775,43 +811,68 @@ function ProductCard({
                     </>
                 ) : (
                     <div className="flex h-full items-center justify-center">
-                        <Package className="h-12 w-12 text-slate-300" />
+                        <Package className="h-12 w-12 text-zinc-200" />
                     </div>
                 )}
                 {!product.is_active && (
-                    <div className="absolute inset-0 bg-slate-900/50 flex items-center justify-center">
-                        <EyeOff className="h-6 w-6 text-white" />
+                    <div className="absolute top-3 right-3 bg-zinc-900/90 backdrop-blur-md text-white text-[10px] uppercase font-bold tracking-widest px-2.5 py-1 rounded-lg flex items-center gap-1.5 shadow-lg shadow-zinc-900/20">
+                        <EyeOff className="h-3 w-3" />
+                        Masqué
                     </div>
                 )}
             </div>
 
             {/* Info */}
-            <CardContent className="p-4">
-                <div className="flex items-start justify-between mb-2">
-                    <div className="flex-1 min-w-0">
-                        <h3 className="font-medium text-slate-900 truncate">{product.title}</h3>
+            <CardContent className="p-6">
+                <div className="flex items-start justify-between mb-4 gap-4">
+                    <div className="flex-1 min-w-0 space-y-1">
+                        <h3 className="font-bold text-zinc-900 truncate text-lg leading-tight">{product.title}</h3>
                         {product.category_id && (
-                            <p className="text-xs text-slate-400">{getCategoryName(product.category_id)}</p>
+                            <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider">{getCategoryName(product.category_id)}</p>
                         )}
                     </div>
-                    <p className="text-lg font-bold text-slate-900 ml-2">{product.price} TND</p>
+                    <div className="text-right">
+                        <p className="text-xl font-serif font-bold italic text-zinc-900">{product.price}</p>
+                        <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-wide">TND</p>
+                    </div>
                 </div>
 
-                <div className="flex items-center justify-between mt-3">
-                    <span className={`text-xs px-2 py-0.5 rounded-full ${product.stock > 0 ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"}`}>
+                <div className="flex items-center justify-between">
+                    <span className={`text-xs font-bold px-2.5 py-1 rounded-lg border ${product.stock > 0 ? "bg-zinc-100 text-zinc-900 border-zinc-200" : "bg-zinc-50 text-zinc-400 border-zinc-100 decoration-slice line-through"}`}>
                         Stock: {product.stock}
                     </span>
-                    <div className="flex items-center gap-1">
-                        <Button variant="ghost" size="sm" onClick={() => onToggleVisibility(product)} className="h-8 w-8 p-0" title={product.is_active ? "Masquer" : "Afficher"}>
-                            {product.is_active ? <Eye className="h-4 w-4 text-slate-400" /> : <EyeOff className="h-4 w-4 text-slate-400" />}
-                        </Button>
-                        <Button variant="ghost" size="sm" onClick={() => onEdit(product)} className="h-8 w-8 p-0" title="Modifier">
-                            <Pencil className="h-4 w-4 text-blue-500" />
-                        </Button>
-                        <Button variant="ghost" size="sm" onClick={() => onDelete(product.id)} disabled={deletingId === product.id} className="text-red-500 hover:text-red-700 hover:bg-red-50 h-8 w-8 p-0" title="Supprimer">
-                            {deletingId === product.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
-                        </Button>
+                    <span className="text-xs font-mono text-zinc-300">#{product.id.slice(0, 4)}</span>
+                </div>
+
+                <div className="flex items-center justify-between mt-6 pt-4 border-t border-zinc-50">
+                    <div className="flex gap-2">
+                        <button
+                            onClick={() => onEdit(product)}
+                            className="p-2 hover:bg-zinc-100 rounded-xl transition-colors text-zinc-400 hover:text-zinc-900 border border-transparent hover:border-zinc-200"
+                            title="Modifier"
+                        >
+                            <Pencil className="h-4 w-4" />
+                        </button>
+                        <button
+                            onClick={() => onToggleVisibility(product)}
+                            className={`p-2 rounded-xl transition-colors border ${!product.is_active ? "text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 border-transparent hover:border-zinc-200" : "text-zinc-900 bg-zinc-100 hover:bg-zinc-200 border-zinc-200"}`}
+                            title={product.is_active ? "Masquer du catalogue" : "Rendre visible"}
+                        >
+                            {product.is_active ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                        </button>
                     </div>
+                    <button
+                        onClick={() => onDelete(product.id)}
+                        disabled={deletingId === product.id}
+                        className="p-2 hover:bg-red-50 text-zinc-300 hover:text-red-500 rounded-xl transition-colors border border-transparent hover:border-red-100"
+                        title="Supprimer"
+                    >
+                        {deletingId === product.id ? (
+                            <Loader2 className="h-4 w-4 animate-spin text-red-500" />
+                        ) : (
+                            <Trash2 className="h-4 w-4" />
+                        )}
+                    </button>
                 </div>
             </CardContent>
         </Card>

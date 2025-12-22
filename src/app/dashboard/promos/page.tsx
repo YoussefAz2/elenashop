@@ -38,14 +38,14 @@ export default async function PromosPage() {
 
     if (storeError || !store) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
-                <div className="text-center p-8 bg-white rounded-2xl shadow-xl max-w-md">
-                    <h1 className="text-2xl font-bold text-slate-900 mb-4">
+            <div className="min-h-screen flex items-center justify-center bg-zinc-50 px-4">
+                <div className="text-center p-8 bg-white rounded-3xl shadow-2xl shadow-zinc-200/50 max-w-md border border-zinc-100">
+                    <h1 className="text-3xl font-serif font-bold italic text-zinc-900 mb-4">
                         Boutique introuvable
                     </h1>
                     <Link
                         href="/dashboard"
-                        className="inline-block px-6 py-3 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 transition-colors"
+                        className="inline-block px-8 py-3 bg-zinc-900 text-white font-bold rounded-xl hover:bg-zinc-800 transition-colors shadow-lg shadow-zinc-900/20"
                     >
                         Retour au dashboard
                     </Link>
@@ -65,14 +65,14 @@ export default async function PromosPage() {
 
     return (
         <div className="max-w-7xl mx-auto space-y-8">
-            {/* Header - Clean & Bold */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-6">
+            {/* Header - Editorial Premium */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-100 pb-8">
                 <div>
-                    <h1 className="text-4xl font-bold tracking-tight text-slate-900 leading-tight font-display">
+                    <h1 className="text-4xl font-serif font-bold italic tracking-tight text-zinc-900 leading-tight">
                         Promotions
                     </h1>
-                    <p className="text-slate-500 mt-2 text-lg font-medium">
-                        Créez des offres irrésistibles pour vos clients.
+                    <p className="text-zinc-500 mt-2 text-lg font-medium">
+                        Boostez vos ventes avec des offres exclusives.
                     </p>
                 </div>
             </div>

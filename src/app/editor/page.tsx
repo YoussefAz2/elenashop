@@ -36,17 +36,17 @@ export default async function EditorPage() {
 
     if (storeError || !store) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
-                <div className="text-center p-8 bg-white rounded-2xl shadow-xl max-w-md">
-                    <h1 className="text-2xl font-bold text-slate-900 mb-4">
+            <div className="min-h-screen flex items-center justify-center bg-zinc-50 px-4">
+                <div className="text-center p-8 bg-white rounded-3xl shadow-2xl shadow-zinc-200/50 max-w-md border border-zinc-100">
+                    <h1 className="text-3xl font-serif font-bold italic text-zinc-900 mb-4">
                         Boutique introuvable
                     </h1>
-                    <p className="text-slate-600 mb-6">
-                        Impossible de charger votre boutique.
+                    <p className="text-zinc-500 mb-8 font-medium">
+                        Impossible de charger votre boutique pour le moment.
                     </p>
                     <Link
                         href="/dashboard"
-                        className="inline-block px-6 py-3 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 transition-colors"
+                        className="inline-block px-8 py-3 bg-zinc-900 text-white font-bold rounded-xl hover:bg-zinc-800 transition-colors shadow-lg shadow-zinc-900/20"
                     >
                         Retour au dashboard
                     </Link>
@@ -80,7 +80,7 @@ export default async function EditorPage() {
 
     return (
         <EditorClient
-            seller={currentStore as any}
+            seller={currentStore}
             themeConfig={themeConfig}
             products={(productsRes.data as Product[]) || []}
             pages={(pagesRes.data as Page[]) || []}

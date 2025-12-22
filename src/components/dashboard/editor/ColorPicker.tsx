@@ -93,11 +93,11 @@ export function ColorPicker({ onColorPicked }: ColorPickerProps) {
                 variant="outline"
                 size="sm"
                 onClick={pickColor}
-                className="gap-2 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                className="gap-2 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors border-zinc-200 text-zinc-600"
                 title="Cliquer pour capturer une couleur"
             >
                 <Pipette className="h-4 w-4" />
-                <span className="hidden sm:inline">Pipette</span>
+                <span className="hidden sm:inline font-medium">Pipette</span>
             </Button>
 
             {/* Color Result Popup */}
@@ -110,24 +110,24 @@ export function ColorPicker({ onColorPicked }: ColorPickerProps) {
                     />
 
                     {/* Popup */}
-                    <div className="absolute top-full left-0 mt-2 z-50 bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 p-4 min-w-[200px] animate-in fade-in slide-in-from-top-2 duration-200">
+                    <div className="absolute top-full left-0 mt-2 z-50 bg-white dark:bg-zinc-900 rounded-2xl shadow-xl shadow-zinc-200/50 dark:shadow-zinc-900/50 border border-zinc-100 dark:border-zinc-800 p-4 min-w-[200px] animate-in fade-in slide-in-from-top-2 duration-200">
                         {/* Close button */}
                         <button
                             onClick={close}
-                            className="absolute top-2 right-2 p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-600 transition-colors"
+                            className="absolute top-2 right-2 p-1.5 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 hover:text-zinc-900 transition-colors"
                         >
-                            <X className="h-4 w-4" />
+                            <X className="h-3.5 w-3.5" />
                         </button>
 
                         {/* Color Preview */}
-                        <div className="flex items-center gap-3 mb-3">
+                        <div className="flex items-center gap-4 mb-4">
                             <div
-                                className="w-14 h-14 rounded-xl shadow-inner border-2 border-white dark:border-slate-700"
+                                className="w-16 h-16 rounded-2xl shadow-inner border border-zinc-100 dark:border-zinc-700"
                                 style={{ backgroundColor: pickedColor }}
                             />
                             <div>
-                                <p className="text-xs text-slate-400 mb-0.5">Couleur</p>
-                                <p className="font-mono font-bold text-lg text-slate-900 dark:text-slate-100 uppercase">
+                                <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider mb-1">Couleur</p>
+                                <p className="font-mono font-bold text-lg text-zinc-900 dark:text-zinc-100 uppercase tracking-tight">
                                     {pickedColor}
                                 </p>
                             </div>
@@ -139,12 +139,12 @@ export function ColorPicker({ onColorPicked }: ColorPickerProps) {
                                 variant="default"
                                 size="sm"
                                 onClick={copyToClipboard}
-                                className="flex-1 gap-2"
+                                className="flex-1 gap-2 bg-zinc-900 hover:bg-zinc-800 text-white rounded-xl shadow-lg shadow-zinc-900/10"
                             >
                                 {copied ? (
                                     <>
                                         <Check className="h-4 w-4" />
-                                        Copié !
+                                        Copié
                                     </>
                                 ) : (
                                     <>
@@ -157,9 +157,9 @@ export function ColorPicker({ onColorPicked }: ColorPickerProps) {
                                 variant="outline"
                                 size="sm"
                                 onClick={pickColor}
-                                className="gap-2"
+                                className="gap-2 rounded-xl border-zinc-200 hover:bg-zinc-50"
                             >
-                                <Pipette className="h-4 w-4" />
+                                <Pipette className="h-4 w-4 text-zinc-700" />
                             </Button>
                         </div>
                     </div>

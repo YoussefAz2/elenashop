@@ -155,21 +155,40 @@ export function EditorWrapper({ editor, children, className = "" }: EditorWrappe
         // Helper to apply all style overrides to an HTMLElement
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const applyStyles = (el: HTMLElement, overrides: any) => {
+            // Text styles
             if (overrides.color) el.style.color = overrides.color;
-            if (overrides.backgroundColor) el.style.backgroundColor = overrides.backgroundColor;
             if (overrides.fontSize) el.style.fontSize = overrides.fontSize;
             if (overrides.fontWeight) el.style.fontWeight = overrides.fontWeight;
             if (overrides.fontFamily) el.style.fontFamily = overrides.fontFamily;
             if (overrides.textAlign) el.style.textAlign = overrides.textAlign;
-            if (overrides.borderRadius) el.style.borderRadius = overrides.borderRadius;
-            if (overrides.opacity !== undefined) el.style.opacity = String(overrides.opacity);
             if (overrides.lineHeight) el.style.lineHeight = overrides.lineHeight;
-            if (overrides.padding) el.style.padding = overrides.padding;
-            if (overrides.boxShadow) el.style.boxShadow = overrides.boxShadow;
-            if (overrides.textTransform) el.style.textTransform = overrides.textTransform;
             if (overrides.letterSpacing) el.style.letterSpacing = overrides.letterSpacing;
+            if (overrides.textTransform) el.style.textTransform = overrides.textTransform;
+            if (overrides.fontStyle) el.style.fontStyle = overrides.fontStyle;
+            if (overrides.textDecoration) el.style.textDecoration = overrides.textDecoration;
+            if (overrides.textShadow) el.style.textShadow = overrides.textShadow;
+
+            // Background & borders
+            if (overrides.backgroundColor) el.style.backgroundColor = overrides.backgroundColor;
+            if (overrides.backgroundImage) el.style.backgroundImage = overrides.backgroundImage;
+            if (overrides.borderRadius) el.style.borderRadius = overrides.borderRadius;
             if (overrides.borderColor) el.style.borderColor = overrides.borderColor;
             if (overrides.borderWidth) el.style.borderWidth = overrides.borderWidth;
+            if (overrides.borderStyle) el.style.borderStyle = overrides.borderStyle;
+
+            // Spacing & dimensions
+            if (overrides.padding) el.style.padding = overrides.padding;
+            if (overrides.width) el.style.width = overrides.width;
+
+            // Effects
+            if (overrides.boxShadow) el.style.boxShadow = overrides.boxShadow;
+            if (overrides.opacity !== undefined) el.style.opacity = String(overrides.opacity);
+
+            // Flex
+            if (overrides.display) el.style.display = overrides.display;
+            if (overrides.flexDirection) el.style.flexDirection = overrides.flexDirection;
+            if (overrides.alignItems) el.style.alignItems = overrides.alignItems;
+            if (overrides.justifyContent) el.style.justifyContent = overrides.justifyContent;
         };
 
         // Find all editable elements and apply overrides
@@ -187,24 +206,36 @@ export function EditorWrapper({ editor, children, className = "" }: EditorWrappe
                 if (type === 'button') {
                     // Get the child button/link element
                     const childLink = htmlEl.querySelector('a, button') as HTMLElement;
+                    const targetEl = childLink || htmlEl;
 
-                    if (childLink) {
-                        // Apply all styles to the actual button/link
-                        applyStyles(childLink, overrides);
-                    } else {
-                        // For badges without a/button child (like New Drop), apply directly but carefully
-                        // Apply text styling to wrapper
-                        if (overrides.color) htmlEl.style.color = overrides.color;
-                        if (overrides.fontWeight) htmlEl.style.fontWeight = overrides.fontWeight;
-                        if (overrides.fontSize) htmlEl.style.fontSize = overrides.fontSize;
-                        // Don't apply backgroundColor to wrapper - it expands beyond the visible content
+                    // Apply all basic styles
+                    applyStyles(targetEl, overrides);
+
+                    // Handle paddingX/Y
+                    if (overrides.paddingY || overrides.paddingX) {
+                        const py = overrides.paddingY || '12px';
+                        const px = overrides.paddingX || '24px';
+                        targetEl.style.padding = `${py} ${px}`;
+                    }
+
+                    // Handle hover states via CSS custom properties
+                    if (overrides.hoverBackgroundColor) {
+                        targetEl.style.setProperty('--hover-bg', overrides.hoverBackgroundColor);
+                        targetEl.setAttribute('data-has-hover', 'true');
+                    }
+                    if (overrides.hoverColor) {
+                        targetEl.style.setProperty('--hover-color', overrides.hoverColor);
                     }
 
                     // Apply text color to all child spans
                     htmlEl.querySelectorAll('span').forEach((span) => {
                         if (overrides.color) span.style.color = overrides.color;
                         if (overrides.backgroundColor) span.style.backgroundColor = overrides.backgroundColor;
-                        if (overrides.padding) span.style.padding = overrides.padding;
+                        if (overrides.paddingY || overrides.paddingX) {
+                            const py = overrides.paddingY || '12px';
+                            const px = overrides.paddingX || '24px';
+                            span.style.padding = `${py} ${px}`;
+                        }
                         if (overrides.borderRadius) span.style.borderRadius = overrides.borderRadius;
                     });
 

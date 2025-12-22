@@ -376,6 +376,13 @@ a,
   z-index: 15;
 }
 
+/* Button hover states - apply custom hover colors */
+[data-has-hover="true"]:hover {
+  background-color: var(--hover-bg) !important;
+  color: var(--hover-color) !important;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
 /* Infinite Marquee Animation */
 @keyframes marquee {
   0% {

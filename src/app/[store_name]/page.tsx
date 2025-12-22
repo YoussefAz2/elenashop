@@ -5,9 +5,11 @@ import type { Store, Product, Page, ThemeConfig, Promo, Category } from "@/types
 import { DEFAULT_THEME_CONFIG } from "@/types";
 import { TemplateMinimal, TemplateLuxe, TemplateStreet } from "@/components/store/templates";
 import { ElenaShopWatermark } from "@/components/store/common/ElenaShopWatermark";
+import { MobilePreviewBridge } from "@/components/editor/MobilePreviewBridge";
 
 interface StorePageProps {
     params: Promise<{ store_name: string }>;
+    searchParams: Promise<{ preview?: string }>;
 }
 
 export async function generateMetadata({ params }: StorePageProps): Promise<Metadata> {
@@ -60,8 +62,10 @@ export async function generateMetadata({ params }: StorePageProps): Promise<Meta
     };
 }
 
-export default async function StorePage({ params }: StorePageProps) {
+export default async function StorePage({ params, searchParams }: StorePageProps) {
     const { store_name } = await params;
+    const { preview } = await searchParams;
+    const isPreviewMode = preview === "mobile";
     const supabase = await createClient();
 
     // Fetch the store by slug (new multi-store architecture)
@@ -154,8 +158,11 @@ export default async function StorePage({ params }: StorePageProps) {
                 <TemplateMinimal {...templateProps} />
             )}
 
-            {/* Watermark for free users */}
-            <ElenaShopWatermark isPro={currentStore.subscription_status === "pro"} />
+            {/* Watermark for free users (hide in preview mode) */}
+            {!isPreviewMode && <ElenaShopWatermark isPro={currentStore.subscription_status === "pro"} />}
+
+            {/* Mobile Preview Bridge - enables click-to-edit in iframe */}
+            {isPreviewMode && <MobilePreviewBridge />}
         </>
     );
 }

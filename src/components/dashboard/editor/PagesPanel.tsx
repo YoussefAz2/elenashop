@@ -107,11 +107,12 @@ export function PagesPanel({ seller, pages: initialPages }: PagesPanelProps) {
     };
 
     return (
-        <div className="p-4 space-y-4">
+    return (
+        <div className="p-6 space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h3 className="font-medium text-sm text-slate-900">Mes Pages</h3>
-                    <p className="text-xs text-slate-500">Créez des pages supplémentaires</p>
+                    <h3 className="font-bold text-sm text-zinc-900 uppercase tracking-wide">Mes Pages</h3>
+                    <p className="text-xs text-zinc-500 mt-1 font-medium">Créez des pages supplémentaires</p>
                 </div>
                 <Dialog
                     open={isOpen}
@@ -121,58 +122,58 @@ export function PagesPanel({ seller, pages: initialPages }: PagesPanelProps) {
                     }}
                 >
                     <DialogTrigger asChild>
-                        <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg h-8 px-3">
-                            <Plus className="h-4 w-4 mr-1" />
-                            Créer
+                        <Button size="sm" className="bg-zinc-900 hover:bg-zinc-800 text-white rounded-xl h-9 px-4 shadow-lg shadow-zinc-900/20 transition-all active:scale-95">
+                            <Plus className="h-4 w-4 mr-2" />
+                            Créer une page
                         </Button>
                     </DialogTrigger>
-                    <DialogContent className="sm:max-w-[500px]">
+                    <DialogContent className="sm:max-w-[500px] rounded-3xl border-0 shadow-2xl p-6">
                         <DialogHeader>
-                            <DialogTitle>
+                            <DialogTitle className="text-xl font-serif font-bold italic text-zinc-900">
                                 {editingPage ? "Modifier la page" : "Nouvelle page"}
                             </DialogTitle>
                         </DialogHeader>
-                        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+                        <form onSubmit={handleSubmit} className="space-y-5 mt-4">
                             <div className="space-y-2">
-                                <Label>Titre</Label>
+                                <Label className="text-sm font-bold text-zinc-700">Titre</Label>
                                 <Input
                                     value={title}
                                     onChange={(e) => {
                                         setTitle(e.target.value);
                                         if (!editingPage) setSlug(generateSlug(e.target.value));
                                     }}
-                                    placeholder="À propos"
-                                    className="h-10"
+                                    placeholder="Ex: À propos"
+                                    className="h-11 rounded-xl border-zinc-200 focus:border-zinc-900 focus:ring-zinc-900/10"
                                     required
                                 />
                             </div>
                             <div className="space-y-2">
-                                <Label>URL</Label>
+                                <Label className="text-sm font-bold text-zinc-700">URL</Label>
                                 <div className="flex items-center gap-1">
-                                    <span className="text-sm text-slate-500">/{seller.store_name}/</span>
+                                    <span className="text-sm font-mono text-zinc-400">/{seller.store_name}/</span>
                                     <Input
                                         value={slug}
                                         onChange={(e) => setSlug(generateSlug(e.target.value))}
-                                        className="h-10 flex-1"
+                                        className="h-11 flex-1 rounded-xl border-zinc-200 focus:border-zinc-900 focus:ring-zinc-900/10 font-mono text-sm"
                                         required
                                     />
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <Label>Contenu</Label>
+                                <Label className="text-sm font-bold text-zinc-700">Contenu</Label>
                                 <textarea
                                     value={content}
                                     onChange={(e) => setContent(e.target.value)}
                                     placeholder="Écrivez le contenu de votre page..."
-                                    className="w-full h-40 rounded-lg border p-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                                    className="w-full h-48 rounded-xl border border-zinc-200 p-4 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-zinc-900/10 focus:border-zinc-900 placeholder:text-zinc-300"
                                 />
                             </div>
                             <Button
                                 type="submit"
-                                className="w-full h-10 bg-emerald-600 hover:bg-emerald-700"
+                                className="w-full h-12 bg-zinc-900 hover:bg-zinc-800 text-white rounded-xl font-bold text-base"
                                 disabled={isLoading}
                             >
-                                {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Enregistrer"}
+                                {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Enregistrer la page"}
                             </Button>
                         </form>
                     </DialogContent>
@@ -180,52 +181,54 @@ export function PagesPanel({ seller, pages: initialPages }: PagesPanelProps) {
             </div>
 
             {pages.length === 0 ? (
-                <Card className="border-dashed">
-                    <CardContent className="py-8 text-center">
-                        <FileText className="h-10 w-10 text-slate-300 mx-auto mb-2" />
-                        <p className="text-sm text-slate-500">Aucune page créée</p>
-                        <p className="text-xs text-slate-400">Créez des pages comme FAQ, À propos...</p>
-                    </CardContent>
-                </Card>
+                <div className="border-2 border-dashed border-zinc-200 rounded-2xl p-8 text-center bg-zinc-50/50">
+                    <div className="h-12 w-12 rounded-full bg-zinc-100 flex items-center justify-center mx-auto mb-3">
+                        <FileText className="h-6 w-6 text-zinc-400" />
+                    </div>
+                    <p className="text-sm font-bold text-zinc-900">Aucune page créée</p>
+                    <p className="text-xs text-zinc-500 mt-1">Créez des pages comme FAQ, À propos, Mentions légales...</p>
+                </div>
             ) : (
-                <div className="space-y-2">
+                <div className="space-y-3">
                     {pages.map((page) => (
-                        <Card key={page.id} className="p-3">
+                        <div key={page.id} className="p-4 rounded-2xl bg-white border border-zinc-100 shadow-sm hover:shadow-md hover:border-zinc-200 transition-all group">
                             <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    <FileText className="h-4 w-4 text-slate-400" />
+                                <div className="flex items-center gap-4">
+                                    <div className="h-10 w-10 rounded-xl bg-zinc-50 flex items-center justify-center text-zinc-400 group-hover:text-zinc-900 group-hover:bg-zinc-100 transition-colors">
+                                        <FileText className="h-5 w-5" />
+                                    </div>
                                     <div>
-                                        <p className="text-sm font-medium">{page.title}</p>
-                                        <p className="text-xs text-slate-500">/{seller.store_name}/{page.slug}</p>
+                                        <p className="text-sm font-bold text-zinc-900">{page.title}</p>
+                                        <p className="text-xs text-zinc-400 font-mono mt-0.5">/{seller.store_name}/{page.slug}</p>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-1">
-                                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0" asChild>
+                                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-lg hover:bg-zinc-100 text-zinc-400 hover:text-zinc-900" asChild>
                                         <a href={`/${seller.store_name}/${page.slug}`} target="_blank">
-                                            <ExternalLink className="h-4 w-4 text-slate-400" />
+                                            <ExternalLink className="h-4 w-4" />
                                         </a>
                                     </Button>
-                                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => handleEdit(page)}>
-                                        <Edit className="h-4 w-4 text-slate-400" />
+                                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-lg hover:bg-zinc-100 text-zinc-400 hover:text-zinc-900" onClick={() => handleEdit(page)}>
+                                        <Edit className="h-4 w-4" />
                                     </Button>
-                                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-red-500" onClick={() => handleDelete(page.id)}>
+                                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-lg hover:bg-red-50 text-zinc-400 hover:text-red-600" onClick={() => handleDelete(page.id)}>
                                         <Trash2 className="h-4 w-4" />
                                     </Button>
                                 </div>
                             </div>
-                        </Card>
+                        </div>
                     ))}
                 </div>
             )}
 
             {/* Quick link to products */}
-            <div className="pt-4 border-t">
+            <div className="pt-6 border-t border-zinc-100">
                 <a
                     href="/dashboard/products"
-                    className="flex items-center gap-2 text-sm text-slate-600 hover:text-emerald-600"
+                    className="flex items-center justify-center gap-2 text-sm font-medium text-zinc-500 hover:text-zinc-900 transition-colors group"
                 >
-                    <ExternalLink className="h-4 w-4" />
-                    Gérer mes produits →
+                    <ExternalLink className="h-4 w-4 group-hover:-translate-y-0.5 transition-transform" />
+                    Gérer mes produits et collections
                 </a>
             </div>
         </div>
