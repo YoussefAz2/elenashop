@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Sparkles, Palette, RotateCcw } from "lucide-react";
+import { Sparkles, RotateCcw } from "lucide-react";
 import type { ElementStyleOverride } from "@/types";
 import { Label } from "@/components/ui/label";
 
@@ -16,18 +16,38 @@ interface IconToolbarProps {
     onClose: () => void;
 }
 
-// ---------- COLOR PRESETS ----------
+// ---------- CONSTANTS ----------
 
-const COLOR_PRESETS = [
-    { value: "#18181b", label: "Noir" },
-    { value: "#ffffff", label: "Blanc" },
-    { value: "#ef4444", label: "Rouge" },
-    { value: "#f97316", label: "Orange" },
-    { value: "#eab308", label: "Jaune" },
-    { value: "#22c55e", label: "Vert" },
-    { value: "#3b82f6", label: "Bleu" },
-    { value: "#8b5cf6", label: "Violet" },
-    { value: "#ec4899", label: "Rose" },
+const SIZE_OPTIONS = [
+    { value: "16px", label: "16" },
+    { value: "20px", label: "20" },
+    { value: "24px", label: "24" },
+    { value: "32px", label: "32" },
+    { value: "40px", label: "40" },
+    { value: "48px", label: "48" },
+    { value: "64px", label: "64" },
+];
+
+const OPACITY_OPTIONS = [
+    { value: 1, label: "100%" },
+    { value: 0.8, label: "80%" },
+    { value: 0.6, label: "60%" },
+    { value: 0.4, label: "40%" },
+    { value: 0.2, label: "20%" },
+];
+
+const PRESET_COLORS = [
+    "#000000", "#374151", "#6b7280", "#9ca3af",
+    "#ef4444", "#f97316", "#eab308", "#22c55e",
+    "#3b82f6", "#6366f1", "#8b5cf6", "#ec4899",
+];
+
+const STROKE_WIDTH_OPTIONS = [
+    { value: "1", label: "Fin" },
+    { value: "1.5", label: "Normal" },
+    { value: "2", label: "Moyen" },
+    { value: "2.5", label: "Épais" },
+    { value: "3", label: "Gras" },
 ];
 
 // ---------- COMPONENT ----------
@@ -54,7 +74,7 @@ export function IconToolbar({
             {/* Header */}
             <div className="flex items-center justify-between pb-2 border-b">
                 <div className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-pink-600" />
+                    <Sparkles className="w-4 h-4 text-violet-600" />
                     <span className="font-medium text-sm">{elementLabel}</span>
                 </div>
                 <button
@@ -66,76 +86,61 @@ export function IconToolbar({
                 </button>
             </div>
 
-            {/* Icon Color */}
-            <div className="space-y-2">
-                <Label className="flex items-center gap-2 text-xs">
-                    <Palette className="w-3 h-3" />
-                    Couleur de l'icône
-                </Label>
+            {/* ========== COULEUR ========== */}
+            <div className="space-y-3 p-3 bg-slate-50 rounded-lg">
+                <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">🎨 Couleur</p>
+
+                {/* Color Picker */}
                 <div className="flex gap-2 items-center">
                     <div className="relative">
                         <div
                             className="w-10 h-10 rounded-lg border-2 border-slate-200 cursor-pointer"
-                            style={{ backgroundColor: styles.iconColor || styles.color || "#18181b" }}
+                            style={{ backgroundColor: styles.color || "#000000" }}
                         />
                         <input
                             type="color"
-                            value={styles.iconColor || styles.color || "#18181b"}
-                            onChange={(e) => updateStyle("iconColor", e.target.value)}
+                            value={styles.color || "#000000"}
+                            onChange={(e) => updateStyle("color", e.target.value)}
                             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                         />
                     </div>
                     <input
                         type="text"
-                        value={styles.iconColor || styles.color || ""}
-                        onChange={(e) => updateStyle("iconColor", e.target.value)}
-                        placeholder="#18181b"
-                        className="flex-1 border rounded-lg px-3 py-2 text-sm"
+                        value={styles.color || ""}
+                        onChange={(e) => updateStyle("color", e.target.value)}
+                        placeholder="#000000"
+                        className="flex-1 border rounded-lg px-3 py-2 text-sm bg-white"
                     />
                 </div>
-            </div>
 
-            {/* Quick Color Presets */}
-            <div className="space-y-2">
-                <Label className="text-xs">🎨 Couleurs rapides</Label>
-                <div className="flex flex-wrap gap-2">
-                    {COLOR_PRESETS.map(({ value, label }) => (
+                {/* Preset Colors */}
+                <div className="flex flex-wrap gap-1">
+                    {PRESET_COLORS.map((color) => (
                         <button
-                            key={value}
-                            onClick={() => updateStyle("iconColor", value)}
-                            className={`
-                                w-8 h-8 rounded-lg border-2 transition-all hover:scale-110
-                                ${(styles.iconColor || styles.color) === value
-                                    ? "border-pink-500 ring-2 ring-pink-200"
-                                    : "border-slate-200"
-                                }
-                            `}
-                            style={{ backgroundColor: value }}
-                            title={label}
+                            key={color}
+                            onClick={() => updateStyle("color", color)}
+                            className={`w-6 h-6 rounded-md border-2 transition-all ${styles.color === color ? "border-violet-500 scale-110" : "border-transparent hover:scale-105"
+                                }`}
+                            style={{ backgroundColor: color }}
                         />
                     ))}
                 </div>
             </div>
 
-            {/* Icon Size */}
-            <div className="space-y-2">
-                <Label className="text-xs">📏 Taille</Label>
-                <div className="flex gap-1">
-                    {[
-                        { value: "0.875rem", label: "S" },
-                        { value: "1rem", label: "M" },
-                        { value: "1.25rem", label: "L" },
-                        { value: "1.5rem", label: "XL" },
-                        { value: "2rem", label: "2XL" },
-                    ].map(({ value, label }) => (
+            {/* ========== TAILLE ========== */}
+            <div className="space-y-3 p-3 bg-slate-50 rounded-lg">
+                <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">📏 Taille</p>
+
+                <div className="flex flex-wrap gap-1">
+                    {SIZE_OPTIONS.map(({ value, label }) => (
                         <button
                             key={value}
                             onClick={() => updateStyle("fontSize", value)}
                             className={`
-                                flex-1 py-1.5 text-xs rounded transition-all
+                                px-3 py-1.5 text-xs rounded transition-all
                                 ${styles.fontSize === value
-                                    ? "bg-pink-600 text-white"
-                                    : "bg-slate-100 hover:bg-slate-200 text-slate-700"
+                                    ? "bg-violet-600 text-white"
+                                    : "bg-white hover:bg-slate-100 text-slate-700 border"
                                 }
                             `}
                         >
@@ -145,24 +150,40 @@ export function IconToolbar({
                 </div>
             </div>
 
-            {/* Opacity */}
-            <div className="space-y-2">
-                <Label className="text-xs">🌗 Opacité</Label>
+            {/* ========== TRAIT ========== */}
+            <div className="space-y-3 p-3 bg-slate-50 rounded-lg">
+                <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">✏️ Épaisseur trait</p>
+
                 <div className="flex gap-1">
-                    {[
-                        { value: 1, label: "100%" },
-                        { value: 0.75, label: "75%" },
-                        { value: 0.5, label: "50%" },
-                        { value: 0.25, label: "25%" },
-                    ].map(({ value, label }) => (
+                    {STROKE_WIDTH_OPTIONS.map(({ value, label }) => (
+                        <button
+                            key={value}
+                            onClick={() => {
+                                const el = document.querySelector(`[data-editable-id="${elementId}"] svg`) as SVGElement;
+                                if (el) el.style.strokeWidth = value;
+                            }}
+                            className="flex-1 py-1.5 text-xs rounded transition-all bg-white hover:bg-slate-100 text-slate-700 border"
+                        >
+                            {label}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            {/* ========== OPACITE ========== */}
+            <div className="space-y-3 p-3 bg-slate-50 rounded-lg">
+                <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">👁️ Opacité</p>
+
+                <div className="flex gap-1">
+                    {OPACITY_OPTIONS.map(({ value, label }) => (
                         <button
                             key={value}
                             onClick={() => updateStyle("opacity", value)}
                             className={`
                                 flex-1 py-1.5 text-xs rounded transition-all
                                 ${styles.opacity === value
-                                    ? "bg-pink-600 text-white"
-                                    : "bg-slate-100 hover:bg-slate-200 text-slate-700"
+                                    ? "bg-violet-600 text-white"
+                                    : "bg-white hover:bg-slate-100 text-slate-700 border"
                                 }
                             `}
                         >
@@ -172,15 +193,37 @@ export function IconToolbar({
                 </div>
             </div>
 
-            {/* Preview */}
-            <div className="p-4 bg-slate-100 rounded-lg mt-4 flex items-center justify-center">
-                <div
-                    className="w-12 h-12 rounded-full flex items-center justify-center"
-                    style={{ backgroundColor: `${styles.iconColor || styles.color || "#18181b"}20` }}
-                >
+            {/* ========== ROTATION ========== */}
+            <div className="space-y-3 p-3 bg-slate-50 rounded-lg">
+                <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">🔄 Rotation</p>
+
+                <div className="flex gap-1">
+                    {["0deg", "45deg", "90deg", "180deg", "-45deg", "-90deg"].map((value) => (
+                        <button
+                            key={value}
+                            onClick={() => {
+                                const el = document.querySelector(`[data-editable-id="${elementId}"]`) as HTMLElement;
+                                if (el) el.style.transform = `rotate(${value})`;
+                            }}
+                            className="flex-1 py-1.5 text-xs rounded transition-all bg-white hover:bg-slate-100 text-slate-700 border"
+                        >
+                            {value.replace("deg", "°")}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            {/* ========== PREVIEW ========== */}
+            <div className="p-3 bg-slate-100 rounded-lg">
+                <p className="text-[10px] text-slate-400 mb-2">Aperçu</p>
+                <div className="flex justify-center py-4">
                     <Sparkles
-                        className="w-6 h-6"
-                        style={{ color: styles.iconColor || styles.color || "#18181b" }}
+                        style={{
+                            color: styles.color || "#000000",
+                            width: styles.fontSize || "24px",
+                            height: styles.fontSize || "24px",
+                            opacity: styles.opacity ?? 1,
+                        }}
                     />
                 </div>
             </div>

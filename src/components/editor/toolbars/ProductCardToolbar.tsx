@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { LayoutGrid, Palette, RotateCcw } from "lucide-react";
+import { Package, RotateCcw } from "lucide-react";
 import type { ElementStyleOverride } from "@/types";
 import { Label } from "@/components/ui/label";
 
@@ -19,25 +19,43 @@ interface ProductCardToolbarProps {
 // ---------- CONSTANTS ----------
 
 const BORDER_RADIUS_OPTIONS = [
-    { value: "0px", label: "Carré" },
-    { value: "8px", label: "Léger" },
-    { value: "12px", label: "Moyen" },
-    { value: "16px", label: "Arrondi" },
-    { value: "24px", label: "Très arrondi" },
+    { value: "0px", label: "0" },
+    { value: "8px", label: "8" },
+    { value: "12px", label: "12" },
+    { value: "16px", label: "16" },
+    { value: "24px", label: "24" },
+];
+
+const PADDING_OPTIONS = [
+    { value: "0", label: "0" },
+    { value: "8px", label: "8" },
+    { value: "12px", label: "12" },
+    { value: "16px", label: "16" },
+    { value: "24px", label: "24" },
 ];
 
 const SHADOW_OPTIONS = [
     { value: "none", label: "Aucune" },
-    { value: "0 2px 8px rgba(0,0,0,0.08)", label: "Subtile" },
-    { value: "0 4px 16px rgba(0,0,0,0.1)", label: "Moyenne" },
-    { value: "0 8px 32px rgba(0,0,0,0.15)", label: "Forte" },
+    { value: "0 1px 3px rgba(0,0,0,0.1)", label: "XS" },
+    { value: "0 4px 6px rgba(0,0,0,0.1)", label: "SM" },
+    { value: "0 10px 15px rgba(0,0,0,0.1)", label: "MD" },
+    { value: "0 20px 25px rgba(0,0,0,0.1)", label: "LG" },
+    { value: "0 25px 50px rgba(0,0,0,0.15)", label: "XL" },
 ];
 
-const PADDING_OPTIONS = [
-    { value: "8px", label: "Compact" },
-    { value: "12px", label: "Normal" },
-    { value: "16px", label: "Aéré" },
-    { value: "24px", label: "Spacieux" },
+const BORDER_WIDTH_OPTIONS = [
+    { value: "0px", label: "0" },
+    { value: "1px", label: "1" },
+    { value: "2px", label: "2" },
+    { value: "3px", label: "3" },
+];
+
+const GAP_OPTIONS = [
+    { value: "8px", label: "8" },
+    { value: "12px", label: "12" },
+    { value: "16px", label: "16" },
+    { value: "24px", label: "24" },
+    { value: "32px", label: "32" },
 ];
 
 // ---------- COMPONENT ----------
@@ -64,7 +82,7 @@ export function ProductCardToolbar({
             {/* Header */}
             <div className="flex items-center justify-between pb-2 border-b">
                 <div className="flex items-center gap-2">
-                    <LayoutGrid className="w-4 h-4 text-orange-600" />
+                    <Package className="w-4 h-4 text-pink-600" />
                     <span className="font-medium text-sm">{elementLabel}</span>
                 </div>
                 <button
@@ -76,48 +94,77 @@ export function ProductCardToolbar({
                 </button>
             </div>
 
-            {/* Background Color */}
-            <div className="space-y-2">
-                <Label className="flex items-center gap-2 text-xs">
-                    <Palette className="w-3 h-3" />
-                    Fond de carte
-                </Label>
-                <div className="flex gap-2 items-center">
-                    <div className="relative">
-                        <div
-                            className="w-10 h-10 rounded-lg border-2 border-slate-200 cursor-pointer"
-                            style={{ backgroundColor: styles.backgroundColor || "#ffffff" }}
-                        />
+            {/* ========== COULEURS ========== */}
+            <div className="space-y-3 p-3 bg-slate-50 rounded-lg">
+                <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">🎨 Couleurs</p>
+
+                {/* Background Color */}
+                <div className="space-y-1">
+                    <Label className="text-xs text-slate-500">Fond</Label>
+                    <div className="flex gap-2 items-center">
+                        <div className="relative">
+                            <div
+                                className="w-8 h-8 rounded-lg border-2 border-slate-200 cursor-pointer"
+                                style={{ backgroundColor: styles.backgroundColor || "#ffffff" }}
+                            />
+                            <input
+                                type="color"
+                                value={styles.backgroundColor || "#ffffff"}
+                                onChange={(e) => updateStyle("backgroundColor", e.target.value)}
+                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                            />
+                        </div>
                         <input
-                            type="color"
-                            value={styles.backgroundColor || "#ffffff"}
+                            type="text"
+                            value={styles.backgroundColor || ""}
                             onChange={(e) => updateStyle("backgroundColor", e.target.value)}
-                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                            placeholder="#ffffff"
+                            className="flex-1 border rounded-lg px-3 py-1.5 text-sm bg-white"
                         />
                     </div>
-                    <input
-                        type="text"
-                        value={styles.backgroundColor || ""}
-                        onChange={(e) => updateStyle("backgroundColor", e.target.value)}
-                        placeholder="#ffffff"
-                        className="flex-1 border rounded-lg px-3 py-2 text-sm"
-                    />
+                </div>
+
+                {/* Border Color */}
+                <div className="space-y-1">
+                    <Label className="text-xs text-slate-500">Bordure</Label>
+                    <div className="flex gap-2 items-center">
+                        <div className="relative">
+                            <div
+                                className="w-8 h-8 rounded-lg border-2 border-slate-200 cursor-pointer"
+                                style={{ backgroundColor: styles.borderColor || "#e5e7eb" }}
+                            />
+                            <input
+                                type="color"
+                                value={styles.borderColor || "#e5e7eb"}
+                                onChange={(e) => updateStyle("borderColor", e.target.value)}
+                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                            />
+                        </div>
+                        <input
+                            type="text"
+                            value={styles.borderColor || ""}
+                            onChange={(e) => updateStyle("borderColor", e.target.value)}
+                            placeholder="#e5e7eb"
+                            className="flex-1 border rounded-lg px-3 py-1.5 text-sm bg-white"
+                        />
+                    </div>
                 </div>
             </div>
 
-            {/* Border Radius */}
-            <div className="space-y-2">
-                <Label className="text-xs">📐 Arrondis</Label>
-                <div className="flex flex-wrap gap-1">
+            {/* ========== ARRONDIS ========== */}
+            <div className="space-y-3 p-3 bg-slate-50 rounded-lg">
+                <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">🔲 Arrondis</p>
+
+                <div className="flex gap-1">
                     {BORDER_RADIUS_OPTIONS.map(({ value, label }) => (
                         <button
                             key={value}
                             onClick={() => updateStyle("borderRadius", value)}
                             className={`
-                                px-2 py-1.5 text-xs rounded transition-all
+                                flex-1 py-1.5 text-xs rounded transition-all
                                 ${styles.borderRadius === value
-                                    ? "bg-orange-600 text-white"
-                                    : "bg-slate-100 hover:bg-slate-200 text-slate-700"
+                                    ? "bg-pink-600 text-white"
+                                    : "bg-white hover:bg-slate-100 text-slate-700 border"
                                 }
                             `}
                         >
@@ -127,9 +174,38 @@ export function ProductCardToolbar({
                 </div>
             </div>
 
-            {/* Shadow */}
-            <div className="space-y-2">
-                <Label className="text-xs">✨ Ombre</Label>
+            {/* ========== BORDURE ========== */}
+            <div className="space-y-3 p-3 bg-slate-50 rounded-lg">
+                <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">🖼️ Bordure</p>
+
+                <div className="flex gap-1">
+                    {BORDER_WIDTH_OPTIONS.map(({ value, label }) => (
+                        <button
+                            key={value}
+                            onClick={() => {
+                                updateStyle("borderWidth", value);
+                                if (value !== "0px") {
+                                    updateStyle("borderStyle", "solid");
+                                }
+                            }}
+                            className={`
+                                flex-1 py-1.5 text-xs rounded transition-all
+                                ${styles.borderWidth === value
+                                    ? "bg-pink-600 text-white"
+                                    : "bg-white hover:bg-slate-100 text-slate-700 border"
+                                }
+                            `}
+                        >
+                            {label}px
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            {/* ========== OMBRE ========== */}
+            <div className="space-y-3 p-3 bg-slate-50 rounded-lg">
+                <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">🌑 Ombre</p>
+
                 <div className="flex flex-wrap gap-1">
                     {SHADOW_OPTIONS.map(({ value, label }) => (
                         <button
@@ -138,8 +214,8 @@ export function ProductCardToolbar({
                             className={`
                                 px-3 py-1.5 text-xs rounded transition-all
                                 ${styles.boxShadow === value
-                                    ? "bg-orange-600 text-white"
-                                    : "bg-slate-100 hover:bg-slate-200 text-slate-700"
+                                    ? "bg-pink-600 text-white"
+                                    : "bg-white hover:bg-slate-100 text-slate-700 border"
                                 }
                             `}
                         >
@@ -149,284 +225,76 @@ export function ProductCardToolbar({
                 </div>
             </div>
 
-            {/* Padding */}
-            <div className="space-y-2">
-                <Label className="text-xs">📏 Espacement interne</Label>
-                <div className="flex gap-1">
-                    {PADDING_OPTIONS.map(({ value, label }) => (
-                        <button
-                            key={value}
-                            onClick={() => updateStyle("padding", value)}
-                            className={`
-                                flex-1 py-1.5 text-xs rounded transition-all
-                                ${styles.padding === value
-                                    ? "bg-orange-600 text-white"
-                                    : "bg-slate-100 hover:bg-slate-200 text-slate-700"
-                                }
-                            `}
-                        >
-                            {label}
-                        </button>
-                    ))}
-                </div>
-            </div>
+            {/* ========== ESPACEMENT ========== */}
+            <div className="space-y-3 p-3 bg-slate-50 rounded-lg">
+                <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">↔️ Espacement</p>
 
-            {/* Separator - Info Box Section */}
-            <div className="border-t pt-4 mt-4">
-                <Label className="text-xs font-medium text-slate-600 mb-3 block">📦 Zone d'infos (titre, prix)</Label>
-            </div>
-
-            {/* Info Box Background Color */}
-            <div className="space-y-2">
-                <Label className="flex items-center gap-2 text-xs">
-                    <Palette className="w-3 h-3" />
-                    Fond zone d'infos
-                </Label>
-                <div className="flex gap-2 items-center">
-                    <div className="relative">
-                        <div
-                            className="w-10 h-10 rounded-lg border-2 border-slate-200 cursor-pointer"
-                            style={{ backgroundColor: styles.infoBoxBackgroundColor || "#1e1e1e" }}
-                        />
-                        <input
-                            type="color"
-                            value={styles.infoBoxBackgroundColor || "#1e1e1e"}
-                            onChange={(e) => updateStyle("infoBoxBackgroundColor", e.target.value)}
-                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                        />
+                {/* Padding */}
+                <div className="space-y-1">
+                    <Label className="text-xs text-slate-500">Padding interne</Label>
+                    <div className="flex gap-1">
+                        {PADDING_OPTIONS.map(({ value, label }) => (
+                            <button
+                                key={value}
+                                onClick={() => updateStyle("padding", value)}
+                                className={`
+                                    flex-1 py-1.5 text-xs rounded transition-all
+                                    ${styles.padding === value
+                                        ? "bg-pink-600 text-white"
+                                        : "bg-white hover:bg-slate-100 text-slate-700 border"
+                                    }
+                                `}
+                            >
+                                {label}
+                            </button>
+                        ))}
                     </div>
-                    <input
-                        type="text"
-                        value={styles.infoBoxBackgroundColor || ""}
-                        onChange={(e) => updateStyle("infoBoxBackgroundColor", e.target.value)}
-                        placeholder="#1e1e1e"
-                        className="flex-1 border rounded-lg px-3 py-2 text-sm"
-                    />
                 </div>
-            </div>
 
-            {/* Info Box Padding */}
-            <div className="space-y-2">
-                <Label className="text-xs">📏 Espacement zone d'infos</Label>
-                <div className="flex gap-1">
-                    {PADDING_OPTIONS.map(({ value, label }) => (
-                        <button
-                            key={value}
-                            onClick={() => updateStyle("infoBoxPadding", value)}
-                            className={`
-                                flex-1 py-1.5 text-xs rounded transition-all
-                                ${styles.infoBoxPadding === value
-                                    ? "bg-orange-600 text-white"
-                                    : "bg-slate-100 hover:bg-slate-200 text-slate-700"
-                                }
-                            `}
-                        >
-                            {label}
-                        </button>
-                    ))}
-                </div>
-            </div>
-
-            {/* Info Box Full Width Toggle */}
-            <div className="space-y-2">
-                <Label className="text-xs">📐 Mode pleine largeur</Label>
-                <div className="flex gap-2">
-                    <button
-                        onClick={() => updateStyle("infoBoxFullWidth", false)}
-                        className={`
-                            flex-1 py-2 text-xs rounded transition-all
-                            ${!styles.infoBoxFullWidth
-                                ? "bg-orange-600 text-white"
-                                : "bg-slate-100 hover:bg-slate-200 text-slate-700"
-                            }
-                        `}
-                    >
-                        Suit l'image
-                    </button>
-                    <button
-                        onClick={() => updateStyle("infoBoxFullWidth", true)}
-                        className={`
-                            flex-1 py-2 text-xs rounded transition-all
-                            ${styles.infoBoxFullWidth
-                                ? "bg-orange-600 text-white"
-                                : "bg-slate-100 hover:bg-slate-200 text-slate-700"
-                            }
-                        `}
-                    >
-                        Pleine largeur
-                    </button>
-                </div>
-                <p className="text-[10px] text-slate-400">Pleine largeur = la zone d'infos couvre toute la carte</p>
-            </div>
-
-            {/* Separator */}
-            <div className="border-t pt-4 mt-4">
-                <Label className="text-xs font-medium text-slate-600 mb-3 block">🎨 Couleurs du texte</Label>
-            </div>
-
-            {/* Title Color */}
-            <div className="space-y-2">
-                <Label className="text-xs">Couleur du titre</Label>
-                <div className="flex gap-2 items-center">
-                    <div className="relative">
-                        <div
-                            className="w-10 h-8 rounded border border-slate-200 cursor-pointer"
-                            style={{ backgroundColor: styles.titleColor || "#1e293b" }}
-                        />
-                        <input
-                            type="color"
-                            value={styles.titleColor || "#1e293b"}
-                            onChange={(e) => updateStyle("titleColor", e.target.value)}
-                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                        />
+                {/* Gap */}
+                <div className="space-y-1">
+                    <Label className="text-xs text-slate-500">Écart entre cartes</Label>
+                    <div className="flex gap-1">
+                        {GAP_OPTIONS.map(({ value, label }) => (
+                            <button
+                                key={value}
+                                onClick={() => updateStyle("gap", value)}
+                                className={`
+                                    flex-1 py-1.5 text-xs rounded transition-all
+                                    ${styles.gap === value
+                                        ? "bg-pink-600 text-white"
+                                        : "bg-white hover:bg-slate-100 text-slate-700 border"
+                                    }
+                                `}
+                            >
+                                {label}
+                            </button>
+                        ))}
                     </div>
-                    <input
-                        type="text"
-                        value={styles.titleColor || ""}
-                        onChange={(e) => updateStyle("titleColor", e.target.value)}
-                        placeholder="#1e293b"
-                        className="flex-1 border rounded px-2 py-1 text-xs"
-                    />
                 </div>
             </div>
 
-            {/* Description Color */}
-            <div className="space-y-2">
-                <Label className="text-xs">Couleur de la description</Label>
-                <div className="flex gap-2 items-center">
-                    <div className="relative">
-                        <div
-                            className="w-10 h-8 rounded border border-slate-200 cursor-pointer"
-                            style={{ backgroundColor: styles.descriptionColor || "#64748b" }}
-                        />
-                        <input
-                            type="color"
-                            value={styles.descriptionColor || "#64748b"}
-                            onChange={(e) => updateStyle("descriptionColor", e.target.value)}
-                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                        />
-                    </div>
-                    <input
-                        type="text"
-                        value={styles.descriptionColor || ""}
-                        onChange={(e) => updateStyle("descriptionColor", e.target.value)}
-                        placeholder="#64748b"
-                        className="flex-1 border rounded px-2 py-1 text-xs"
-                    />
-                </div>
-            </div>
-
-            {/* Price Color */}
-            <div className="space-y-2">
-                <Label className="text-xs">Couleur du prix</Label>
-                <div className="flex gap-2 items-center">
-                    <div className="relative">
-                        <div
-                            className="w-10 h-8 rounded border border-slate-200 cursor-pointer"
-                            style={{ backgroundColor: styles.priceColor || "#ea580c" }}
-                        />
-                        <input
-                            type="color"
-                            value={styles.priceColor || "#ea580c"}
-                            onChange={(e) => updateStyle("priceColor", e.target.value)}
-                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                        />
-                    </div>
-                    <input
-                        type="text"
-                        value={styles.priceColor || ""}
-                        onChange={(e) => updateStyle("priceColor", e.target.value)}
-                        placeholder="#ea580c"
-                        className="flex-1 border rounded px-2 py-1 text-xs"
-                    />
-                </div>
-            </div>
-
-            {/* Separator - Button Section */}
-            <div className="border-t pt-4 mt-4">
-                <Label className="text-xs font-medium text-slate-600 mb-3 block">🔘 Bouton "Commander"</Label>
-            </div>
-
-            {/* Button Background Color */}
-            <div className="space-y-2">
-                <Label className="text-xs">Couleur du bouton</Label>
-                <div className="flex gap-2 items-center">
-                    <div className="relative">
-                        <div
-                            className="w-10 h-8 rounded border border-slate-200 cursor-pointer"
-                            style={{ backgroundColor: styles.buttonBgColor || "#8b5cf6" }}
-                        />
-                        <input
-                            type="color"
-                            value={styles.buttonBgColor || "#8b5cf6"}
-                            onChange={(e) => updateStyle("buttonBgColor", e.target.value)}
-                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                        />
-                    </div>
-                    <input
-                        type="text"
-                        value={styles.buttonBgColor || ""}
-                        onChange={(e) => updateStyle("buttonBgColor", e.target.value)}
-                        placeholder="#8b5cf6"
-                        className="flex-1 border rounded px-2 py-1 text-xs"
-                    />
-                </div>
-            </div>
-
-            {/* Button Text Color */}
-            <div className="space-y-2">
-                <Label className="text-xs">Couleur texte bouton</Label>
-                <div className="flex gap-2 items-center">
-                    <div className="relative">
-                        <div
-                            className="w-10 h-8 rounded border border-slate-200 cursor-pointer"
-                            style={{ backgroundColor: styles.buttonTextColor || "#ffffff" }}
-                        />
-                        <input
-                            type="color"
-                            value={styles.buttonTextColor || "#ffffff"}
-                            onChange={(e) => updateStyle("buttonTextColor", e.target.value)}
-                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                        />
-                    </div>
-                    <input
-                        type="text"
-                        value={styles.buttonTextColor || ""}
-                        onChange={(e) => updateStyle("buttonTextColor", e.target.value)}
-                        placeholder="#ffffff"
-                        className="flex-1 border rounded px-2 py-1 text-xs"
-                    />
-                </div>
-            </div>
-
-            {/* Preview */}
-            <div className="p-3 bg-slate-100 rounded-lg mt-4">
-                <p className="text-[10px] text-slate-400 mb-2">Aperçu carte</p>
-                <div
-                    className="bg-white"
-                    style={{
-                        backgroundColor: styles.backgroundColor,
-                        borderRadius: styles.borderRadius || "8px",
-                        boxShadow: styles.boxShadow,
-                        padding: styles.padding || "12px",
-                    }}
-                >
-                    <div className="w-full h-16 bg-slate-200 rounded mb-2" />
-                    <div className="text-sm font-medium" style={{ color: styles.titleColor || "#1e293b" }}>Produit exemple</div>
-                    <div className="text-xs mt-1" style={{ color: styles.descriptionColor || "#64748b" }}>Description courte</div>
-                    <div className="text-lg font-bold mt-2" style={{ color: styles.priceColor || "#ea580c" }}>29.99 TND</div>
+            {/* ========== PREVIEW ========== */}
+            <div className="p-3 bg-slate-100 rounded-lg">
+                <p className="text-[10px] text-slate-400 mb-2">Aperçu</p>
+                <div className="flex justify-center">
                     <div
-                        className="mt-3 text-center py-2 text-sm font-medium rounded"
+                        className="w-24 p-2 text-center text-xs text-slate-500"
                         style={{
-                            backgroundColor: styles.buttonBgColor || "#8b5cf6",
-                            color: styles.buttonTextColor || "#ffffff"
+                            backgroundColor: styles.backgroundColor || "#ffffff",
+                            borderRadius: styles.borderRadius || "8px",
+                            borderWidth: styles.borderWidth || "1px",
+                            borderStyle: "solid",
+                            borderColor: styles.borderColor || "#e5e7eb",
+                            boxShadow: styles.boxShadow || "0 1px 3px rgba(0,0,0,0.1)",
+                            padding: styles.padding || "12px",
                         }}
                     >
-                        COMMANDER
+                        <div className="w-full h-12 bg-slate-200 rounded mb-2" />
+                        Produit
                     </div>
                 </div>
             </div>
         </div>
     );
 }
-

@@ -1,7 +1,12 @@
 "use client";
 
-import React from "react";
-import { Box, Palette, RotateCcw } from "lucide-react";
+import React, { useState } from "react";
+import {
+    Box, RotateCcw,
+    AlignVerticalJustifyStart, AlignVerticalJustifyCenter, AlignVerticalJustifyEnd,
+    AlignHorizontalJustifyStart, AlignHorizontalJustifyCenter, AlignHorizontalJustifyEnd,
+    AlignHorizontalSpaceBetween
+} from "lucide-react";
 import type { ElementStyleOverride } from "@/types";
 import { Label } from "@/components/ui/label";
 
@@ -18,12 +23,72 @@ interface ContainerToolbarProps {
 
 // ---------- CONSTANTS ----------
 
+const MIN_HEIGHT_OPTIONS = [
+    { value: "auto", label: "Auto" },
+    { value: "300px", label: "300px" },
+    { value: "400px", label: "400px" },
+    { value: "500px", label: "500px" },
+    { value: "100vh", label: "Plein écran" },
+    { value: "80vh", label: "80%" },
+    { value: "50vh", label: "50%" },
+];
+
+const WIDTH_OPTIONS = [
+    { value: "100%", label: "Large" },
+    { value: "1280px", label: "Boxed XL" },
+    { value: "1024px", label: "Boxed L" },
+    { value: "768px", label: "Boxed M" },
+];
+
+const GRADIENT_DIRECTIONS = [
+    { value: "to bottom", label: "↓" },
+    { value: "to top", label: "↑" },
+    { value: "to right", label: "→" },
+    { value: "to left", label: "←" },
+    { value: "to bottom right", label: "↘" },
+    { value: "to bottom left", label: "↙" },
+];
+
+const BG_SIZE_OPTIONS = [
+    { value: "cover", label: "Cover" },
+    { value: "contain", label: "Contain" },
+    { value: "auto", label: "Auto" },
+];
+
+const BG_POSITION_OPTIONS = [
+    { value: "center", label: "Centre" },
+    { value: "top", label: "Haut" },
+    { value: "bottom", label: "Bas" },
+    { value: "left", label: "Gauche" },
+    { value: "right", label: "Droite" },
+];
+
 const PADDING_OPTIONS = [
-    { value: "16px", label: "Petit" },
-    { value: "24px", label: "Normal" },
-    { value: "32px", label: "Moyen" },
-    { value: "48px", label: "Grand" },
-    { value: "64px", label: "Très grand" },
+    { value: "0", label: "0" },
+    { value: "16px", label: "16" },
+    { value: "24px", label: "24" },
+    { value: "32px", label: "32" },
+    { value: "48px", label: "48" },
+    { value: "64px", label: "64" },
+    { value: "80px", label: "80" },
+    { value: "100px", label: "100" },
+];
+
+const BORDER_RADIUS_OPTIONS = [
+    { value: "0px", label: "0" },
+    { value: "8px", label: "8" },
+    { value: "16px", label: "16" },
+    { value: "24px", label: "24" },
+    { value: "32px", label: "32" },
+];
+
+const OVERLAY_OPACITY_OPTIONS = [
+    { value: 0, label: "0%" },
+    { value: 0.2, label: "20%" },
+    { value: 0.4, label: "40%" },
+    { value: 0.5, label: "50%" },
+    { value: 0.6, label: "60%" },
+    { value: 0.8, label: "80%" },
 ];
 
 // ---------- COMPONENT ----------
@@ -36,11 +101,23 @@ export function ContainerToolbar({
     onReset,
     onClose,
 }: ContainerToolbarProps) {
+    const [bgMode, setBgMode] = useState<"color" | "gradient" | "image">("color");
+    const [gradientStart, setGradientStart] = useState("#667eea");
+    const [gradientEnd, setGradientEnd] = useState("#764ba2");
+    const [gradientDirection, setGradientDirection] = useState("to bottom");
+    const [overlayColor, setOverlayColor] = useState("#000000");
+    const [overlayOpacity, setOverlayOpacity] = useState(0);
+
     const updateStyle = <K extends keyof ElementStyleOverride>(
         key: K,
         value: ElementStyleOverride[K]
     ) => {
         onSave({ [key]: value } as ElementStyleOverride);
+    };
+
+    const applyGradient = () => {
+        const gradient = `linear-gradient(${gradientDirection}, ${gradientStart} 0%, ${gradientEnd} 100%)`;
+        updateStyle("backgroundImage", gradient);
     };
 
     const styles = currentStyles;
@@ -50,7 +127,7 @@ export function ContainerToolbar({
             {/* Header */}
             <div className="flex items-center justify-between pb-2 border-b">
                 <div className="flex items-center gap-2">
-                    <Box className="w-4 h-4 text-indigo-600" />
+                    <Box className="w-4 h-4 text-orange-600" />
                     <span className="font-medium text-sm">{elementLabel}</span>
                 </div>
                 <button
@@ -62,131 +139,71 @@ export function ContainerToolbar({
                 </button>
             </div>
 
-            {/* Background Color */}
-            <div className="space-y-2">
-                <Label className="flex items-center gap-2 text-xs">
-                    <Palette className="w-3 h-3" />
-                    Couleur de fond
-                </Label>
-                <div className="flex gap-2 items-center">
-                    <div className="relative">
-                        <div
-                            className="w-10 h-10 rounded-lg border-2 border-slate-200 cursor-pointer"
-                            style={{ backgroundColor: styles.backgroundColor || "#ffffff" }}
-                        />
-                        <input
-                            type="color"
-                            value={styles.backgroundColor || "#ffffff"}
-                            onChange={(e) => updateStyle("backgroundColor", e.target.value)}
-                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                        />
+            {/* ========== DIMENSIONS ========== */}
+            <div className="space-y-3 p-3 bg-slate-50 rounded-lg">
+                <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">📐 Dimensions</p>
+
+                {/* Min Height */}
+                <div className="space-y-1">
+                    <Label className="text-xs text-slate-500">Hauteur Min</Label>
+                    <div className="flex flex-wrap gap-1">
+                        {MIN_HEIGHT_OPTIONS.map(({ value, label }) => (
+                            <button
+                                key={value}
+                                onClick={() => {
+                                    const el = document.querySelector(`[data-editable-id="${elementId}"]`) as HTMLElement;
+                                    if (el) el.style.minHeight = value;
+                                }}
+                                className="px-2 py-1 text-xs rounded transition-all bg-white hover:bg-slate-100 text-slate-700 border"
+                            >
+                                {label}
+                            </button>
+                        ))}
                     </div>
-                    <input
-                        type="text"
-                        value={styles.backgroundColor || ""}
-                        onChange={(e) => updateStyle("backgroundColor", e.target.value)}
-                        placeholder="#ffffff"
-                        className="flex-1 border rounded-lg px-3 py-2 text-sm"
-                    />
                 </div>
-            </div>
 
-            {/* Text Color */}
-            <div className="space-y-2">
-                <Label className="flex items-center gap-2 text-xs">
-                    🎨 Couleur du texte
-                </Label>
-                <div className="flex gap-2 items-center">
-                    <div className="relative">
-                        <div
-                            className="w-10 h-10 rounded-lg border-2 border-slate-200 cursor-pointer"
-                            style={{ backgroundColor: styles.color || "#18181b" }}
-                        />
-                        <input
-                            type="color"
-                            value={styles.color || "#18181b"}
-                            onChange={(e) => updateStyle("color", e.target.value)}
-                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                        />
+                {/* Content Width */}
+                <div className="space-y-1">
+                    <Label className="text-xs text-slate-500">Largeur Contenu</Label>
+                    <div className="flex gap-1">
+                        {WIDTH_OPTIONS.map(({ value, label }) => (
+                            <button
+                                key={value}
+                                onClick={() => updateStyle("width", value)}
+                                className={`
+                                    flex-1 py-1.5 text-xs rounded transition-all
+                                    ${styles.width === value
+                                        ? "bg-orange-600 text-white"
+                                        : "bg-white hover:bg-slate-100 text-slate-700 border"
+                                    }
+                                `}
+                            >
+                                {label}
+                            </button>
+                        ))}
                     </div>
-                    <input
-                        type="text"
-                        value={styles.color || ""}
-                        onChange={(e) => updateStyle("color", e.target.value)}
-                        placeholder="#18181b"
-                        className="flex-1 border rounded-lg px-3 py-2 text-sm"
-                    />
                 </div>
             </div>
 
-            {/* Padding */}
-            <div className="space-y-2">
-                <Label className="text-xs">📏 Espacement interne</Label>
-                <div className="flex flex-wrap gap-1">
-                    {PADDING_OPTIONS.map(({ value, label }) => (
-                        <button
-                            key={value}
-                            onClick={() => updateStyle("padding", value)}
-                            className={`
-                                px-2 py-1.5 text-xs rounded transition-all
-                                ${styles.padding === value
-                                    ? "bg-indigo-600 text-white"
-                                    : "bg-slate-100 hover:bg-slate-200 text-slate-700"
-                                }
-                            `}
-                        >
-                            {label}
-                        </button>
-                    ))}
-                </div>
-            </div>
+            {/* ========== ARRIERE-PLAN ========== */}
+            <div className="space-y-3 p-3 bg-slate-50 rounded-lg">
+                <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">🎨 Arrière-plan</p>
 
-            {/* Border Radius */}
-            <div className="space-y-2">
-                <Label className="text-xs">📐 Arrondis</Label>
-                <div className="flex flex-wrap gap-1">
-                    {[
-                        { value: "0px", label: "Carré" },
-                        { value: "8px", label: "Léger" },
-                        { value: "16px", label: "Moyen" },
-                        { value: "24px", label: "Arrondi" },
-                        { value: "32px", label: "Très arrondi" },
-                    ].map(({ value, label }) => (
-                        <button
-                            key={value}
-                            onClick={() => updateStyle("borderRadius", value)}
-                            className={`
-                                px-2 py-1.5 text-xs rounded transition-all
-                                ${styles.borderRadius === value
-                                    ? "bg-indigo-600 text-white"
-                                    : "bg-slate-100 hover:bg-slate-200 text-slate-700"
-                                }
-                            `}
-                        >
-                            {label}
-                        </button>
-                    ))}
-                </div>
-            </div>
-
-            {/* Box Shadow */}
-            <div className="space-y-2">
-                <Label className="text-xs">✨ Ombre</Label>
+                {/* Mode selector */}
                 <div className="flex gap-1">
                     {[
-                        { value: "none", label: "Aucune" },
-                        { value: "0 4px 12px rgba(0,0,0,0.08)", label: "Subtile" },
-                        { value: "0 8px 24px rgba(0,0,0,0.12)", label: "Moyenne" },
-                        { value: "0 12px 40px rgba(0,0,0,0.18)", label: "Forte" },
+                        { value: "color", label: "Couleur" },
+                        { value: "gradient", label: "Dégradé" },
+                        { value: "image", label: "Image" },
                     ].map(({ value, label }) => (
                         <button
                             key={value}
-                            onClick={() => updateStyle("boxShadow", value)}
+                            onClick={() => setBgMode(value as typeof bgMode)}
                             className={`
                                 flex-1 py-1.5 text-xs rounded transition-all
-                                ${styles.boxShadow === value
-                                    ? "bg-indigo-600 text-white"
-                                    : "bg-slate-100 hover:bg-slate-200 text-slate-700"
+                                ${bgMode === value
+                                    ? "bg-orange-600 text-white"
+                                    : "bg-white hover:bg-slate-100 text-slate-700 border"
                                 }
                             `}
                         >
@@ -194,146 +211,357 @@ export function ContainerToolbar({
                         </button>
                     ))}
                 </div>
-            </div>
 
-            {/* Border */}
-            <div className="space-y-2">
-                <Label className="text-xs">🖼️ Bordure</Label>
-                <div className="flex gap-1 mb-2">
-                    {[
-                        { value: "none", label: "Aucune" },
-                        { value: "solid", label: "Solide" },
-                        { value: "dashed", label: "Tirets" },
-                    ].map(({ value, label }) => (
-                        <button
-                            key={value}
-                            onClick={() => updateStyle("borderStyle", value as ElementStyleOverride["borderStyle"])}
-                            className={`
-                                flex-1 py-1.5 text-xs rounded transition-all
-                                ${styles.borderStyle === value
-                                    ? "bg-indigo-600 text-white"
-                                    : "bg-slate-100 hover:bg-slate-200 text-slate-700"
-                                }
-                            `}
-                        >
-                            {label}
-                        </button>
-                    ))}
-                </div>
-                {styles.borderStyle && styles.borderStyle !== "none" && (
-                    <div className="flex gap-2 items-center">
-                        <select
-                            value={styles.borderWidth || "1px"}
-                            onChange={(e) => updateStyle("borderWidth", e.target.value)}
-                            className="border rounded px-2 py-1 text-xs"
-                        >
-                            <option value="1px">1px</option>
-                            <option value="2px">2px</option>
-                            <option value="3px">3px</option>
-                            <option value="4px">4px</option>
-                        </select>
-                        <div className="relative flex-1">
-                            <div
-                                className="w-8 h-8 rounded border-2 border-slate-200 cursor-pointer"
-                                style={{ backgroundColor: styles.borderColor || "#e5e7eb" }}
-                            />
+                {/* Color Mode */}
+                {bgMode === "color" && (
+                    <div className="space-y-1">
+                        <Label className="text-xs text-slate-500">Couleur de fond</Label>
+                        <div className="flex gap-2 items-center">
+                            <div className="relative">
+                                <div
+                                    className="w-10 h-10 rounded-lg border-2 border-slate-200 cursor-pointer"
+                                    style={{ backgroundColor: styles.backgroundColor || "#ffffff" }}
+                                />
+                                <input
+                                    type="color"
+                                    value={styles.backgroundColor || "#ffffff"}
+                                    onChange={(e) => updateStyle("backgroundColor", e.target.value)}
+                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                />
+                            </div>
                             <input
-                                type="color"
-                                value={styles.borderColor || "#e5e7eb"}
-                                onChange={(e) => updateStyle("borderColor", e.target.value)}
-                                className="absolute inset-0 w-8 h-8 opacity-0 cursor-pointer"
+                                type="text"
+                                value={styles.backgroundColor || ""}
+                                onChange={(e) => updateStyle("backgroundColor", e.target.value)}
+                                placeholder="#ffffff"
+                                className="flex-1 border rounded-lg px-3 py-2 text-sm bg-white"
                             />
                         </div>
                     </div>
                 )}
+
+                {/* Gradient Mode */}
+                {bgMode === "gradient" && (
+                    <div className="space-y-2">
+                        <div className="grid grid-cols-2 gap-2">
+                            <div className="space-y-1">
+                                <Label className="text-xs text-slate-500">Début</Label>
+                                <div className="relative">
+                                    <div
+                                        className="w-full h-8 rounded border-2 border-slate-200 cursor-pointer"
+                                        style={{ backgroundColor: gradientStart }}
+                                    />
+                                    <input
+                                        type="color"
+                                        value={gradientStart}
+                                        onChange={(e) => setGradientStart(e.target.value)}
+                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                    />
+                                </div>
+                            </div>
+                            <div className="space-y-1">
+                                <Label className="text-xs text-slate-500">Fin</Label>
+                                <div className="relative">
+                                    <div
+                                        className="w-full h-8 rounded border-2 border-slate-200 cursor-pointer"
+                                        style={{ backgroundColor: gradientEnd }}
+                                    />
+                                    <input
+                                        type="color"
+                                        value={gradientEnd}
+                                        onChange={(e) => setGradientEnd(e.target.value)}
+                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <div className="space-y-1">
+                            <Label className="text-xs text-slate-500">Direction</Label>
+                            <div className="flex gap-1">
+                                {GRADIENT_DIRECTIONS.map(({ value, label }) => (
+                                    <button
+                                        key={value}
+                                        onClick={() => setGradientDirection(value)}
+                                        className={`
+                                            flex-1 py-1.5 text-sm rounded transition-all
+                                            ${gradientDirection === value
+                                                ? "bg-orange-600 text-white"
+                                                : "bg-white hover:bg-slate-100 text-slate-700 border"
+                                            }
+                                        `}
+                                    >
+                                        {label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                        <button
+                            onClick={applyGradient}
+                            className="w-full py-2 text-xs bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
+                        >
+                            Appliquer le dégradé
+                        </button>
+                    </div>
+                )}
+
+                {/* Image Mode */}
+                {bgMode === "image" && (
+                    <div className="space-y-2">
+                        <div className="space-y-1">
+                            <Label className="text-xs text-slate-500">URL Image</Label>
+                            <input
+                                type="text"
+                                placeholder="https://..."
+                                onChange={(e) => updateStyle("backgroundImage", `url(${e.target.value})`)}
+                                className="w-full border rounded-lg px-3 py-2 text-sm bg-white"
+                            />
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                            <div className="space-y-1">
+                                <Label className="text-xs text-slate-500">Taille</Label>
+                                <div className="flex gap-1">
+                                    {BG_SIZE_OPTIONS.map(({ value, label }) => (
+                                        <button
+                                            key={value}
+                                            onClick={() => {
+                                                const el = document.querySelector(`[data-editable-id="${elementId}"]`) as HTMLElement;
+                                                if (el) el.style.backgroundSize = value;
+                                            }}
+                                            className="flex-1 py-1 text-xs rounded bg-white hover:bg-slate-100 text-slate-700 border"
+                                        >
+                                            {label}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="space-y-1">
+                                <Label className="text-xs text-slate-500">Position</Label>
+                                <select
+                                    onChange={(e) => {
+                                        const el = document.querySelector(`[data-editable-id="${elementId}"]`) as HTMLElement;
+                                        if (el) el.style.backgroundPosition = e.target.value;
+                                    }}
+                                    className="w-full border rounded px-2 py-1 text-xs bg-white"
+                                >
+                                    {BG_POSITION_OPTIONS.map(({ value, label }) => (
+                                        <option key={value} value={value}>{label}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+                        <label className="flex items-center gap-2 text-xs text-slate-600">
+                            <input
+                                type="checkbox"
+                                onChange={(e) => {
+                                    const el = document.querySelector(`[data-editable-id="${elementId}"]`) as HTMLElement;
+                                    if (el) el.style.backgroundAttachment = e.target.checked ? "fixed" : "scroll";
+                                }}
+                                className="rounded"
+                            />
+                            Effet Parallaxe (Fixe)
+                        </label>
+                    </div>
+                )}
             </div>
 
-            {/* Background Gradient */}
-            <div className="space-y-2">
-                <Label className="text-xs">🎨 Fond dégradé</Label>
-                <div className="grid grid-cols-4 gap-1">
-                    {[
-                        { value: "", label: "Aucun", preview: "#f1f5f9" },
-                        { value: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", label: "Violet", preview: "linear-gradient(135deg, #667eea, #764ba2)" },
-                        { value: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)", label: "Rose", preview: "linear-gradient(135deg, #f093fb, #f5576c)" },
-                        { value: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)", label: "Bleu", preview: "linear-gradient(135deg, #4facfe, #00f2fe)" },
-                        { value: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)", label: "Vert", preview: "linear-gradient(135deg, #43e97b, #38f9d7)" },
-                        { value: "linear-gradient(135deg, #fa709a 0%, #fee140 100%)", label: "Sunset", preview: "linear-gradient(135deg, #fa709a, #fee140)" },
-                        { value: "linear-gradient(135deg, #30cfd0 0%, #330867 100%)", label: "Ocean", preview: "linear-gradient(135deg, #30cfd0, #330867)" },
-                        { value: "linear-gradient(135deg, #0c0c0c 0%, #434343 100%)", label: "Dark", preview: "linear-gradient(135deg, #0c0c0c, #434343)" },
-                    ].map(({ value, label, preview }) => (
-                        <button
-                            key={label}
-                            onClick={() => updateStyle("backgroundImage", value)}
-                            className={`
-                                h-8 rounded text-[10px] font-medium transition-all
-                                ${styles.backgroundImage === value
-                                    ? "ring-2 ring-indigo-500 ring-offset-1"
-                                    : "hover:scale-105"
-                                }
-                            `}
-                            style={{
-                                background: preview,
-                                color: label === "Dark" || label === "Ocean" ? "#fff" : "#333"
-                            }}
-                            title={label}
+            {/* ========== OVERLAY ========== */}
+            <div className="space-y-3 p-3 bg-gradient-to-r from-slate-50 to-zinc-50 rounded-lg">
+                <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">🌫️ Overlay</p>
+
+                <div className="grid grid-cols-2 gap-2">
+                    <div className="space-y-1">
+                        <Label className="text-xs text-slate-500">Couleur</Label>
+                        <div className="relative">
+                            <div
+                                className="w-full h-8 rounded border-2 border-slate-200 cursor-pointer"
+                                style={{ backgroundColor: overlayColor }}
+                            />
+                            <input
+                                type="color"
+                                value={overlayColor}
+                                onChange={(e) => setOverlayColor(e.target.value)}
+                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                            />
+                        </div>
+                    </div>
+                    <div className="space-y-1">
+                        <Label className="text-xs text-slate-500">Opacité</Label>
+                        <select
+                            value={overlayOpacity}
+                            onChange={(e) => setOverlayOpacity(Number(e.target.value))}
+                            className="w-full border rounded px-2 py-1.5 text-sm bg-white"
                         >
-                            {value === "" ? "∅" : ""}
-                        </button>
-                    ))}
+                            {OVERLAY_OPACITY_OPTIONS.map(({ value, label }) => (
+                                <option key={value} value={value}>{label}</option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
+                <p className="text-[10px] text-slate-400">Note: L&apos;overlay nécessite un pseudo-élément CSS (implémentation avancée)</p>
+            </div>
+
+            {/* ========== ESPACEMENT ========== */}
+            <div className="space-y-3 p-3 bg-slate-50 rounded-lg">
+                <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">↔️ Espacement</p>
+
+                {/* Padding */}
+                <div className="space-y-1">
+                    <Label className="text-xs text-slate-500">Padding (Interne)</Label>
+                    <div className="flex flex-wrap gap-1">
+                        {PADDING_OPTIONS.map(({ value, label }) => (
+                            <button
+                                key={value}
+                                onClick={() => updateStyle("padding", value)}
+                                className={`
+                                    px-2 py-1 text-xs rounded transition-all
+                                    ${styles.padding === value
+                                        ? "bg-orange-600 text-white"
+                                        : "bg-white hover:bg-slate-100 text-slate-700 border"
+                                    }
+                                `}
+                            >
+                                {label}
+                            </button>
+                        ))}
+                    </div>
                 </div>
             </div>
 
-            {/* Flex Alignment */}
-            <div className="space-y-2">
-                <Label className="text-xs">📍 Alignement contenu</Label>
-                <div className="grid grid-cols-3 gap-1">
-                    {[
-                        { value: "flex-start", label: "Haut" },
-                        { value: "center", label: "Centre" },
-                        { value: "flex-end", label: "Bas" },
-                    ].map(({ value, label }) => (
-                        <button
-                            key={value}
-                            onClick={() => {
-                                updateStyle("display", "flex");
-                                updateStyle("flexDirection", "column");
-                                updateStyle("alignItems", "center");
-                                updateStyle("justifyContent", value as ElementStyleOverride["justifyContent"]);
-                            }}
-                            className={`
-                                py-1.5 text-xs rounded transition-all
-                                ${styles.justifyContent === value
-                                    ? "bg-indigo-600 text-white"
-                                    : "bg-slate-100 hover:bg-slate-200 text-slate-700"
-                                }
-                            `}
-                        >
-                            {label}
-                        </button>
-                    ))}
+            {/* ========== BORDURES ========== */}
+            <div className="space-y-3 p-3 bg-slate-50 rounded-lg">
+                <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">🖼️ Bordures</p>
+
+                <div className="space-y-1">
+                    <Label className="text-xs text-slate-500">Arrondis</Label>
+                    <div className="flex gap-1">
+                        {BORDER_RADIUS_OPTIONS.map(({ value, label }) => (
+                            <button
+                                key={value}
+                                onClick={() => updateStyle("borderRadius", value)}
+                                className={`
+                                    flex-1 py-1.5 text-xs rounded transition-all
+                                    ${styles.borderRadius === value
+                                        ? "bg-orange-600 text-white"
+                                        : "bg-white hover:bg-slate-100 text-slate-700 border"
+                                    }
+                                `}
+                            >
+                                {label}
+                            </button>
+                        ))}
+                    </div>
                 </div>
             </div>
 
-            {/* Preview */}
-            <div className="p-3 bg-slate-100 rounded-lg mt-4">
-                <p className="text-[10px] text-slate-400 mb-2">Aperçu section</p>
+            {/* ========== ALIGNEMENT FLEX ========== */}
+            <div className="space-y-3 p-3 bg-slate-50 rounded-lg">
+                <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">📐 Alignement</p>
+
+                {/* Align Items (Vertical) */}
+                <div className="space-y-1">
+                    <Label className="text-xs text-slate-500">Vertical</Label>
+                    <div className="flex gap-1">
+                        {[
+                            { value: "flex-start", label: "Haut", icon: AlignVerticalJustifyStart },
+                            { value: "center", label: "Milieu", icon: AlignVerticalJustifyCenter },
+                            { value: "flex-end", label: "Bas", icon: AlignVerticalJustifyEnd },
+                        ].map(({ value, label, icon: Icon }) => (
+                            <button
+                                key={value}
+                                onClick={() => {
+                                    updateStyle("display", "flex");
+                                    updateStyle("alignItems", value as ElementStyleOverride["alignItems"]);
+                                }}
+                                className={`
+                                    flex-1 p-2 rounded transition-colors flex items-center justify-center gap-1
+                                    ${styles.alignItems === value
+                                        ? "bg-orange-600 text-white"
+                                        : "bg-white hover:bg-slate-100 text-slate-700 border"
+                                    }
+                                `}
+                                title={label}
+                            >
+                                <Icon className="w-4 h-4" />
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Justify Content (Horizontal) */}
+                <div className="space-y-1">
+                    <Label className="text-xs text-slate-500">Horizontal</Label>
+                    <div className="flex gap-1">
+                        {[
+                            { value: "flex-start", label: "Gauche", icon: AlignHorizontalJustifyStart },
+                            { value: "center", label: "Centre", icon: AlignHorizontalJustifyCenter },
+                            { value: "flex-end", label: "Droite", icon: AlignHorizontalJustifyEnd },
+                            { value: "space-between", label: "Espacé", icon: AlignHorizontalSpaceBetween },
+                        ].map(({ value, label, icon: Icon }) => (
+                            <button
+                                key={value}
+                                onClick={() => {
+                                    updateStyle("display", "flex");
+                                    updateStyle("justifyContent", value as ElementStyleOverride["justifyContent"]);
+                                }}
+                                className={`
+                                    flex-1 p-2 rounded transition-colors flex items-center justify-center gap-1
+                                    ${styles.justifyContent === value
+                                        ? "bg-orange-600 text-white"
+                                        : "bg-white hover:bg-slate-100 text-slate-700 border"
+                                    }
+                                `}
+                                title={label}
+                            >
+                                <Icon className="w-4 h-4" />
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Flex Direction */}
+                <div className="space-y-1">
+                    <Label className="text-xs text-slate-500">Direction</Label>
+                    <div className="flex gap-1">
+                        {[
+                            { value: "row", label: "Horizontal" },
+                            { value: "column", label: "Vertical" },
+                        ].map(({ value, label }) => (
+                            <button
+                                key={value}
+                                onClick={() => {
+                                    updateStyle("display", "flex");
+                                    updateStyle("flexDirection", value as ElementStyleOverride["flexDirection"]);
+                                }}
+                                className={`
+                                    flex-1 py-1.5 text-xs rounded transition-all
+                                    ${styles.flexDirection === value
+                                        ? "bg-orange-600 text-white"
+                                        : "bg-white hover:bg-slate-100 text-slate-700 border"
+                                    }
+                                `}
+                            >
+                                {label}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            {/* ========== PREVIEW ========== */}
+            <div className="p-3 bg-slate-100 rounded-lg">
+                <p className="text-[10px] text-slate-400 mb-2">Aperçu</p>
                 <div
-                    className="h-16 flex items-center justify-center text-xs text-slate-400 rounded"
+                    className="h-20 rounded-lg flex items-center justify-center text-xs text-slate-500"
                     style={{
-                        backgroundColor: styles.backgroundImage ? undefined : (styles.backgroundColor || "#f8fafc"),
-                        backgroundImage: styles.backgroundImage || undefined,
-                        padding: styles.padding ? `calc(${styles.padding} / 3)` : "12px",
-                        borderRadius: styles.borderRadius || "0px",
-                        borderStyle: styles.borderStyle || "none",
-                        borderWidth: styles.borderWidth || "1px",
-                        borderColor: styles.borderColor || "#e5e7eb",
+                        backgroundColor: styles.backgroundColor || "#f1f5f9",
+                        backgroundImage: styles.backgroundImage || "none",
+                        borderRadius: styles.borderRadius || "8px",
+                        padding: styles.padding || "16px",
                     }}
                 >
-                    Contenu de section
+                    Container
                 </div>
             </div>
         </div>
     );
 }
-
