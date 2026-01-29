@@ -224,7 +224,7 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
     return (
         <div className="w-full max-w-2xl mx-auto">
             {/* Progress Steps */}
-            <div className="mb-12">
+            <div className="mb-6 sm:mb-12">
                 <div className="flex items-center justify-between relative max-w-lg mx-auto">
                     {/* Progress Line */}
                     <div className="absolute top-5 left-0 right-0 h-[1px] bg-zinc-200">
@@ -244,7 +244,7 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
                                     backgroundColor: currentStep >= step.id ? "#18181b" : "#ffffff",
                                     borderColor: currentStep >= step.id ? "#18181b" : "#e4e4e7",
                                 }}
-                                className={`h-10 w-10 rounded-full flex items-center justify-center text-sm border-2 transition-colors duration-300 ${currentStep >= step.id ? "text-white" : "text-zinc-300"
+                                className={`h-8 w-8 sm:h-10 sm:w-10 rounded-full flex items-center justify-center text-sm border-2 transition-colors duration-300 ${currentStep >= step.id ? "text-white" : "text-zinc-300"
                                     }`}
                             >
                                 {currentStep > step.id ? (
@@ -263,8 +263,8 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
             </div>
 
             {/* Main Card */}
-            <Card className="border-white shadow-2xl shadow-zinc-200/50 overflow-hidden bg-white/80 backdrop-blur-xl rounded-[2rem]">
-                <CardContent className="p-10">
+            <Card className="border-white shadow-2xl shadow-zinc-200/50 overflow-hidden bg-white/80 backdrop-blur-xl rounded-2xl sm:rounded-[2rem]">
+                <CardContent className="p-4 sm:p-10">
                     <AnimatePresence mode="wait" custom={direction}>
                         <motion.div
                             key={currentStep}
@@ -277,15 +277,15 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
                         >
                             {/* Step 1: Store Name */}
                             {currentStep === 1 && (
-                                <div className="space-y-8">
-                                    <div className="text-center mb-10">
-                                        <div className="inline-flex items-center justify-center h-20 w-20 bg-zinc-900 rounded-3xl mb-6 shadow-xl shadow-zinc-900/10">
-                                            <Store className="h-10 w-10 text-white" />
+                                <div className="space-y-6 sm:space-y-8">
+                                    <div className="text-center mb-6 sm:mb-10">
+                                        <div className="inline-flex items-center justify-center h-14 w-14 sm:h-20 sm:w-20 bg-zinc-900 rounded-2xl sm:rounded-3xl mb-4 sm:mb-6 shadow-xl shadow-zinc-900/10">
+                                            <Store className="h-7 w-7 sm:h-10 sm:w-10 text-white" />
                                         </div>
-                                        <h2 className="text-3xl font-serif font-bold text-zinc-900 italic">
+                                        <h2 className="text-xl sm:text-3xl font-serif font-bold text-zinc-900 italic">
                                             Nommait votre boutique
                                         </h2>
-                                        <p className="text-zinc-500 mt-3 font-medium">
+                                        <p className="text-zinc-500 mt-2 sm:mt-3 text-sm sm:text-base font-medium">
                                             Ce nom sera votre identité unique sur Elena
                                         </p>
                                     </div>
@@ -303,7 +303,7 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
                                                 placeholder="maboutique"
                                                 value={storeName}
                                                 onChange={handleStoreNameChange}
-                                                className={`h-16 pl-40 pr-12 rounded-2xl text-xl font-bold border transition-all duration-300 ${isAvailable === true
+                                                className={`h-12 sm:h-16 pl-32 sm:pl-40 pr-10 sm:pr-12 rounded-xl sm:rounded-2xl text-base sm:text-xl font-bold border transition-all duration-300 ${isAvailable === true
                                                     ? "border-emerald-200 bg-emerald-50/30 ring-4 ring-emerald-50"
                                                     : isAvailable === false
                                                         ? "border-red-200 bg-red-50/30 ring-4 ring-red-50"
@@ -336,17 +336,17 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
 
                             {/* Step 2: Category */}
                             {currentStep === 2 && (
-                                <div className="space-y-8">
-                                    <div className="text-center mb-10">
-                                        <h2 className="text-3xl font-serif font-bold text-zinc-900 italic">
+                                <div className="space-y-6 sm:space-y-8">
+                                    <div className="text-center mb-6 sm:mb-10">
+                                        <h2 className="text-xl sm:text-3xl font-serif font-bold text-zinc-900 italic">
                                             Que vendez-vous ?
                                         </h2>
-                                        <p className="text-zinc-500 mt-3 font-medium">
+                                        <p className="text-zinc-500 mt-2 sm:mt-3 text-sm sm:text-base font-medium">
                                             Cela nous aide à personnaliser votre expérience
                                         </p>
                                     </div>
 
-                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4">
                                         {STORE_CATEGORIES.map((cat) => (
                                             <motion.button
                                                 key={cat.id}
@@ -354,14 +354,14 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
                                                 whileHover={{ scale: 1.02 }}
                                                 whileTap={{ scale: 0.98 }}
                                                 onClick={() => setCategory(cat.id)}
-                                                className={`flex flex-col items-center gap-3 p-6 rounded-2xl border transition-all duration-300 ${category === cat.id
+                                                className={`flex flex-col items-center gap-2 sm:gap-3 p-3 sm:p-6 rounded-xl sm:rounded-2xl border transition-all duration-300 ${category === cat.id
                                                     ? "border-zinc-900 bg-zinc-900 text-white shadow-xl shadow-zinc-900/20"
                                                     : "border-zinc-100 bg-white hover:border-zinc-300 hover:shadow-lg hover:shadow-zinc-200/50"
                                                     }`}
                                             >
-                                                <span className="text-4xl">{cat.emoji}</span>
-                                                <span className={`text-sm font-bold ${category === cat.id ? "text-white" : "text-zinc-700"}`}>{cat.label}</span>
-                                                <span className={`text-[10px] uppercase tracking-wider ${category === cat.id ? "text-zinc-400" : "text-zinc-400"}`}>{cat.description}</span>
+                                                <span className="text-2xl sm:text-4xl">{cat.emoji}</span>
+                                                <span className={`text-xs sm:text-sm font-bold ${category === cat.id ? "text-white" : "text-zinc-700"}`}>{cat.label}</span>
+                                                <span className={`text-[8px] sm:text-[10px] uppercase tracking-wider hidden sm:block ${category === cat.id ? "text-zinc-400" : "text-zinc-400"}`}>{cat.description}</span>
                                             </motion.button>
                                         ))}
                                     </div>
@@ -370,17 +370,17 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
 
                             {/* Step 3: Visual Style */}
                             {currentStep === 3 && (
-                                <div className="space-y-8">
-                                    <div className="text-center mb-10">
-                                        <h2 className="text-3xl font-serif font-bold text-zinc-900 italic">
+                                <div className="space-y-6 sm:space-y-8">
+                                    <div className="text-center mb-6 sm:mb-10">
+                                        <h2 className="text-xl sm:text-3xl font-serif font-bold text-zinc-900 italic">
                                             Quel style vous représente ?
                                         </h2>
-                                        <p className="text-zinc-500 mt-3 font-medium">
+                                        <p className="text-zinc-500 mt-2 sm:mt-3 text-sm sm:text-base font-medium">
                                             Définissez l'atmosphère visuelle de votre marque
                                         </p>
                                     </div>
 
-                                    <div className="grid grid-cols-2 gap-6">
+                                    <div className="grid grid-cols-2 gap-3 sm:gap-6">
                                         {VISUAL_STYLES.map((s) => (
                                             <motion.button
                                                 key={s.id}
@@ -388,25 +388,25 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
                                                 whileHover={{ scale: 1.02 }}
                                                 whileTap={{ scale: 0.98 }}
                                                 onClick={() => setStyle(s.id)}
-                                                className={`relative flex flex-col items-center gap-4 p-6 rounded-[2rem] border transition-all duration-300 overflow-hidden ${style === s.id
+                                                className={`relative flex flex-col items-center gap-2 sm:gap-4 p-4 sm:p-6 rounded-xl sm:rounded-[2rem] border transition-all duration-300 overflow-hidden ${style === s.id
                                                     ? "border-zinc-900 bg-zinc-50 shadow-xl shadow-zinc-900/5 group"
                                                     : "border-zinc-100 hover:border-zinc-300 hover:shadow-lg hover:shadow-zinc-200/50"
                                                     }`}
                                             >
                                                 {/* Color Preview */}
-                                                <div className="flex -space-x-3">
+                                                <div className="flex -space-x-2 sm:-space-x-3">
                                                     {s.colors.map((color, i) => (
                                                         <div
                                                             key={i}
-                                                            className="h-10 w-10 rounded-full border-4 border-white shadow-lg z-10"
+                                                            className="h-6 w-6 sm:h-10 sm:w-10 rounded-full border-2 sm:border-4 border-white shadow-lg z-10"
                                                             style={{ backgroundColor: color }}
                                                         />
                                                     ))}
                                                 </div>
                                                 <div className="text-center">
-                                                    <span className="text-3xl mb-2 block filter drop-shadow-md">{s.emoji}</span>
-                                                    <span className="text-base font-bold text-zinc-900">{s.label}</span>
-                                                    <span className="text-xs text-zinc-500 block mt-1 font-medium">{s.description}</span>
+                                                    <span className="text-xl sm:text-3xl mb-1 sm:mb-2 block filter drop-shadow-md">{s.emoji}</span>
+                                                    <span className="text-sm sm:text-base font-bold text-zinc-900">{s.label}</span>
+                                                    <span className="text-[10px] sm:text-xs text-zinc-500 block mt-0.5 sm:mt-1 font-medium hidden sm:block">{s.description}</span>
                                                 </div>
                                                 {style === s.id && (
                                                     <div className="absolute top-4 right-4 bg-zinc-900 text-white p-1.5 rounded-full">
@@ -421,17 +421,17 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
 
                             {/* Step 4: Template Selection */}
                             {currentStep === 4 && (
-                                <div className="space-y-8">
-                                    <div className="text-center mb-8">
-                                        <h2 className="text-3xl font-serif font-bold text-zinc-900 italic">
+                                <div className="space-y-6 sm:space-y-8">
+                                    <div className="text-center mb-4 sm:mb-8">
+                                        <h2 className="text-xl sm:text-3xl font-serif font-bold text-zinc-900 italic">
                                             Choisissez votre template
                                         </h2>
-                                        <p className="text-zinc-500 mt-3 font-medium">
+                                        <p className="text-zinc-500 mt-2 sm:mt-3 text-sm sm:text-base font-medium">
                                             Nous avons sélectionné le meilleur design pour vous
                                         </p>
                                     </div>
 
-                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                    <div className="grid grid-cols-3 gap-2 sm:gap-4">
                                         {TEMPLATE_OPTIONS.map((template) => (
                                             <TemplateCard
                                                 key={template.id}
@@ -443,8 +443,8 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
                                         ))}
                                     </div>
 
-                                    {/* Smart Matching Info */}
-                                    <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-100 rounded-2xl p-5 flex items-start gap-4 shadow-sm">
+                                    {/* Smart Matching Info - hidden on mobile */}
+                                    <div className="hidden sm:flex bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-100 rounded-2xl p-5 items-start gap-4 shadow-sm">
                                         <div className="bg-white p-2 rounded-lg shadow-sm border border-amber-100">
                                             <Sparkles className="h-4 w-4 text-amber-500" />
                                         </div>
@@ -474,7 +474,7 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
                     )}
 
                     {/* Navigation Buttons */}
-                    <div className="flex justify-between mt-10 pt-8 border-t border-zinc-100">
+                    <div className="flex justify-between mt-6 sm:mt-10 pt-4 sm:pt-8 border-t border-zinc-100">
                         <Button
                             type="button"
                             variant="ghost"

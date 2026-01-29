@@ -68,7 +68,7 @@ export default async function OnboardingPage() {
 
     // User can create a store (0 stores, or less than MAX) - show onboarding form
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-stone-50 px-4 py-12 font-sans">
+        <div className="min-h-dvh flex flex-col items-center justify-center bg-stone-50 px-4 py-4 sm:py-12 font-sans">
             {/* Back link if user already has stores */}
             {storeCount > 0 && (
                 <div className="w-full max-w-md mb-6">
