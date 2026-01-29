@@ -134,9 +134,12 @@ export interface ElementStyleOverride {
     padding?: string;
     paddingX?: string; // horizontal padding
     paddingY?: string; // vertical padding
+    margin?: string;   // margin (e.g., "8px 0" for dividers)
+    gap?: string;      // gap between items
 
     // Dimensions
-    width?: string; // "auto", "100%", or specific value
+    width?: string;  // "auto", "100%", or specific value
+    height?: string; // height for dividers, containers
 
     // Flex alignment (for containers)
     display?: "block" | "flex";
