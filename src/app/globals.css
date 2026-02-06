@@ -220,6 +220,17 @@
   animation-delay: 4s;
 }
 
+/* Skeleton Shimmer Animation */
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
 /* Mobile Input Fix - Prevent zoom on iOS */
 @media screen and (max-width: 768px) {
 
