@@ -42,7 +42,7 @@ const ParallaxSection = ({ children, className, id }: { children: React.ReactNod
 
   // Matches Hero Effect: Move down slowly (0 -> 100px) as user scrolls down
   const y = useTransform(scrollYProgress, [0, 1], [0, 150]);
-  const opacity = useTransform(scrollYProgress, [0.5, 1], [1, 0]);
+  const opacity = useTransform(scrollYProgress, [0.85, 1], [1, 0]);
   const scale = useTransform(scrollYProgress, [0, 1], [1, 0.95]);
 
   return (
@@ -168,7 +168,7 @@ export default function Home() {
                 <motion.span
                   initial={{ opacity: 0, y: 50, rotateX: 20 }}
                   animate={{ opacity: 1, y: 0, rotateX: 0 }}
-                  transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
+                  transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
                   className="block relative"
                 >
                   <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-violet-600 to-indigo-600 animate-gradient-x bg-[length:200%_auto]">
@@ -188,7 +188,7 @@ export default function Home() {
                 <motion.span
                   initial={{ opacity: 0, y: 50, rotateX: 20 }}
                   animate={{ opacity: 1, y: 0, rotateX: 0 }}
-                  transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+                  transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
                   className="block"
                 >
                   en 2 min.
@@ -199,7 +199,7 @@ export default function Home() {
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.5, duration: 1 }}
+                transition={{ delay: 0.3, duration: 0.8 }}
                 className="text-xl sm:text-2xl text-slate-600 mb-10 max-w-xl leading-relaxed font-medium"
               >
                 Lancez votre marque <span className="text-slate-900 font-semibold">gratuitement</span>.
@@ -210,7 +210,7 @@ export default function Home() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
+                transition={{ delay: 0.4 }}
                 className="flex flex-col sm:flex-row gap-5 w-full sm:w-auto"
               >
                 <Link href="/login?mode=signup" className="w-full sm:w-auto">
@@ -520,13 +520,13 @@ export default function Home() {
                         strokeLinecap="round"
                         initial={{ pathLength: 0 }}
                         whileInView={{ pathLength: 1 }}
-                        transition={{ duration: 1.5, ease: "easeInOut", delay: 0.2 }}
+                        transition={{ duration: 1.0, ease: "easeInOut", delay: 0.2 }}
                       />
                       {/* Needle Group - Rotating from Center */}
                       <motion.g
                         initial={{ rotate: -90 }}
                         whileInView={{ rotate: 90 }}
-                        transition={{ duration: 1.5, ease: "easeInOut", delay: 0.2 }}
+                        transition={{ duration: 1.0, ease: "easeInOut", delay: 0.2 }}
                         style={{ translateX: 50, translateY: 50 }}
                       >
                         {/* The needle itself, drawn from (0,0) upwards */}
@@ -728,7 +728,7 @@ export default function Home() {
                     strokeLinejoin="round"
                     initial={{ pathLength: 0 }}
                     whileInView={{ pathLength: 1 }}
-                    transition={{ duration: 1.5, ease: "easeOut" }}
+                    transition={{ duration: 1.0, ease: "easeOut" }}
                   />
 
                   {/* Interactive Points */}
