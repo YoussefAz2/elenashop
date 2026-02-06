@@ -107,7 +107,7 @@ export default function Home() {
       </nav>
 
       {/* Hero Section - Alive & Dynamic */}
-      <section className="pt-32 pb-40 px-4 sm:px-6 lg:px-8 relative overflow-visible snap-start">
+      <section className="pt-32 pb-40 px-4 sm:px-6 lg:px-8 relative overflow-hidden snap-start">
         {/* Animated Background Mesh */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <motion.div
@@ -156,7 +156,7 @@ export default function Home() {
               </motion.div>
 
               {/* Staggered Title Animation */}
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-slate-900 leading-[1.05] mb-8 tracking-tight perspective-lg">
+              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-slate-900 leading-[1.1] sm:leading-[1.05] mb-8 tracking-tight perspective-lg">
                 <motion.span
                   initial={{ opacity: 0, y: 50, rotateX: 20 }}
                   animate={{ opacity: 1, y: 0, rotateX: 0 }}
@@ -214,22 +214,22 @@ export default function Home() {
                 className="flex flex-col sm:flex-row gap-5 w-full sm:w-auto"
               >
                 <Link href="/login?mode=signup" className="w-full sm:w-auto">
-                  <Button size="lg" className="group w-full sm:w-auto h-16 bg-[#4f46e5] hover:bg-[#4338ca] text-white rounded-2xl px-10 text-lg font-bold shadow-xl shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:-translate-y-1 transition-all duration-300 ring-4 ring-indigo-500/10">
+                  <Button size="lg" className="group w-full sm:w-auto h-14 sm:h-16 bg-[#4f46e5] hover:bg-[#4338ca] text-white rounded-2xl px-6 sm:px-10 text-base sm:text-lg font-bold shadow-xl shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:-translate-y-1 transition-all duration-300 ring-4 ring-indigo-500/10">
                     Lancer ma boutique
                     <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
                 <Link href="#how-it-works" className="w-full sm:w-auto">
-                  <Button variant="outline" size="lg" className="w-full sm:w-auto h-16 rounded-2xl px-10 text-lg border-2 border-slate-200 hover:border-indigo-200 hover:bg-indigo-50/50 hover:text-indigo-700 transition-all font-semibold bg-white/50 backdrop-blur-sm">
+                  <Button variant="outline" size="lg" className="w-full sm:w-auto h-14 sm:h-16 rounded-2xl px-6 sm:px-10 text-base sm:text-lg border-2 border-slate-200 hover:border-indigo-200 hover:bg-indigo-50/50 hover:text-indigo-700 transition-all font-semibold bg-white/50 backdrop-blur-sm">
                     Voir la démo
                   </Button>
                 </Link>
               </motion.div>
 
               {/* Infinite Social Proof Marquee - Platforms */}
-              <div className="mt-12 w-full max-w-md">
+              <div className="mt-12 w-full max-w-[90vw] sm:max-w-md mx-auto lg:mx-0 overflow-hidden">
                 <p className="text-xs font-bold text-slate-400 mb-4 tracking-widest uppercase text-center lg:text-left">Compatible avec vos réseaux préférés</p>
-                <div className="overflow-hidden relative fade-mask-x">
+                <div className="relative fade-mask-x w-full">
                   <div className="flex gap-12 animate-marquee whitespace-nowrap items-center">
                     {[
                       { name: 'Instagram', icon: <Instagram className="w-5 h-5" />, color: 'text-pink-600' },
