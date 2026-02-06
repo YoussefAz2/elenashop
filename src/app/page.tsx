@@ -490,7 +490,8 @@ export default function Home() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.5 }}
               className="md:col-span-2 bg-gradient-to-br from-white to-indigo-50/50 rounded-[2rem] p-8 border border-white/50 shadow-sm hover:shadow-xl hover:shadow-indigo-500/10 transition-all group overflow-hidden relative"
             >
               {/* Background Tech Pulse */}
@@ -520,13 +521,15 @@ export default function Home() {
                         strokeLinecap="round"
                         initial={{ pathLength: 0 }}
                         whileInView={{ pathLength: 1 }}
-                        transition={{ duration: 1.0, ease: "easeInOut", delay: 0.2 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6, ease: "easeOut" }}
                       />
                       {/* Needle Group - Rotating from Center */}
                       <motion.g
                         initial={{ rotate: -90 }}
                         whileInView={{ rotate: 90 }}
-                        transition={{ duration: 1.0, ease: "easeInOut", delay: 0.2 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6, ease: "easeOut" }}
                         style={{ translateX: 50, translateY: 50 }}
                       >
                         {/* The needle itself, drawn from (0,0) upwards */}
@@ -599,10 +602,10 @@ export default function Home() {
 
             {/* Feature 3: Tunisian Market (Config Toggles) */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.5 }}
               className="bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-rose-500/5 transition-all group relative overflow-hidden"
             >
               {/* Background Shapes */}
@@ -720,7 +723,8 @@ export default function Home() {
                     fill="url(#chartGradient)"
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
-                    transition={{ duration: 1, delay: 0.2 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4 }}
                   />
 
                   {/* Line Path */}
@@ -733,26 +737,29 @@ export default function Home() {
                     strokeLinejoin="round"
                     initial={{ pathLength: 0 }}
                     whileInView={{ pathLength: 1 }}
-                    transition={{ duration: 1.0, ease: "easeOut" }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, ease: "easeOut" }}
                   />
 
                   {/* Interactive Points */}
                   {[
-                    { cx: 100, cy: 110, delay: 0.5, val: "+120" },
-                    { cx: 300, cy: 50, delay: 1.1, val: "+890" },
+                    { cx: 100, cy: 110, delay: 0.2, val: "+120" },
+                    { cx: 300, cy: 50, delay: 0.4, val: "+890" },
                   ].map((point, i) => (
                     <g key={i}>
                       <motion.circle
                         cx={point.cx} cy={point.cy} r="4" fill="#1e1b4b" stroke="#818cf8" strokeWidth="2"
                         initial={{ scale: 0 }}
                         whileInView={{ scale: 1 }}
-                        transition={{ duration: 0.3, delay: point.delay }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.2, delay: point.delay }}
                       />
                       {/* Floating Tooltips */}
                       <motion.foreignObject x={point.cx - 20} y={point.cy - 30} width="40" height="24"
-                        initial={{ opacity: 0, y: 10 }}
+                        initial={{ opacity: 0, y: 5 }}
                         whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3, delay: point.delay + 0.1 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.2, delay: point.delay + 0.05 }}
                       >
                         <div className="bg-indigo-500/90 backdrop-blur-[2px] text-[10px] font-bold text-white px-1.5 py-0.5 rounded text-center shadow-lg transform -translate-x-1">
                           {point.val}
