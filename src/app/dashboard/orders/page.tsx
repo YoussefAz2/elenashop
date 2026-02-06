@@ -1,8 +1,6 @@
-import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
-import type { Store, Order } from "@/types";
-import Link from "next/link";
+import type { Order } from "@/types";
+import { getCurrentStore } from "@/utils/get-current-store";
 import {
     ShoppingBag,
     Phone,
@@ -18,35 +16,8 @@ import {
 export const revalidate = 60;
 
 export default async function OrdersPage() {
+    const currentStore = await getCurrentStore();
     const supabase = await createClient();
-    const cookieStore = await cookies();
-
-    // Check authentication
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-
-    if (authError || !user) {
-        redirect("/login");
-    }
-
-    // Get current store from cookie
-    const currentStoreId = cookieStore.get("current_store_id")?.value;
-
-    if (!currentStoreId) {
-        redirect("/dashboard");
-    }
-
-    // Fetch store
-    const { data: store, error: storeError } = await supabase
-        .from("stores")
-        .select("*")
-        .eq("id", currentStoreId)
-        .single();
-
-    if (storeError || !store) {
-        redirect("/dashboard");
-    }
-
-    const currentStore = store as Store;
 
     // Fetch orders
     const { data: orders } = await supabase

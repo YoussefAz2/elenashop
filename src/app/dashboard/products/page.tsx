@@ -1,39 +1,11 @@
-import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
-import type { Store, Product, Category } from "@/types";
+import type { Product, Category } from "@/types";
 import { ProductsClient } from "@/components/dashboard/products-client";
+import { getCurrentStore } from "@/utils/get-current-store";
 
 export default async function ProductsPage() {
+    const currentStore = await getCurrentStore();
     const supabase = await createClient();
-    const cookieStore = await cookies();
-
-    // Check authentication
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-
-    if (authError || !user) {
-        redirect("/login");
-    }
-
-    // Get current store from cookie
-    const currentStoreId = cookieStore.get("current_store_id")?.value;
-
-    if (!currentStoreId) {
-        redirect("/dashboard");
-    }
-
-    // Fetch store
-    const { data: store, error: storeError } = await supabase
-        .from("stores")
-        .select("*")
-        .eq("id", currentStoreId)
-        .single();
-
-    if (storeError || !store) {
-        redirect("/dashboard");
-    }
-
-    const currentStore = store as Store;
 
     // Fetch products and categories for this store
     const [productsRes, categoriesRes] = await Promise.all([
