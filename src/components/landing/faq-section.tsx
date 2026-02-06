@@ -40,10 +40,10 @@ function FAQItem({ question, answer, isOpen, onClick, index }: {
 }) {
     return (
         <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: index * 0.1 }}
+            viewport={{ once: true, margin: "-30px" }}
+            transition={{ duration: 0.4, delay: index * 0.05 }}
             className={`group rounded-2xl border transition-all duration-300 overflow-hidden ${isOpen
                 ? "bg-white border-indigo-100 shadow-xl shadow-indigo-100/50 ring-1 ring-indigo-50"
                 : "bg-white border-slate-100 hover:border-indigo-100/50 hover:shadow-lg hover:shadow-indigo-50/40"
@@ -70,7 +70,7 @@ function FAQItem({ question, answer, isOpen, onClick, index }: {
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: "auto", opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                        transition={{ duration: 0.2, ease: "easeOut" }}
                         className="overflow-hidden"
                     >
                         <div className="px-6 pb-6 text-slate-600 leading-relaxed border-t border-slate-50 pt-4">
@@ -101,9 +101,10 @@ export function FAQSection() {
             <div className="max-w-3xl mx-auto relative z-10">
                 <div className="text-center mb-16">
                     <motion.div
-                        initial={{ scale: 0.5, opacity: 0 }}
+                        initial={{ scale: 0.8, opacity: 0 }}
                         whileInView={{ scale: 1, opacity: 1 }}
-                        viewport={{ once: true }}
+                        viewport={{ once: true, margin: "-30px" }}
+                        transition={{ duration: 0.4 }}
                         className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-100 text-xs font-semibold mb-6"
                     >
                         <Sparkles className="h-3 w-3" />
@@ -111,9 +112,10 @@ export function FAQSection() {
                     </motion.div>
 
                     <motion.h2
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 15 }}
                         whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
+                        viewport={{ once: true, margin: "-30px" }}
+                        transition={{ duration: 0.4 }}
                         className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-4 tracking-tight"
                     >
                         Questions fréquentes
@@ -121,8 +123,8 @@ export function FAQSection() {
                     <motion.p
                         initial={{ opacity: 0 }}
                         whileInView={{ opacity: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.1 }}
+                        viewport={{ once: true, margin: "-30px" }}
+                        transition={{ duration: 0.4, delay: 0.05 }}
                         className="text-lg text-slate-500"
                     >
                         Tout ce que vous devez savoir pour démarrer.
@@ -144,10 +146,10 @@ export function FAQSection() {
 
                 {/* CTA under FAQ */}
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 15 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.4 }}
+                    viewport={{ once: true, margin: "-30px" }}
+                    transition={{ duration: 0.4 }}
                     className="mt-16 text-center"
                 >
                     <p className="text-slate-500 mb-4">

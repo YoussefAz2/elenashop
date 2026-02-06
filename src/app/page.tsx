@@ -177,7 +177,7 @@ export default function Home() {
                   <motion.svg
                     initial={{ pathLength: 0 }}
                     animate={{ pathLength: 1 }}
-                    transition={{ duration: 1, delay: 0.8, ease: "easeInOut" }}
+                    transition={{ duration: 0.5, delay: 0.3, ease: "easeOut" }}
                     className="absolute w-full h-3 -bottom-1 left-0 text-indigo-200 -z-10"
                     viewBox="0 0 100 10"
                     preserveAspectRatio="none"
@@ -199,7 +199,7 @@ export default function Home() {
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.3, duration: 0.8 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
                 className="text-xl sm:text-2xl text-slate-600 mb-10 max-w-xl leading-relaxed font-medium"
               >
                 Lancez votre marque <span className="text-slate-900 font-semibold">gratuitement</span>.
@@ -208,9 +208,9 @@ export default function Home() {
 
               {/* Buttons */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
+                transition={{ delay: 0.25, duration: 0.4 }}
                 className="flex flex-col sm:flex-row gap-5 w-full sm:w-auto"
               >
                 <Link href="/login?mode=signup" className="w-full sm:w-auto">
@@ -274,10 +274,10 @@ export default function Home() {
               />
 
               <motion.div
-                initial={{ rotateY: 15, rotateX: 5, y: 50, opacity: 0 }}
+                initial={{ rotateY: 10, rotateX: 5, y: 30, opacity: 0 }}
                 animate={{ rotateY: -5, rotateX: 0, y: 0, opacity: 1 }}
-                transition={{ duration: 1.5, ease: "easeOut" }}
-                whileHover={{ rotateY: 0, rotateX: 0, scale: 1.02, transition: { duration: 0.5 } }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                whileHover={{ rotateY: 0, rotateX: 0, scale: 1.02, transition: { duration: 0.3 } }}
                 className="relative preserve-3d"
               >
 
