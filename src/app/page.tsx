@@ -883,7 +883,7 @@ export default function Home() {
       </ParallaxSection>
 
       {/* Testimonials - Light Premium (Apple Style) */}
-      <ParallaxSection className="py-32 px-4 sm:px-6 lg:px-8 bg-slate-50 relative snap-start">
+      <section className="py-32 px-4 sm:px-6 lg:px-8 bg-slate-50 relative snap-start">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-20">
             <h2 className="text-3xl sm:text-5xl font-extrabold text-slate-900 mb-6 tracking-tight">
@@ -963,10 +963,10 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </ParallaxSection>
+      </section>
 
       {/* Pricing Teaser - Dark Card on Light Background */}
-      <ParallaxSection className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden snap-start bg-[#0f172a]">
+      <section className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden snap-start bg-[#0f172a]">
         <div className="max-w-6xl mx-auto">
           <div className="bg-[#020617] rounded-[3rem] p-12 sm:p-24 relative overflow-hidden text-center shadow-2xl shadow-indigo-900/20 isolate">
             {/* Inner Glow Effects */}
@@ -1002,15 +1002,15 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </ParallaxSection>
+      </section>
 
       {/* FAQ Section should interact with the theme */}
-      <ParallaxSection className="snap-start bg-white">
+      <section className="snap-start bg-white">
         <FAQSection />
-      </ParallaxSection>
+      </section>
 
       {/* Footer - Floating Purity Premium */}
-      <ParallaxSection className="py-12 px-4 sm:px-6 lg:px-8 bg-slate-50">
+      <section className="py-12 px-4 sm:px-6 lg:px-8 bg-slate-50">
         <footer className="max-w-[85rem] mx-auto bg-white rounded-[2rem] border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-12 lg:p-16 relative overflow-hidden snap-start">
           <div className="grid md:grid-cols-12 gap-12 lg:gap-8">
 
@@ -1082,7 +1082,7 @@ export default function Home() {
             </div>
           </div>
         </footer>
-      </ParallaxSection>
+      </section>
     </div>
   );
 }
