@@ -59,6 +59,11 @@ export default function Home() {
   const heroY = useTransform(scrollY, [0, 500], [0, 150]);
   const opacity = useTransform(scrollY, [0, 300], [1, 0]);
 
+  // Scroll to top on page load/refresh
+  if (typeof window !== "undefined") {
+    window.history.scrollRestoration = "manual";
+  }
+
   return (
     <div className="min-h-screen bg-[#f8fafc] overflow-hidden font-sans selection:bg-indigo-100 selection:text-indigo-900">
       {/* Global Fixed Grid Background */}
