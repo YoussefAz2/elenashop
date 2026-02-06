@@ -261,6 +261,26 @@ a,
   -webkit-tap-highlight-color: transparent;
 }
 
+/* GPU Acceleration for animations */
+[data-motion] {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* ========================================
    Visual Editor V2 - Override Styles
    These rules ensure inline styles from the editor

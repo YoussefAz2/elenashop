@@ -548,10 +548,10 @@ export default function Home() {
 
             {/* Feature 2: WhatsApp (Vertical - Restored) */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.5 }}
               className="md:row-span-2 bg-[#25D366]/5 rounded-[2rem] p-8 border border-[#25D366]/10 shadow-sm hover:shadow-xl hover:shadow-[#25D366]/10 transition-all group relative overflow-hidden flex flex-col"
             >
               <div className="absolute bottom-0 right-0 w-48 h-48 bg-[#25D366]/10 rounded-full blur-2xl translate-y-1/3 translate-x-1/3"></div>
@@ -571,7 +571,8 @@ export default function Home() {
                   <motion.div
                     initial={{ opacity: 0, x: -10 }}
                     whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.4 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: 0.1 }}
                     className="flex gap-2"
                   >
                     <div className="h-8 w-8 rounded-full bg-indigo-100 flex-shrink-0 flex items-center justify-center text-[10px] font-bold text-indigo-500">C</div>
@@ -582,9 +583,10 @@ export default function Home() {
 
                   {/* Message 2 (Store) */}
                   <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.8, type: "spring" }}
+                    initial={{ opacity: 0, x: 10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: 0.3 }}
                     className="flex gap-2 justify-end"
                   >
                     <div className="bg-[#dcf8c6] p-3 rounded-l-2xl rounded-br-2xl text-slate-900 shadow-sm max-w-[80%] font-medium">
@@ -625,9 +627,10 @@ export default function Home() {
                     <motion.div
                       className="w-8 h-4 bg-slate-200 rounded-full relative"
                       whileInView={{ backgroundColor: "#10b981" }}
-                      transition={{ delay: 0.5, duration: 0.6 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.1, duration: 0.3 }}
                     >
-                      <motion.div className="absolute top-0.5 left-0.5 w-3 h-3 bg-white rounded-full shadow-sm" whileInView={{ x: 16 }} transition={{ delay: 0.5, duration: 0.6, type: "spring" }} />
+                      <motion.div className="absolute top-0.5 left-0.5 w-3 h-3 bg-white rounded-full shadow-sm" whileInView={{ x: 16 }} viewport={{ once: true }} transition={{ delay: 0.1, duration: 0.3 }} />
                     </motion.div>
                   </div>
                   {/* Toggle 2: Governorates */}
@@ -636,9 +639,10 @@ export default function Home() {
                     <motion.div
                       className="w-8 h-4 bg-slate-200 rounded-full relative"
                       whileInView={{ backgroundColor: "#10b981" }}
-                      transition={{ delay: 1.0, duration: 0.6 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.2, duration: 0.3 }}
                     >
-                      <motion.div className="absolute top-0.5 left-0.5 w-3 h-3 bg-white rounded-full shadow-sm" whileInView={{ x: 16 }} transition={{ delay: 1.0, duration: 0.6, type: "spring" }} />
+                      <motion.div className="absolute top-0.5 left-0.5 w-3 h-3 bg-white rounded-full shadow-sm" whileInView={{ x: 16 }} viewport={{ once: true }} transition={{ delay: 0.2, duration: 0.3 }} />
                     </motion.div>
                   </div>
                   {/* Toggle 3: Instant Site */}
@@ -647,9 +651,10 @@ export default function Home() {
                     <motion.div
                       className="w-8 h-4 bg-slate-200 rounded-full relative"
                       whileInView={{ backgroundColor: "#10b981" }}
-                      transition={{ delay: 1.5, duration: 0.6 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.3, duration: 0.3 }}
                     >
-                      <motion.div className="absolute top-0.5 left-0.5 w-3 h-3 bg-white rounded-full shadow-sm" whileInView={{ x: 16 }} transition={{ delay: 1.5, duration: 0.6, type: "spring" }} />
+                      <motion.div className="absolute top-0.5 left-0.5 w-3 h-3 bg-white rounded-full shadow-sm" whileInView={{ x: 16 }} viewport={{ once: true }} transition={{ delay: 0.3, duration: 0.3 }} />
                     </motion.div>
                   </div>
                 </div>
@@ -658,10 +663,10 @@ export default function Home() {
 
             {/* Feature 4: Dashboard (Live Analytics) */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1, duration: 0.5 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.5 }}
               className="md:col-span-1 bg-slate-900 rounded-[2rem] p-8 shadow-xl shadow-indigo-900/10 group relative overflow-hidden flex flex-col justify-between h-full min-h-[400px]"
             >
               {/* Content Container (Z-Index High) */}
