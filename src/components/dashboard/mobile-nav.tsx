@@ -17,6 +17,8 @@ import {
     X,
     Tag,
     LogOut,
+    Loader2,
+    RefreshCcw,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/utils/supabase/client";
@@ -74,7 +76,18 @@ interface MobileNavProps {
 
 export function MobileNav({ storeName, storeSlug }: MobileNavProps) {
     const [isOpen, setIsOpen] = useState(false);
+    const [isSwitching, setIsSwitching] = useState(false);
     const pathname = usePathname();
+    const router = useRouter();
+
+    const handleSwitchStore = () => {
+        setIsSwitching(true);
+        setIsOpen(false);
+        // Clear the store cookie (fire-and-forget)
+        fetch("/api/clear-store").catch(console.error);
+        // Navigate immediately
+        router.push("/stores");
+    };
 
     const isActive = (href: string) => {
         if (href === "/dashboard") {
@@ -165,6 +178,23 @@ export function MobileNav({ storeName, storeSlug }: MobileNavProps) {
                                 </div>
                                 <span>→</span>
                             </a>
+
+                            <button
+                                onClick={handleSwitchStore}
+                                disabled={isSwitching}
+                                className="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-slate-500 hover:text-slate-800 hover:bg-white transition-all duration-200 w-full disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                <div className="flex items-center gap-2">
+                                    {isSwitching ? (
+                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                    ) : (
+                                        <RefreshCcw className="h-4 w-4" />
+                                    )}
+                                    {isSwitching ? "Chargement..." : "Changer de boutique"}
+                                </div>
+                                {!isSwitching && <span>→</span>}
+                            </button>
+
                             <MobileLogoutButton onLogout={() => setIsOpen(false)} />
                         </div>
                     </SheetContent>
