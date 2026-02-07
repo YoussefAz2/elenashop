@@ -67,7 +67,7 @@ export default async function StoresPage() {
             {/* Content */}
             <div className="relative z-10 w-full max-w-5xl">
                 {/* Header */}
-                <div className="text-center mb-6 sm:mb-16">
+                <div className="text-center mb-6 sm:mb-16 animate-in fade-in slide-in-from-top-4 duration-700">
                     <Link href="/" className="inline-block mb-4 sm:mb-8 text-xl sm:text-2xl font-black tracking-tight text-zinc-900 hover:opacity-70 transition-opacity">
                         ElenaShop.
                     </Link>
@@ -100,7 +100,12 @@ export default async function StoresPage() {
                             <a
                                 key={store.id}
                                 href={`/dashboard?store=${store.id}`}
-                                className="group relative bg-white rounded-2xl sm:rounded-3xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-zinc-200/50 hover:-translate-y-2 border border-zinc-100"
+                                className="group relative bg-white rounded-2xl sm:rounded-3xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-zinc-200/50 hover:-translate-y-2 border border-zinc-100 animate-in fade-in slide-in-from-bottom-4"
+                                style={{
+                                    animationDelay: `${i * 100}ms`,
+                                    animationDuration: '500ms',
+                                    animationFillMode: 'backwards'
+                                }}
                             >
                                 {/* Abstract Cover */}
                                 <div className={`h-20 sm:h-36 w-full bg-gradient-to-br ${gradient} opacity-60 group-hover:opacity-90 transition-opacity duration-500`} />
