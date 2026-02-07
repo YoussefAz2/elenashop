@@ -72,7 +72,8 @@ export function Sidebar({ storeName, storeSlug }: SidebarProps) {
 
     const handleSwitchStore = () => {
         setIsSwitching(true);
-        router.push("/api/clear-store");
+        // Use window.location for API routes (router.push doesn't work with API routes)
+        window.location.href = "/api/clear-store";
     };
 
     const isActive = (href: string) => {
