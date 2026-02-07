@@ -62,10 +62,10 @@ export async function updateSession(request: NextRequest) {
             return NextResponse.redirect(url);
         }
 
-        // If logged in user tries to access login page, redirect to dashboard
+        // If logged in user tries to access login page, redirect to stores selection
         if (user && pathname === "/login") {
             const url = request.nextUrl.clone();
-            url.pathname = "/dashboard";
+            url.pathname = "/stores";
             return NextResponse.redirect(url);
         }
 
