@@ -1,7 +1,6 @@
-import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
-import { createClient } from "@/utils/supabase/server";
-import type { Order, Store, StoreWithRole } from "@/types";
+"use client";
+
+import { useDashboard } from "@/contexts/DashboardContext";
 import Link from "next/link";
 import {
     DollarSign,
@@ -11,137 +10,12 @@ import {
     Truck,
     ExternalLink,
     Package,
-    Clock,
-    CheckCircle,
-    XCircle,
     ArrowUpRight,
-    Search,
-    Filter
+    RefreshCw,
 } from "lucide-react";
 
-// Cache page data for 60 seconds for smoother navigation
-export const revalidate = 60;
-
-interface PageProps {
-    searchParams: Promise<{ store?: string }>;
-}
-
-export default async function DashboardPage({ searchParams }: PageProps) {
-    const supabase = await createClient();
-    const cookieStore = await cookies();
-    const params = await searchParams;
-
-    // Check authentication
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-
-    if (authError || !user) {
-        redirect("/login");
-    }
-
-    // Handle store selection from query param - redirect to API route handler
-    const storeFromParam = params.store;
-    if (storeFromParam) {
-        // Cookie setting must happen in a Route Handler, not Server Component
-        redirect(`/api/select-store?store=${storeFromParam}`);
-    }
-
-    // Try to get store from cookie or query param
-    const cookieStoreId = storeFromParam || cookieStore.get("current_store_id")?.value;
-
-    let currentStore: Store | null = null;
-    let allStores: StoreWithRole[] = [];
-
-    // Try direct store load if we have a cookie
-    if (cookieStoreId) {
-        try {
-            const { data } = await supabase
-                .from("stores")
-                .select("*")
-                .eq("id", cookieStoreId)
-                .single();
-
-            if (data) {
-                currentStore = data as Store;
-                allStores = [{ ...currentStore, role: "owner" as const }];
-            }
-        } catch (e) {
-            console.error("Direct store load failed:", e);
-        }
-    }
-
-    // If no store from cookie, try membership query
-    if (!currentStore) {
-        try {
-            const { data: memberships } = await supabase
-                .from("store_members")
-                .select("store_id, role")
-                .eq("user_id", user.id);
-
-            if (memberships && memberships.length > 0) {
-                const storeIds = memberships.map(m => m.store_id);
-
-                const { data: stores } = await supabase
-                    .from("stores")
-                    .select("*")
-                    .in("id", storeIds);
-
-                if (stores && stores.length > 0) {
-                    allStores = stores.map(store => {
-                        const membership = memberships.find(m => m.store_id === store.id);
-                        const role = (membership?.role || "owner") as "owner" | "admin" | "editor";
-                        return { ...store, role };
-                    }) as StoreWithRole[];
-
-                    currentStore = allStores[0] as Store;
-                }
-            }
-        } catch (e) {
-            console.error("Membership query failed:", e);
-        }
-    }
-
-    // Multiple stores and no preference saved - redirect to store selection page
-    if (allStores.length > 1 && !cookieStoreId) {
-        redirect("/stores");
-    }
-
-    // No store found - show helpful page
-    if (!currentStore) {
-        return (
-            <div className="flex items-center justify-center min-h-[80vh]">
-                <div className="text-center p-8 bg-white/60 backdrop-blur-xl rounded-3xl border border-slate-100 max-w-md shadow-xl shadow-slate-200/50">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-50 rounded-2xl mb-6">
-                        <span className="text-3xl">🏪</span>
-                    </div>
-                    <h1 className="text-2xl font-bold text-slate-900 mb-4">Bienvenue !</h1>
-                    <p className="text-slate-500 mb-8 leading-relaxed">Créez votre première boutique pour commencer à vendre en ligne.</p>
-                    <Link
-                        href="/onboarding"
-                        className="inline-block px-8 py-4 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-600/30 hover:-translate-y-0.5"
-                    >
-                        Créer ma boutique
-                    </Link>
-                </div>
-            </div>
-        );
-    }
-
-    // Fetch orders and products count
-    const [ordersRes, productsRes] = await Promise.all([
-        supabase
-            .from("orders")
-            .select("*")
-            .eq("store_id", currentStore.id)
-            .order("created_at", { ascending: false }),
-        supabase
-            .from("products")
-            .select("id")
-            .eq("store_id", currentStore.id)
-            .eq("is_active", true),
-    ]);
-
-    const allOrders = (ordersRes.data as Order[]) || [];
-    const productCount = productsRes.data?.length || 0;
+export default function DashboardPage() {
+    const { store, orders, products, isRefreshing, refresh } = useDashboard();
 
     // Calculate stats
     const today = new Date();
@@ -156,12 +30,12 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     const lastMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0, 23, 59, 59);
 
     // Filter orders by month
-    const thisMonthOrders = allOrders.filter(order => {
+    const thisMonthOrders = orders.filter(order => {
         const orderDate = new Date(order.created_at);
         return orderDate >= thisMonthStart && orderDate <= thisMonthEnd;
     });
 
-    const lastMonthOrders = allOrders.filter(order => {
+    const lastMonthOrders = orders.filter(order => {
         const orderDate = new Date(order.created_at);
         return orderDate >= lastMonthStart && orderDate <= lastMonthEnd;
     });
@@ -170,7 +44,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     const thisMonthRevenue = thisMonthOrders.reduce((sum, order) => sum + Number(order.total_price), 0);
     const lastMonthRevenue = lastMonthOrders.reduce((sum, order) => sum + Number(order.total_price), 0);
 
-    // Calculate month-over-month change (only if there's data to compare)
+    // Calculate month-over-month change
     let revenueChange: number | null = null;
     if (lastMonthRevenue > 0) {
         revenueChange = ((thisMonthRevenue - lastMonthRevenue) / lastMonthRevenue) * 100;
@@ -182,7 +56,8 @@ export default async function DashboardPage({ searchParams }: PageProps) {
         orderCountChange = ((thisMonthOrders.length - lastMonthOrders.length) / lastMonthOrders.length) * 100;
     }
 
-    const recentOrders = allOrders.slice(0, 5);
+    const productCount = products.filter(p => p.is_active).length;
+    const recentOrders = orders.slice(0, 5);
 
     const getStatusColor = (status: string) => {
         switch (status) {
@@ -218,13 +93,21 @@ export default async function DashboardPage({ searchParams }: PageProps) {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
                     <h1 className="text-4xl font-black tracking-tight text-slate-900 leading-tight">
-                        Bonjour, {(user.user_metadata?.first_name || "Entrepreneur")}
+                        Vue d&apos;ensemble
                     </h1>
                     <p className="text-slate-500 mt-2 text-lg font-medium">
-                        Voici ce qui se passe sur <span className="text-indigo-600 font-bold">{currentStore.name}</span> aujourd'hui.
+                        Voici ce qui se passe sur <span className="text-indigo-600 font-bold">{store.name}</span> aujourd&apos;hui.
                     </p>
                 </div>
                 <div className="flex items-center gap-4">
+                    <button
+                        onClick={refresh}
+                        disabled={isRefreshing}
+                        className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-colors disabled:opacity-50"
+                    >
+                        <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+                        {isRefreshing ? 'Actualisation...' : 'Actualiser'}
+                    </button>
                     <div className="hidden md:flex items-center gap-2 px-6 py-3 bg-white rounded-2xl border border-slate-100 text-sm font-bold text-slate-600 shadow-sm">
                         <span className="text-indigo-500">🗓️</span>
                         <span className="capitalize">{currentDate}</span>
@@ -248,8 +131,8 @@ export default async function DashboardPage({ searchParams }: PageProps) {
                         </div>
                         {revenueChange !== null ? (
                             <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-lg text-xs font-bold border ${revenueChange >= 0
-                                    ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
-                                    : 'bg-red-50 text-red-700 border-red-100'
+                                ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
+                                : 'bg-red-50 text-red-700 border-red-100'
                                 }`}>
                                 <ArrowUpRight className={`h-3 w-3 ${revenueChange < 0 ? 'rotate-90' : ''}`} />
                                 {revenueChange >= 0 ? '+' : ''}{revenueChange.toFixed(0)}% vs mois dernier
@@ -273,8 +156,8 @@ export default async function DashboardPage({ searchParams }: PageProps) {
                         </div>
                         {orderCountChange !== null ? (
                             <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-lg text-xs font-bold border ${orderCountChange >= 0
-                                    ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
-                                    : 'bg-red-50 text-red-700 border-red-100'
+                                ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
+                                : 'bg-red-50 text-red-700 border-red-100'
                                 }`}>
                                 <ShoppingBag className="h-3 w-3" />
                                 {orderCountChange >= 0 ? '+' : ''}{orderCountChange.toFixed(0)}% vs mois dernier
@@ -351,7 +234,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
                             </Link>
 
                             <a
-                                href={`/${currentStore.slug}`}
+                                href={`/${store.slug}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 hover:bg-white hover:shadow-md hover:shadow-indigo-500/5 border border-transparent hover:border-indigo-100 transition-all duration-200 group"

@@ -1,26 +1,15 @@
-import { createClient } from "@/utils/supabase/server";
-import type { Category } from "@/types";
+"use client";
+
+import { useDashboard } from "@/contexts/DashboardContext";
 import { CategoriesClient } from "@/components/dashboard/categories-client";
-import { getCurrentStore } from "@/utils/get-current-store";
 
-// Enable ISR for faster navigation
-export const revalidate = 30;
-
-export default async function CategoriesPage() {
-    const currentStore = await getCurrentStore();
-    const supabase = await createClient();
-
-    // Fetch categories for this store
-    const { data: categories } = await supabase
-        .from("categories")
-        .select("*")
-        .eq("store_id", currentStore.id)
-        .order("position", { ascending: true });
+export default function CategoriesPage() {
+    const { store, categories } = useDashboard();
 
     return (
         <CategoriesClient
-            seller={currentStore as any}
-            categories={(categories as Category[]) || []}
+            seller={store as any}
+            categories={categories}
         />
     );
 }

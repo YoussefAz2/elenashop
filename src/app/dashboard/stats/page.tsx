@@ -1,27 +1,10 @@
-import { createClient } from "@/utils/supabase/server";
-import type { Order, Product } from "@/types";
+"use client";
+
+import { useDashboard } from "@/contexts/DashboardContext";
 import { StatsClient } from "@/components/dashboard/stats-client";
-import { getCurrentStore } from "@/utils/get-current-store";
 
-// Cache for smoother navigation
-export const revalidate = 60;
-
-export default async function StatsPage() {
-    const currentStore = await getCurrentStore();
-    const supabase = await createClient();
-
-    // Fetch all orders for this store
-    const { data: orders } = await supabase
-        .from("orders")
-        .select("*")
-        .eq("store_id", currentStore.id)
-        .order("created_at", { ascending: false });
-
-    // Fetch products for top products stats
-    const { data: products } = await supabase
-        .from("products")
-        .select("id, title, price, image_url")
-        .eq("store_id", currentStore.id);
+export default function StatsPage() {
+    const { store, orders, products } = useDashboard();
 
     return (
         <div className="max-w-7xl mx-auto space-y-8">
@@ -38,9 +21,9 @@ export default async function StatsPage() {
             </div>
 
             <StatsClient
-                seller={currentStore as any}
-                orders={(orders as Order[]) || []}
-                products={(products as Pick<Product, "id" | "title" | "price" | "image_url">[]) || []}
+                seller={store as any}
+                orders={orders}
+                products={products.map(p => ({ id: p.id, title: p.title, price: p.price, image_url: p.image_url }))}
             />
         </div>
     );

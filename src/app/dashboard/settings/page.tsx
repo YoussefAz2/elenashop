@@ -1,6 +1,7 @@
-import type { Store } from "@/types";
+"use client";
+
+import { useDashboard } from "@/contexts/DashboardContext";
 import Link from "next/link";
-import { getCurrentStore } from "@/utils/get-current-store";
 import {
     Settings,
     Truck,
@@ -11,25 +12,22 @@ import {
     ExternalLink,
 } from "lucide-react";
 
-// Cache for smoother navigation
-export const revalidate = 60;
+interface SettingsItem {
+    icon: React.ElementType;
+    label: string;
+    description: string;
+    href: string;
+    external?: boolean;
+    comingSoon?: boolean;
+}
 
-export default async function SettingsPage() {
-    const currentStore = await getCurrentStore();
+interface SettingsSection {
+    title: string;
+    items: SettingsItem[];
+}
 
-    interface SettingsItem {
-        icon: React.ElementType;
-        label: string;
-        description: string;
-        href: string;
-        external?: boolean;
-        comingSoon?: boolean;
-    }
-
-    interface SettingsSection {
-        title: string;
-        items: SettingsItem[];
-    }
+export default function SettingsPage() {
+    const { store } = useDashboard();
 
     const settingsSections: SettingsSection[] = [
         {
@@ -44,8 +42,8 @@ export default async function SettingsPage() {
                 {
                     icon: Globe,
                     label: "Voir ma boutique",
-                    description: `/${currentStore.slug}`,
-                    href: `/${currentStore.slug}`,
+                    description: `/${store.slug}`,
+                    href: `/${store.slug}`,
                     external: true,
                 },
             ],
@@ -165,13 +163,13 @@ export default async function SettingsPage() {
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-zinc-800 mb-4 border border-zinc-700 shadow-inner">
                     <Settings className="h-8 w-8 text-zinc-100" />
                 </div>
-                <h3 className="text-white font-serif font-bold italic text-xl mb-1">{currentStore.name}</h3>
-                <p className="text-zinc-500 font-mono text-sm mb-4">ID: {currentStore.id}</p>
+                <h3 className="text-white font-serif font-bold italic text-xl mb-1">{store.name}</h3>
+                <p className="text-zinc-500 font-mono text-sm mb-4">ID: {store.id}</p>
                 <div className="inline-block bg-zinc-800 rounded-xl px-4 py-2 border border-zinc-700">
                     <p className="text-sm">
                         <span className="text-zinc-500">URL Publique: </span>
-                        <a href={`https://elenashop.vercel.app/${currentStore.slug}`} target="_blank" className="font-bold text-zinc-200 hover:text-white transition-colors">
-                            elenashop.vercel.app/{currentStore.slug}
+                        <a href={`https://elenashop.vercel.app/${store.slug}`} target="_blank" className="font-bold text-zinc-200 hover:text-white transition-colors">
+                            elenashop.vercel.app/{store.slug}
                         </a>
                     </p>
                 </div>

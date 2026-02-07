@@ -1,21 +1,13 @@
-import { createClient } from "@/utils/supabase/server";
-import type { Category, Promo, Product } from "@/types";
+"use client";
+
+import { useDashboard } from "@/contexts/DashboardContext";
 import { PromosClient } from "@/components/dashboard/promos-client";
-import { getCurrentStore } from "@/utils/get-current-store";
 
-// Cache for smoother navigation
-export const revalidate = 60;
+export default function PromosPage() {
+    const { store, promos, categories, products } = useDashboard();
 
-export default async function PromosPage() {
-    const currentStore = await getCurrentStore();
-    const supabase = await createClient();
-
-    // Fetch promos, categories, and products for this store
-    const [promosRes, categoriesRes, productsRes] = await Promise.all([
-        supabase.from("promos").select("*").eq("store_id", currentStore.id).order("created_at", { ascending: false }),
-        supabase.from("categories").select("*").eq("store_id", currentStore.id).order("position"),
-        supabase.from("products").select("id, title, price, image_url").eq("store_id", currentStore.id).eq("is_active", true),
-    ]);
+    // Filter only active products for promo selection
+    const activeProducts = products.filter(p => p.is_active);
 
     return (
         <div className="max-w-7xl mx-auto space-y-8">
@@ -32,10 +24,10 @@ export default async function PromosPage() {
             </div>
 
             <PromosClient
-                seller={currentStore as any}
-                promos={(promosRes.data as Promo[]) || []}
-                categories={(categoriesRes.data as Category[]) || []}
-                products={(productsRes.data as Pick<Product, "id" | "title" | "price" | "image_url">[]) || []}
+                seller={store as any}
+                promos={promos}
+                categories={categories}
+                products={activeProducts.map(p => ({ id: p.id, title: p.title, price: p.price, image_url: p.image_url }))}
             />
         </div>
     );

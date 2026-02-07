@@ -1,6 +1,6 @@
-import { createClient } from "@/utils/supabase/server";
-import type { Order } from "@/types";
-import { getCurrentStore } from "@/utils/get-current-store";
+"use client";
+
+import { useDashboard } from "@/contexts/DashboardContext";
 import {
     ShoppingBag,
     Phone,
@@ -10,23 +10,11 @@ import {
     Truck,
     XCircle,
     Package,
+    RefreshCw,
 } from "lucide-react";
 
-// Cache for smoother navigation
-export const revalidate = 60;
-
-export default async function OrdersPage() {
-    const currentStore = await getCurrentStore();
-    const supabase = await createClient();
-
-    // Fetch orders
-    const { data: orders } = await supabase
-        .from("orders")
-        .select("*")
-        .eq("store_id", currentStore.id)
-        .order("created_at", { ascending: false });
-
-    const allOrders = (orders as Order[]) || [];
+export default function OrdersPage() {
+    const { store, orders, isRefreshing, refresh, lastRefresh } = useDashboard();
 
     const getStatusIcon = (status: string) => {
         switch (status) {
@@ -89,14 +77,24 @@ export default async function OrdersPage() {
                         Suivez et gérez l&apos;activité de votre boutique.
                     </p>
                 </div>
-                <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-white rounded-full border border-zinc-200 text-sm font-bold text-zinc-600 shadow-sm">
-                    <Clock className="h-4 w-4 text-zinc-400" />
-                    {currentDate.replace(".", "")}
+                <div className="hidden md:flex items-center gap-4">
+                    <button
+                        onClick={refresh}
+                        disabled={isRefreshing}
+                        className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-zinc-500 hover:text-zinc-700 hover:bg-zinc-100 rounded-lg transition-colors disabled:opacity-50"
+                    >
+                        <RefreshCw className={`h-3.5 w-3.5 ${isRefreshing ? 'animate-spin' : ''}`} />
+                        {isRefreshing ? 'Mise à jour...' : 'Actualiser'}
+                    </button>
+                    <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full border border-zinc-200 text-sm font-bold text-zinc-600 shadow-sm">
+                        <Clock className="h-4 w-4 text-zinc-400" />
+                        {currentDate.replace(".", "")}
+                    </div>
                 </div>
             </div>
 
             {/* Orders List */}
-            {allOrders.length === 0 ? (
+            {orders.length === 0 ? (
                 <div className="bg-white/50 backdrop-blur-sm rounded-3xl border border-dashed border-zinc-200 p-16 text-center">
                     <div className="w-20 h-20 bg-zinc-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
                         <ShoppingBag className="h-8 w-8 text-zinc-300" />
@@ -106,7 +104,7 @@ export default async function OrdersPage() {
                         Partagez le lien de votre boutique pour recevoir vos premières commandes.
                     </p>
                     <a
-                        href={`/${currentStore.slug}`}
+                        href={`/${store.slug}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 px-6 py-3 bg-zinc-900 text-white rounded-xl hover:bg-zinc-800 transition-all font-bold shadow-lg shadow-zinc-900/20"
@@ -118,7 +116,7 @@ export default async function OrdersPage() {
             ) : (
                 <div className="bg-white rounded-3xl border border-zinc-100 overflow-hidden shadow-sm">
                     <div className="divide-y divide-zinc-50">
-                        {allOrders.map((order) => (
+                        {orders.map((order) => (
                             <div key={order.id} className="p-5 hover:bg-zinc-50/80 transition-all group cursor-default">
                                 <div className="flex items-start justify-between gap-6">
                                     <div className="flex items-start gap-5 flex-1">

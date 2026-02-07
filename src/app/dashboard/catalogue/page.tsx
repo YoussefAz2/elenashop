@@ -1,20 +1,10 @@
-import { createClient } from "@/utils/supabase/server";
-import type { Product, Category } from "@/types";
+"use client";
+
+import { useDashboard } from "@/contexts/DashboardContext";
 import { CatalogueClient } from "@/components/dashboard/catalogue-client";
-import { getCurrentStore } from "@/utils/get-current-store";
 
-// Cache for smoother navigation
-export const revalidate = 60;
-
-export default async function CataloguePage() {
-    const currentStore = await getCurrentStore();
-    const supabase = await createClient();
-
-    // Fetch products and categories for this store
-    const [productsRes, categoriesRes] = await Promise.all([
-        supabase.from("products").select("*").eq("store_id", currentStore.id).order("created_at", { ascending: false }),
-        supabase.from("categories").select("*").eq("store_id", currentStore.id).order("position"),
-    ]);
+export default function CataloguePage() {
+    const { store, products, categories } = useDashboard();
 
     return (
         <div className="max-w-7xl mx-auto space-y-8">
@@ -31,9 +21,9 @@ export default async function CataloguePage() {
             </div>
 
             <CatalogueClient
-                seller={currentStore as any}
-                products={(productsRes.data as Product[]) || []}
-                categories={(categoriesRes.data as Category[]) || []}
+                seller={store as any}
+                products={products}
+                categories={categories}
             />
         </div>
     );

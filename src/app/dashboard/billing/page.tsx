@@ -1,11 +1,10 @@
+"use client";
+
+import { useDashboard } from "@/contexts/DashboardContext";
 import { BillingClient } from "@/components/dashboard/billing-client";
-import { getCurrentStore } from "@/utils/get-current-store";
 
-// Enable ISR for faster navigation
-export const revalidate = 30;
+export default function BillingPage() {
+    const { store } = useDashboard();
 
-export default async function BillingPage() {
-    const currentStore = await getCurrentStore();
-
-    return <BillingClient seller={currentStore as any} />;
+    return <BillingClient seller={store as any} />;
 }

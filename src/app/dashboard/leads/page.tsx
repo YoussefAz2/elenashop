@@ -1,37 +1,14 @@
-import { createClient } from "@/utils/supabase/server";
-import type { Lead } from "@/types";
+"use client";
+
+import { useDashboard } from "@/contexts/DashboardContext";
 import { LeadsClient } from "@/components/dashboard/leads-client";
-import { getCurrentStore } from "@/utils/get-current-store";
 
-// Cache for smoother navigation
-export const revalidate = 60;
-
-export default async function LeadsPage() {
-    const currentStore = await getCurrentStore();
-    const supabase = await createClient();
-
-    // Fetch leads for this store
-    const { data: leads } = await supabase
-        .from("leads")
-        .select("*")
-        .eq("store_id", currentStore.id)
-        .order("created_at", { ascending: false });
-
-    // Fetch orders to filter out converted leads
-    const { data: orders } = await supabase
-        .from("orders")
-        .select("customer_phone")
-        .eq("store_id", currentStore.id);
-
-    const allLeads = (leads as Lead[]) || [];
-    const orderPhones = new Set(
-        (orders || []).map((o: { customer_phone: string }) => o.customer_phone)
-    );
+export default function LeadsPage() {
+    const { store, leads, orders } = useDashboard();
 
     // Filter out leads that have converted to orders
-    const abandonedLeads = allLeads.filter(
-        (lead) => !orderPhones.has(lead.customer_phone)
-    );
+    const orderPhones = new Set(orders.map(o => o.customer_phone));
+    const abandonedLeads = leads.filter(lead => !orderPhones.has(lead.customer_phone));
 
     return (
         <div className="max-w-7xl mx-auto space-y-8">
@@ -48,9 +25,9 @@ export default async function LeadsPage() {
             </div>
 
             <LeadsClient
-                seller={currentStore as any}
+                seller={store as any}
                 leads={abandonedLeads}
-                totalLeads={allLeads.length}
+                totalLeads={leads.length}
             />
         </div>
     );
