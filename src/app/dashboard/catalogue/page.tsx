@@ -80,7 +80,7 @@ export default async function CataloguePage() {
                             <div key={product.id} className="p-4 flex items-center gap-4 hover:bg-zinc-50/50">
                                 <div className="w-16 h-16 bg-zinc-100 rounded-xl overflow-hidden">
                                     {product.images && product.images[0] ? (
-                                        <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" />
+                                        <img src={product.images[0]} alt={product.title} className="w-full h-full object-cover" />
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center">
                                             <Package className="h-6 w-6 text-zinc-300" />
@@ -88,7 +88,7 @@ export default async function CataloguePage() {
                                     )}
                                 </div>
                                 <div className="flex-1">
-                                    <p className="font-bold text-zinc-900">{product.name}</p>
+                                    <p className="font-bold text-zinc-900">{product.title}</p>
                                     <p className="text-sm text-zinc-500">{Number(product.price).toFixed(2)} TND</p>
                                 </div>
                                 <span className={`px-3 py-1 rounded-full text-xs font-bold ${product.is_active ? 'bg-emerald-50 text-emerald-700' : 'bg-zinc-100 text-zinc-500'}`}>

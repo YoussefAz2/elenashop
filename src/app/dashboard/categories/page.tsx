@@ -46,9 +46,7 @@ export default async function CategoriesPage() {
                                 </div>
                                 <div className="flex-1">
                                     <p className="font-bold text-zinc-900">{category.name}</p>
-                                    {category.description && (
-                                        <p className="text-sm text-zinc-500 mt-1">{category.description}</p>
-                                    )}
+                                    <p className="text-sm text-zinc-500 mt-1 font-mono">/{category.slug}</p>
                                 </div>
                                 <span className="text-sm text-zinc-400 font-mono">
                                     Position: {category.position}

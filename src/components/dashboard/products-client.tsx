@@ -43,15 +43,15 @@ import {
     AlignVerticalJustifyEnd,
 } from "lucide-react";
 import Image from "next/image";
-import type { Profile, Product, Category } from "@/types";
+import type { Product, Category } from "@/types";
 
 interface ProductsClientProps {
-    seller: Profile;
+    storeId: string;
     products: Product[];
     categories: Category[];
 }
 
-export function ProductsClient({ seller, products: initialProducts, categories }: ProductsClientProps) {
+export function ProductsClient({ storeId, products: initialProducts, categories }: ProductsClientProps) {
     const [products, setProducts] = useState(initialProducts);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -171,7 +171,7 @@ export function ProductsClient({ seller, products: initialProducts, categories }
         // Upload new images
         for (const file of imageFiles) {
             const fileExt = file.name.split(".").pop();
-            const fileName = `${seller.id}/${Date.now()}_${Math.random().toString(36).slice(2)}.${fileExt}`;
+            const fileName = `${storeId}/${Date.now()}_${Math.random().toString(36).slice(2)}.${fileExt}`;
 
             const { error: uploadError } = await supabase.storage
                 .from("products")
@@ -224,7 +224,7 @@ export function ProductsClient({ seller, products: initialProducts, categories }
             } else {
                 const { data: newProduct, error: insertError } = await supabase
                     .from("products")
-                    .insert({ ...productData, store_id: seller.id })
+                    .insert({ ...productData, store_id: storeId })
                     .select()
                     .single();
 

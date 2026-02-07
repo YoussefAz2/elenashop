@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import type { Profile, Product, Category } from "@/types";
+import type { Product, Category } from "@/types";
 import { Loader2 } from "lucide-react";
 
 const ProductsClient = dynamic(
@@ -17,12 +17,12 @@ const ProductsClient = dynamic(
 );
 
 interface ProductsWrapperProps {
-    seller: Profile;
+    storeId: string;
     products: Product[];
     categories: Category[];
 }
 
-export function ProductsWrapper({ seller, products, categories }: ProductsWrapperProps) {
-    return <ProductsClient seller={seller} products={products} categories={categories} />;
+export function ProductsWrapper({ storeId, products, categories }: ProductsWrapperProps) {
+    return <ProductsClient storeId={storeId} products={products} categories={categories} />;
 }
 

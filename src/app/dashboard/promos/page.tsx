@@ -46,7 +46,7 @@ export default async function PromosPage() {
                                         <Percent className="h-6 w-6 text-emerald-600" />
                                     </div>
                                     <div>
-                                        <p className="font-bold text-zinc-900 font-mono">{promo.code}</p>
+                                        <p className="font-bold text-zinc-900 font-mono">{promo.name}</p>
                                         <p className="text-sm text-zinc-500 mt-1">
                                             {promo.discount_type === "percentage" ? `${promo.discount_value}%` : `${promo.discount_value} TND`} de réduction
                                         </p>

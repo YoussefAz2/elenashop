@@ -1,7 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { getCurrentStore } from "@/utils/get-current-store";
 import type { Lead } from "@/types";
-import { Users, Mail, Phone, Calendar } from "lucide-react";
+import { Users, Phone, Calendar } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -46,18 +46,12 @@ export default async function LeadsPage() {
                                         <Users className="h-6 w-6 text-amber-600" />
                                     </div>
                                     <div>
-                                        <p className="font-bold text-zinc-900">{lead.name || "Anonyme"}</p>
+                                        <p className="font-bold text-zinc-900">{lead.customer_name || "Anonyme"}</p>
                                         <div className="flex items-center gap-4 text-sm text-zinc-500 mt-1">
-                                            {lead.email && (
-                                                <span className="flex items-center gap-1">
-                                                    <Mail className="h-3 w-3" />
-                                                    {lead.email}
-                                                </span>
-                                            )}
-                                            {lead.phone && (
+                                            {lead.customer_phone && (
                                                 <span className="flex items-center gap-1">
                                                     <Phone className="h-3 w-3" />
-                                                    {lead.phone}
+                                                    {lead.customer_phone}
                                                 </span>
                                             )}
                                         </div>
