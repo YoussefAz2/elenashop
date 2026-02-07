@@ -1,5 +1,4 @@
 import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
 import type { Store, StoreWithRole } from "@/types";
 import Link from "next/link";
@@ -7,7 +6,6 @@ import { Plus, ArrowRight } from "lucide-react";
 
 export default async function StoresPage() {
     const supabase = await createClient();
-    const cookieStore = await cookies();
 
     // Check authentication
     const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -16,22 +14,8 @@ export default async function StoresPage() {
         redirect("/login");
     }
 
-    // Check if user already has a store selected in cookie
-    const cookieStoreId = cookieStore.get("current_store_id")?.value;
-
-    // If a store is already selected, go to dashboard
-    if (cookieStoreId) {
-        // Verify the store still exists and user has access
-        const { data: store } = await supabase
-            .from("stores")
-            .select("id")
-            .eq("id", cookieStoreId)
-            .single();
-
-        if (store) {
-            redirect("/dashboard");
-        }
-    }
+    // Note: We don't redirect to dashboard even if a cookie exists
+    // Users who visit /stores explicitly want to switch or manage stores
 
     // Fetch all stores the user has access to
     let allStores: StoreWithRole[] = [];
