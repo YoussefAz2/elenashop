@@ -61,13 +61,17 @@ function LogoutButton() {
 }
 
 function StoreSwitcher({ storeName }: { storeName: string }) {
+    const router = useRouter();
     const [isSwitching, setIsSwitching] = useState(false);
 
     const handleSwitch = async () => {
         setIsSwitching(true);
         try {
+            // Clear the store cookie
             await fetch("/api/clear-store");
-            window.location.href = "/stores";
+            // Use router.push for instant client-side navigation
+            router.push("/stores");
+            router.refresh();
         } catch (error) {
             console.error("Failed to switch store:", error);
             setIsSwitching(false);
@@ -78,7 +82,8 @@ function StoreSwitcher({ storeName }: { storeName: string }) {
         <button
             onClick={handleSwitch}
             disabled={isSwitching}
-            className="group flex items-center gap-2.5 p-3 -mx-2 rounded-xl hover:bg-zinc-50 transition-all duration-200 mb-6 border border-transparent hover:border-zinc-100 w-full text-left disabled:opacity-70 disabled:cursor-not-allowed"
+            className={`group flex items-center gap-2.5 p-3 -mx-2 rounded-xl hover:bg-zinc-50 transition-all duration-300 mb-6 border border-transparent hover:border-zinc-100 w-full text-left disabled:cursor-not-allowed ${isSwitching ? 'opacity-70 scale-95' : 'opacity-100 scale-100'
+                }`}
         >
             <div className="w-9 h-9 rounded-xl bg-zinc-900 flex items-center justify-center text-white font-serif font-bold text-base italic shrink-0">
                 {isSwitching ? (
