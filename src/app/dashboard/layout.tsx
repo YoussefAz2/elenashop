@@ -1,66 +1,19 @@
 import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
-import { createClient } from "@/utils/supabase/server";
-import type { Store } from "@/types";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { MobileNav } from "@/components/dashboard/mobile-nav";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
+import { getCurrentStore } from "@/utils/get-current-store";
+
+// Enable static generation with revalidation for faster subsequent loads
+export const revalidate = 30; // Revalidate every 30 seconds
 
 export default async function DashboardLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
-    const supabase = await createClient();
-    const cookieStore = await cookies();
-
-    // Check authentication
-    const {
-        data: { user },
-        error: authError,
-    } = await supabase.auth.getUser();
-
-    if (authError || !user) {
-        redirect("/login");
-    }
-
-    // Get current store from cookie
-    const currentStoreId = cookieStore.get("current_store_id")?.value;
-
-    let store: Store | null = null;
-
-    if (currentStoreId) {
-        const { data } = await supabase
-            .from("stores")
-            .select("*")
-            .eq("id", currentStoreId)
-            .single();
-        store = data as Store | null;
-    }
-
-    // If no store in cookie (or cookie invalid), get first store from membership
-    if (!store) {
-        const { data: membership } = await supabase
-            .from("store_members")
-            .select("store_id, stores(*)")
-            .eq("user_id", user.id)
-            .limit(1)
-            .single();
-
-        if (membership?.stores) {
-            store = membership.stores as unknown as Store;
-            // Note: Cookie will be set when user navigates through /stores or /api/select-store
-            // For now, we just use the store directly - it works for this request
-        }
-    }
-
-    // If no store at all, redirect to onboarding
-    if (!store) {
-        redirect("/onboarding");
-    }
-
-    const storeName = store.name;
-    const storeSlug = store.slug;
+    // Use cached function - no duplicate calls if pages also call it
+    const store = await getCurrentStore();
 
     return (
         <div className="min-h-screen bg-slate-50/50 relative overflow-hidden font-sans selection:bg-indigo-100 selection:text-indigo-900">
@@ -70,10 +23,10 @@ export default async function DashboardLayout({
             </div>
 
             {/* Desktop Sidebar */}
-            <Sidebar storeName={storeName} storeSlug={storeSlug} />
+            <Sidebar storeName={store.name} storeSlug={store.slug} />
 
             {/* Mobile Navigation */}
-            <MobileNav storeName={storeName} storeSlug={storeSlug} />
+            <MobileNav storeName={store.name} storeSlug={store.slug} />
 
             {/* Main Content */}
             <main className="lg:pl-[260px] pt-14 lg:pt-0 min-h-screen relative z-10">

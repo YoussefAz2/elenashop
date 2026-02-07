@@ -3,6 +3,9 @@ import type { Category } from "@/types";
 import { CategoriesClient } from "@/components/dashboard/categories-client";
 import { getCurrentStore } from "@/utils/get-current-store";
 
+// Enable ISR for faster navigation
+export const revalidate = 30;
+
 export default async function CategoriesPage() {
     const currentStore = await getCurrentStore();
     const supabase = await createClient();

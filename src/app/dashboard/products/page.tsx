@@ -3,6 +3,9 @@ import type { Product, Category } from "@/types";
 import { ProductsClient } from "@/components/dashboard/products-client";
 import { getCurrentStore } from "@/utils/get-current-store";
 
+// Enable ISR for faster navigation
+export const revalidate = 30;
+
 export default async function ProductsPage() {
     const currentStore = await getCurrentStore();
     const supabase = await createClient();

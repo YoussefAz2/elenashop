@@ -2,15 +2,16 @@ import { cookies } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import type { Store } from "@/types";
+import { cache } from "react";
 
 /**
  * Get the current store for dashboard pages.
- * Uses cookie if available, otherwise fetches from membership.
+ * Uses React.cache for request-level memoization - only one DB call per request.
  * 
  * IMPORTANT: This function reads the store but does NOT modify cookies.
  * Cookie is set by /api/select-store route handler.
  */
-export async function getCurrentStore(): Promise<Store> {
+export const getCurrentStore = cache(async (): Promise<Store> => {
     const supabase = await createClient();
     const cookieStore = await cookies();
 
@@ -45,11 +46,23 @@ export async function getCurrentStore(): Promise<Store> {
         .single();
 
     if (membership?.stores) {
-        // Return the store - it will work for this request
-        // The layout or a client component should set the cookie properly
         return membership.stores as unknown as Store;
     }
 
     // User has no stores - go to onboarding
     redirect("/onboarding");
-}
+});
+
+/**
+ * Get authenticated user - cached per request
+ */
+export const getAuthenticatedUser = cache(async () => {
+    const supabase = await createClient();
+    const { data: { user }, error } = await supabase.auth.getUser();
+
+    if (error || !user) {
+        redirect("/login");
+    }
+
+    return user;
+});
