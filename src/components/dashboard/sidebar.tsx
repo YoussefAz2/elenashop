@@ -64,18 +64,12 @@ function StoreSwitcher({ storeName }: { storeName: string }) {
     const router = useRouter();
     const [isSwitching, setIsSwitching] = useState(false);
 
-    const handleSwitch = async () => {
+    const handleSwitch = () => {
         setIsSwitching(true);
-        try {
-            // Clear the store cookie
-            await fetch("/api/clear-store");
-            // Use router.push for instant client-side navigation
-            router.push("/stores");
-            router.refresh();
-        } catch (error) {
-            console.error("Failed to switch store:", error);
-            setIsSwitching(false);
-        }
+        // Clear the store cookie (fire-and-forget - don't wait)
+        fetch("/api/clear-store").catch(console.error);
+        // Navigate immediately for instant transition
+        router.push("/stores");
     };
 
     return (
