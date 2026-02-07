@@ -58,18 +58,19 @@ export default async function EditorPage() {
     const currentStore = store as Store;
     const themeConfig = currentStore.theme_config || DEFAULT_THEME_CONFIG;
 
-    // Fetch products for this store
+    // Fetch products for this store (only needed columns)
     const { data: products } = await supabase
         .from("products")
-        .select("*")
+        .select("id, title, description, price, image_url, is_active, stock, created_at")
         .eq("store_id", currentStore.id)
         .eq("is_active", true)
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false })
+        .limit(100); // Reasonable limit
 
-    // Fetch pages for this store
+    // Fetch pages for this store (only needed columns)
     const { data: pages } = await supabase
         .from("pages")
-        .select("*")
+        .select("id, title, slug, content, is_published, created_at")
         .eq("store_id", currentStore.id)
         .order("created_at", { ascending: false });
 

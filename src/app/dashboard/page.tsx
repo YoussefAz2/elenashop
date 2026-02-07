@@ -20,21 +20,22 @@ export default async function DashboardPage() {
     const store = await getCurrentStore();
     const supabase = await createClient();
 
-    // Fetch orders and products
+    // Fetch orders and products (optimized queries)
     const [ordersRes, productsRes] = await Promise.all([
         supabase
             .from("orders")
-            .select("*")
+            .select("id, customer_name, customer_phone, customer_address, items, total, status, created_at")
             .eq("store_id", store.id)
-            .order("created_at", { ascending: false }),
+            .order("created_at", { ascending: false })
+            .limit(50), // Only fetch recent 50 orders for dashboard
         supabase
             .from("products")
             .select("id, is_active")
             .eq("store_id", store.id)
             .eq("is_active", true),
-    ]);
+    ])
 
-    const orders = (ordersRes.data as Order[]) || [];
+    const orders = (ordersRes.data as unknown as Order[]) || [];
     const productCount = productsRes.data?.length || 0;
 
     // Calculate stats
