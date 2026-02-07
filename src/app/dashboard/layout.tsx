@@ -28,6 +28,7 @@ export default async function DashboardLayout({
     const currentStoreId = cookieStore.get("current_store_id")?.value;
 
     let store: Store | null = null;
+    let needsCookieSync = false;
 
     if (currentStoreId) {
         const { data } = await supabase
@@ -38,7 +39,7 @@ export default async function DashboardLayout({
         store = data as Store | null;
     }
 
-    // If no store in cookie, try to get first store from membership
+    // If no store in cookie (or cookie invalid), get first store from membership
     if (!store) {
         const { data: membership } = await supabase
             .from("store_members")
@@ -49,12 +50,23 @@ export default async function DashboardLayout({
 
         if (membership?.stores) {
             store = membership.stores as unknown as Store;
+            needsCookieSync = true;
         }
     }
 
-    // Default values if no store found
-    const storeName = store?.name || "Ma Boutique";
-    const storeSlug = store?.slug || "";
+    // If no store at all, redirect to onboarding
+    if (!store) {
+        redirect("/onboarding");
+    }
+
+    // If we found a store but no valid cookie, redirect through API to set it
+    // This ensures the cookie is properly set via Route Handler
+    if (needsCookieSync) {
+        redirect(`/api/select-store?store=${store.id}`);
+    }
+
+    const storeName = store.name;
+    const storeSlug = store.slug;
 
     return (
         <div className="min-h-screen bg-slate-50/50 relative overflow-hidden font-sans selection:bg-indigo-100 selection:text-indigo-900">
