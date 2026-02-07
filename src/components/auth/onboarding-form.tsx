@@ -45,18 +45,29 @@ const STEPS = [
 ];
 
 const slideVariants = {
-    enter: (direction: number) => ({
-        x: direction > 0 ? 300 : -300,
-        opacity: 0,
-    }),
+    enter: (direction: number) => {
+        const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+        const distance = isMobile ? 150 : 300;
+        return {
+            x: direction > 0 ? distance : -distance,
+            opacity: 0,
+            scale: isMobile ? 0.97 : 1,
+        };
+    },
     center: {
         x: 0,
         opacity: 1,
+        scale: 1,
     },
-    exit: (direction: number) => ({
-        x: direction < 0 ? 300 : -300,
-        opacity: 0,
-    }),
+    exit: (direction: number) => {
+        const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+        const distance = isMobile ? 150 : 300;
+        return {
+            x: direction < 0 ? distance : -distance,
+            opacity: 0,
+            scale: isMobile ? 0.97 : 1,
+        };
+    },
 };
 
 export function OnboardingForm({ userId }: OnboardingFormProps) {
@@ -480,7 +491,7 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
                             variant="ghost"
                             onClick={prevStep}
                             disabled={currentStep === 1}
-                            className="gap-2 text-zinc-400 hover:text-zinc-900 hover:bg-zinc-50"
+                            className="gap-2 text-zinc-400 hover:text-zinc-900 hover:bg-zinc-50 active:scale-95 transition-transform min-h-[44px]"
                         >
                             <ArrowLeft className="h-4 w-4" />
                             Retour
@@ -491,7 +502,7 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
                                 type="button"
                                 onClick={nextStep}
                                 disabled={!canProceed()}
-                                className="gap-2 bg-zinc-900 hover:bg-zinc-800 text-white px-8 rounded-xl font-bold shadow-lg shadow-zinc-200"
+                                className="gap-2 bg-zinc-900 hover:bg-zinc-800 text-white px-8 rounded-xl font-bold shadow-lg shadow-zinc-200 active:scale-95 transition-transform min-h-[44px]"
                             >
                                 Continuer
                                 <ArrowRight className="h-4 w-4" />
@@ -501,7 +512,7 @@ export function OnboardingForm({ userId }: OnboardingFormProps) {
                                 type="button"
                                 onClick={handleSubmit}
                                 disabled={!canProceed() || isLoading}
-                                className="gap-2 bg-zinc-900 hover:bg-zinc-800 text-white px-8 rounded-xl font-bold shadow-lg shadow-zinc-900/20"
+                                className="gap-2 bg-zinc-900 hover:bg-zinc-800 text-white px-8 rounded-xl font-bold shadow-lg shadow-zinc-900/20 active:scale-95 transition-transform min-h-[44px]"
                             >
                                 {isLoading ? (
                                     <Loader2 className="h-5 w-5 animate-spin" />
