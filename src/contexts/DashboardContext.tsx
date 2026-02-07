@@ -16,7 +16,7 @@ interface DashboardData {
 interface DashboardContextType extends DashboardData {
     isLoading: boolean;
     isRefreshing: boolean;
-    lastRefresh: Date;
+    lastRefresh: number;
     refresh: () => Promise<void>;
 }
 
@@ -31,9 +31,16 @@ export function DashboardProvider({ children, initialData }: DashboardProviderPr
     const [data, setData] = useState<DashboardData>(initialData);
     const [isLoading, setIsLoading] = useState(false);
     const [isRefreshing, setIsRefreshing] = useState(false);
-    const [lastRefresh, setLastRefresh] = useState(new Date());
+    const [lastRefresh, setLastRefresh] = useState<number>(0); // Use timestamp instead of Date to avoid hydration mismatch
+    const [isMounted, setIsMounted] = useState(false);
 
     const supabase = createClient();
+
+    // Set mounted state on client
+    useEffect(() => {
+        setIsMounted(true);
+        setLastRefresh(Date.now());
+    }, []);
 
     const refresh = useCallback(async () => {
         if (isRefreshing) return;
@@ -61,7 +68,7 @@ export function DashboardProvider({ children, initialData }: DashboardProviderPr
                 promos: (promosRes.data as Promo[]) || prev.promos,
             }));
 
-            setLastRefresh(new Date());
+            setLastRefresh(Date.now());
         } catch (error) {
             console.error("Failed to refresh dashboard data:", error);
         } finally {
@@ -81,7 +88,7 @@ export function DashboardProvider({ children, initialData }: DashboardProviderPr
     // Refresh on window focus (user comes back to tab)
     useEffect(() => {
         const handleFocus = () => {
-            const timeSinceLastRefresh = Date.now() - lastRefresh.getTime();
+            const timeSinceLastRefresh = Date.now() - lastRefresh;
             // Only refresh if more than 10 seconds since last refresh
             if (timeSinceLastRefresh > 10000) {
                 refresh();
