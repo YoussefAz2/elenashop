@@ -1,34 +1,79 @@
-"use client";
+import { createClient } from "@/utils/supabase/server";
+import { getCurrentStore } from "@/utils/get-current-store";
+import type { Lead } from "@/types";
+import { Users, Mail, Phone, Calendar } from "lucide-react";
 
-import { useDashboard } from "@/contexts/DashboardContext";
-import { LeadsClient } from "@/components/dashboard/leads-client";
+export const dynamic = "force-dynamic";
 
-export default function LeadsPage() {
-    const { store, leads, orders } = useDashboard();
+export default async function LeadsPage() {
+    const store = await getCurrentStore();
+    const supabase = await createClient();
 
-    // Filter out leads that have converted to orders
-    const orderPhones = new Set(orders.map(o => o.customer_phone));
-    const abandonedLeads = leads.filter(lead => !orderPhones.has(lead.customer_phone));
+    const { data } = await supabase
+        .from("leads")
+        .select("*")
+        .eq("store_id", store.id)
+        .order("created_at", { ascending: false });
+
+    const leads = (data as Lead[]) || [];
 
     return (
-        <div className="max-w-7xl mx-auto space-y-8">
-            {/* Header - Editorial Premium */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-100 pb-8">
-                <div>
-                    <h1 className="text-4xl font-serif font-bold italic tracking-tight text-zinc-900 leading-tight">
-                        Paniers Abandonnés
-                    </h1>
-                    <p className="text-zinc-500 mt-2 text-lg font-medium">
-                        Relancez vos visiteurs et convertissez-les en clients.
-                    </p>
-                </div>
+        <div className="max-w-6xl mx-auto space-y-8">
+            {/* Header */}
+            <div className="border-b border-zinc-100 pb-8">
+                <h1 className="text-4xl font-serif font-bold italic tracking-tight text-zinc-900 leading-tight">Paniers abandonnés</h1>
+                <p className="text-zinc-500 mt-2 text-lg font-medium">Clients potentiels qui n&apos;ont pas finalisé leur achat.</p>
             </div>
 
-            <LeadsClient
-                seller={store as any}
-                leads={abandonedLeads}
-                totalLeads={leads.length}
-            />
+            {/* Leads List */}
+            {leads.length === 0 ? (
+                <div className="bg-white rounded-3xl border border-zinc-100 p-12 text-center">
+                    <div className="w-20 h-20 bg-zinc-50 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-zinc-100">
+                        <Users className="h-10 w-10 text-zinc-300" />
+                    </div>
+                    <h3 className="text-xl font-bold text-zinc-900 mb-2">Aucun panier abandonné</h3>
+                    <p className="text-zinc-500 max-w-md mx-auto">
+                        Les clients qui abandonnent leur panier apparaîtront ici.
+                    </p>
+                </div>
+            ) : (
+                <div className="bg-white rounded-3xl border border-zinc-100 overflow-hidden divide-y divide-zinc-50">
+                    {leads.map((lead) => (
+                        <div key={lead.id} className="p-6 hover:bg-zinc-50/50 transition-colors">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center">
+                                        <Users className="h-6 w-6 text-amber-600" />
+                                    </div>
+                                    <div>
+                                        <p className="font-bold text-zinc-900">{lead.name || "Anonyme"}</p>
+                                        <div className="flex items-center gap-4 text-sm text-zinc-500 mt-1">
+                                            {lead.email && (
+                                                <span className="flex items-center gap-1">
+                                                    <Mail className="h-3 w-3" />
+                                                    {lead.email}
+                                                </span>
+                                            )}
+                                            {lead.phone && (
+                                                <span className="flex items-center gap-1">
+                                                    <Phone className="h-3 w-3" />
+                                                    {lead.phone}
+                                                </span>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="text-right">
+                                    <div className="flex items-center gap-1 text-sm text-zinc-400">
+                                        <Calendar className="h-3 w-3" />
+                                        {new Date(lead.created_at).toLocaleDateString("fr-FR")}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

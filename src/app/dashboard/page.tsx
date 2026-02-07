@@ -1,6 +1,7 @@
-"use client";
-
-import { useDashboard } from "@/contexts/DashboardContext";
+import { redirect } from "next/navigation";
+import { createClient } from "@/utils/supabase/server";
+import { getCurrentStore } from "@/utils/get-current-store";
+import type { Order, Product } from "@/types";
 import Link from "next/link";
 import {
     DollarSign,
@@ -11,25 +12,40 @@ import {
     ExternalLink,
     Package,
     ArrowUpRight,
-    RefreshCw,
 } from "lucide-react";
 
-export default function DashboardPage() {
-    const { store, orders, products, isRefreshing, refresh } = useDashboard();
+export const dynamic = "force-dynamic";
+
+export default async function DashboardPage() {
+    const store = await getCurrentStore();
+    const supabase = await createClient();
+
+    // Fetch orders and products
+    const [ordersRes, productsRes] = await Promise.all([
+        supabase
+            .from("orders")
+            .select("*")
+            .eq("store_id", store.id)
+            .order("created_at", { ascending: false }),
+        supabase
+            .from("products")
+            .select("id, is_active")
+            .eq("store_id", store.id)
+            .eq("is_active", true),
+    ]);
+
+    const orders = (ordersRes.data as Order[]) || [];
+    const productCount = productsRes.data?.length || 0;
 
     // Calculate stats
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // Current month boundaries
     const thisMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
     const thisMonthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59);
-
-    // Last month boundaries
     const lastMonthStart = new Date(today.getFullYear(), today.getMonth() - 1, 1);
     const lastMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0, 23, 59, 59);
 
-    // Filter orders by month
     const thisMonthOrders = orders.filter(order => {
         const orderDate = new Date(order.created_at);
         return orderDate >= thisMonthStart && orderDate <= thisMonthEnd;
@@ -40,23 +56,19 @@ export default function DashboardPage() {
         return orderDate >= lastMonthStart && orderDate <= lastMonthEnd;
     });
 
-    // Calculate revenues
     const thisMonthRevenue = thisMonthOrders.reduce((sum, order) => sum + Number(order.total_price), 0);
     const lastMonthRevenue = lastMonthOrders.reduce((sum, order) => sum + Number(order.total_price), 0);
 
-    // Calculate month-over-month change
     let revenueChange: number | null = null;
     if (lastMonthRevenue > 0) {
         revenueChange = ((thisMonthRevenue - lastMonthRevenue) / lastMonthRevenue) * 100;
     }
 
-    // Order count comparison
     let orderCountChange: number | null = null;
     if (lastMonthOrders.length > 0) {
         orderCountChange = ((thisMonthOrders.length - lastMonthOrders.length) / lastMonthOrders.length) * 100;
     }
 
-    const productCount = products.filter(p => p.is_active).length;
     const recentOrders = orders.slice(0, 5);
 
     const getStatusColor = (status: string) => {
@@ -89,7 +101,7 @@ export default function DashboardPage() {
 
     return (
         <div className="max-w-[1600px] mx-auto space-y-10 p-4 lg:p-10">
-            {/* Header - Clean & Bold */}
+            {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
                     <h1 className="text-4xl font-black tracking-tight text-slate-900 leading-tight">
@@ -100,14 +112,6 @@ export default function DashboardPage() {
                     </p>
                 </div>
                 <div className="flex items-center gap-4">
-                    <button
-                        onClick={refresh}
-                        disabled={isRefreshing}
-                        className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-colors disabled:opacity-50"
-                    >
-                        <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-                        {isRefreshing ? 'Actualisation...' : 'Actualiser'}
-                    </button>
                     <div className="hidden md:flex items-center gap-2 px-6 py-3 bg-white rounded-2xl border border-slate-100 text-sm font-bold text-slate-600 shadow-sm">
                         <span className="text-indigo-500">🗓️</span>
                         <span className="capitalize">{currentDate}</span>
@@ -115,7 +119,7 @@ export default function DashboardPage() {
                 </div>
             </div>
 
-            {/* Metric Cards - Ghost Style */}
+            {/* Metric Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="group bg-white rounded-[2rem] p-8 border border-white/40 shadow-xl shadow-slate-200/40 hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
                     <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
@@ -187,9 +191,8 @@ export default function DashboardPage() {
                 </div>
             </div>
 
-            {/* Quick Actions & Recent Orders Grid */}
+            {/* Quick Actions & Recent Orders */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Actions */}
                 <div className="lg:col-span-1 space-y-6">
                     <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-6">
                         <h2 className="font-bold text-slate-900 mb-6 text-lg tracking-tight">
@@ -250,7 +253,6 @@ export default function DashboardPage() {
                     </div>
                 </div>
 
-                {/* Orders List */}
                 <div className="lg:col-span-2 bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden flex flex-col">
                     <div className="p-8 border-b border-slate-50 flex items-center justify-between bg-white/50 backdrop-blur-sm sticky top-0 z-10">
                         <div>

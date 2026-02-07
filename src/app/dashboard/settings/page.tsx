@@ -1,6 +1,4 @@
-"use client";
-
-import { useDashboard } from "@/contexts/DashboardContext";
+import { getCurrentStore } from "@/utils/get-current-store";
 import Link from "next/link";
 import {
     Settings,
@@ -11,6 +9,8 @@ import {
     Palette,
     ExternalLink,
 } from "lucide-react";
+
+export const dynamic = "force-dynamic";
 
 interface SettingsItem {
     icon: React.ElementType;
@@ -26,8 +26,8 @@ interface SettingsSection {
     items: SettingsItem[];
 }
 
-export default function SettingsPage() {
-    const { store } = useDashboard();
+export default async function SettingsPage() {
+    const store = await getCurrentStore();
 
     const settingsSections: SettingsSection[] = [
         {
