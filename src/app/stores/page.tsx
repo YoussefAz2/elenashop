@@ -46,10 +46,11 @@ export default async function StoresPage() {
         console.error("Membership query failed:", e);
     }
 
-    // If user has only one store, auto-select it via API and redirect
-    if (allStores.length === 1) {
-        redirect(`/api/select-store?store=${allStores[0].id}`);
-    }
+    // REMOVED: Auto-redirect disabled to allow store switching
+    // Even with 1 store, user should be able to see the stores page if they explicitly navigate here
+    // if (allStores.length === 1) {
+    //     redirect(`/api/select-store?store=${allStores[0].id}`);
+    // }
 
     // If user has no stores, redirect to onboarding
     if (allStores.length === 0) {
