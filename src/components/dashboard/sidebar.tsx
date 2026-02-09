@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import {
     LayoutDashboard,
@@ -59,12 +59,14 @@ function LogoutButton() {
 
 function StoreSwitcher({ storeName }: { storeName: string }) {
     const [isSwitching, setIsSwitching] = useState(false);
+    const router = useRouter();
 
     const handleSwitch = () => {
         setIsSwitching(true);
-        // Clear cookie client-side (skip /api/clear-store round-trip)
+        // Clear cookie client-side
         document.cookie = "current_store_id=; path=/; max-age=0";
-        window.location.href = "/stores";
+        // Use router.push to show stores skeleton immediately
+        router.push("/stores");
     };
 
     return (

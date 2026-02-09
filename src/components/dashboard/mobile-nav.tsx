@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
     LayoutDashboard,
     Package,
@@ -76,13 +76,15 @@ export function MobileNav({ storeName, storeSlug }: MobileNavProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [isSwitching, setIsSwitching] = useState(false);
     const pathname = usePathname();
+    const router = useRouter();
 
     const handleSwitchStore = () => {
         setIsSwitching(true);
         setIsOpen(false);
-        // Clear cookie client-side (skip /api/clear-store round-trip)
+        // Clear cookie client-side
         document.cookie = "current_store_id=; path=/; max-age=0";
-        window.location.href = "/stores";
+        // Use router.push to show stores skeleton immediately
+        router.push("/stores");
     };
 
     const isActive = (href: string) => {
