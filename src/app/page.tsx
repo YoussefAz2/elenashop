@@ -4,8 +4,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { AnimatedCounter } from "@/components/landing/animated-counter";
-import { FAQSection } from "@/components/landing/faq-section";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import dynamic from "next/dynamic";
+import { motion } from "framer-motion";
 import {
   Store,
   Zap,
@@ -28,37 +28,22 @@ import {
   ShieldCheck,
   Rocket
 } from "lucide-react";
-import { useRef } from "react";
 
-// Parallax Section - Mimics the Hero "Superposition" Effect
-// As you scroll down, this section moves slightly slower and fades out,
-// making the next section appear to slide "over" it.
+// Lazy-load FAQ section (heavy, below fold)
+const FAQSection = dynamic(() => import("@/components/landing/faq-section").then(mod => ({ default: mod.FAQSection })), {
+  loading: () => <div className="h-96 animate-pulse bg-slate-50 rounded-3xl" />,
+});
+
+// Simple CSS-based section wrapper (replaces heavy framer-motion scroll observers)
 const ParallaxSection = ({ children, className, id }: { children: React.ReactNode, className?: string, id?: string }) => {
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start start", "end start"]
-  });
-
-  // Matches Hero Effect: Move down slowly (0 -> 100px) as user scrolls down
-  const y = useTransform(scrollYProgress, [0, 1], [0, 150]);
-  const opacity = useTransform(scrollYProgress, [0.85, 1], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 0.95]);
-
   return (
-    <section ref={ref} id={id} className={`relative z-10 ${className}`}>
-      <motion.div style={{ y, opacity, scale }} className="h-full w-full origin-top">
-        {children}
-      </motion.div>
+    <section id={id} className={`relative z-10 ${className}`}>
+      {children}
     </section>
   );
 };
 
 export default function Home() {
-  const { scrollY } = useScroll();
-  const heroY = useTransform(scrollY, [0, 500], [0, 150]);
-  const opacity = useTransform(scrollY, [0, 300], [1, 0]);
-
   // Scroll to top on page load/refresh
   if (typeof window !== "undefined") {
     window.history.scrollRestoration = "manual";
@@ -141,7 +126,9 @@ export default function Home() {
           <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
             {/* Left - Content */}
             <motion.div
-              style={{ y: heroY, opacity }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
               className="text-center lg:text-left flex flex-col items-center lg:items-start z-10"
             >
               {/* Animated Badge */}

@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -50,7 +49,6 @@ export function LoginForm({ defaultMode = "login" }: LoginFormProps) {
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
 
-    const router = useRouter();
     const supabase = createClient();
 
     const handleGoogleLogin = async () => {
@@ -98,10 +96,8 @@ export function LoginForm({ defaultMode = "login" }: LoginFormProps) {
                 }
 
                 if (user) {
-                    // Always redirect to dashboard - it will handle showing
-                    // appropriate content based on store membership
-                    router.push("/dashboard");
-                    router.refresh();
+                    // Hard redirect — faster than router.push + refresh for auth transitions
+                    window.location.href = "/dashboard";
                 }
             } else {
                 // Signup with name metadata
@@ -131,8 +127,7 @@ export function LoginForm({ defaultMode = "login" }: LoginFormProps) {
                     // Check if email confirmation is required
                     if (authData.session) {
                         // No confirmation needed, redirect to onboarding
-                        router.push("/onboarding");
-                        router.refresh();
+                        window.location.href = "/onboarding";
                     } else {
                         // Email confirmation required - show success message
                         setSuccess("✅ Compte créé ! Vérifiez votre boîte mail pour confirmer votre inscription.");
