@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import type { StoreWithRole } from "@/types";
 
@@ -11,14 +12,16 @@ interface StoreCardProps {
 
 export function StoreCard({ store, gradient }: StoreCardProps) {
     const [isSelecting, setIsSelecting] = useState(false);
+    const router = useRouter();
 
     const handleClick = () => {
         if (isSelecting) return;
         setIsSelecting(true);
-        // Set cookie client-side (skip /api/select-store round-trip)
+        // Set cookie client-side (no server round-trip)
         document.cookie = `current_store_id=${store.id}; path=/; max-age=31536000; samesite=lax`;
-        // Navigate directly to dashboard
-        window.location.href = "/dashboard";
+        // Use router.push for instant skeleton (loading.tsx shows immediately)
+        // instead of window.location.href which waits for full page load
+        router.push("/dashboard");
     };
 
     return (
