@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { AnimatedCounter } from "@/components/landing/animated-counter";
 import dynamic from "next/dynamic";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import {
   Store,
   Zap,
@@ -44,6 +44,10 @@ const ParallaxSection = ({ children, className, id }: { children: React.ReactNod
 };
 
 export default function Home() {
+  const { scrollY } = useScroll();
+  const heroY = useTransform(scrollY, [0, 500], [0, 150]);
+  const heroOpacity = useTransform(scrollY, [0, 300], [1, 0]);
+
   // Scroll to top on page load/refresh
   if (typeof window !== "undefined") {
     window.history.scrollRestoration = "manual";
@@ -126,9 +130,7 @@ export default function Home() {
           <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
             {/* Left - Content */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
+              style={{ y: heroY, opacity: heroOpacity }}
               className="text-center lg:text-left flex flex-col items-center lg:items-start z-10"
             >
               {/* Animated Badge */}
