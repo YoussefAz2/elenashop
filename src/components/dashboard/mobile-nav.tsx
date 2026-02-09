@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import {
     LayoutDashboard,
     Package,
@@ -47,15 +47,13 @@ const navItems: NavItem[] = [
 ];
 
 function MobileLogoutButton({ onLogout }: { onLogout: () => void }) {
-    const router = useRouter();
     const supabase = createClient();
 
     const handleLogout = async () => {
         onLogout();
         await supabase.auth.signOut();
         document.cookie = "current_store_id=; path=/; max-age=0";
-        router.push("/login");
-        router.refresh();
+        window.location.href = "/login";
     };
 
     return (
@@ -78,15 +76,12 @@ export function MobileNav({ storeName, storeSlug }: MobileNavProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [isSwitching, setIsSwitching] = useState(false);
     const pathname = usePathname();
-    const router = useRouter();
 
     const handleSwitchStore = () => {
         setIsSwitching(true);
         setIsOpen(false);
-        // Clear the store cookie (fire-and-forget)
-        fetch("/api/clear-store").catch(console.error);
-        // Navigate immediately
-        router.push("/stores");
+        // Navigate to clear-store API which clears cookie and redirects to /stores
+        window.location.href = "/api/clear-store";
     };
 
     const isActive = (href: string) => {

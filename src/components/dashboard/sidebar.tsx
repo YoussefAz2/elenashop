@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import {
     LayoutDashboard,
@@ -38,15 +38,12 @@ const navItems: NavItem[] = [
 ];
 
 function LogoutButton() {
-    const router = useRouter();
     const supabase = createClient();
 
     const handleLogout = async () => {
         await supabase.auth.signOut();
-        // Clear cookies
         document.cookie = "current_store_id=; path=/; max-age=0";
-        router.push("/login");
-        router.refresh();
+        window.location.href = "/login";
     };
 
     return (
@@ -61,15 +58,12 @@ function LogoutButton() {
 }
 
 function StoreSwitcher({ storeName }: { storeName: string }) {
-    const router = useRouter();
     const [isSwitching, setIsSwitching] = useState(false);
 
     const handleSwitch = () => {
         setIsSwitching(true);
-        // Clear the store cookie (fire-and-forget - don't wait)
-        fetch("/api/clear-store").catch(console.error);
-        // Navigate immediately for instant transition
-        router.push("/stores");
+        // Navigate to clear-store API which clears cookie and redirects to /stores
+        window.location.href = "/api/clear-store";
     };
 
     return (

@@ -99,7 +99,7 @@ export default async function StoresPage() {
                         return (
                             <a
                                 key={store.id}
-                                href={`/dashboard?store=${store.id}`}
+                                href={`/api/select-store?store=${store.id}`}
                                 className="group relative bg-white rounded-2xl sm:rounded-3xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-zinc-200/50 hover:-translate-y-2 active:scale-[0.98] border border-zinc-100 animate-in fade-in slide-in-from-bottom-4 will-change-transform touch-none sm:touch-auto"
                                 style={{
                                     animationDelay: `${i * 100}ms`,
