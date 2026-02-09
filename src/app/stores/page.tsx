@@ -3,6 +3,7 @@ import { createClient } from "@/utils/supabase/server";
 import type { Store, StoreWithRole } from "@/types";
 import Link from "next/link";
 import { Plus, ArrowRight, Loader2 } from "lucide-react";
+import { StoreCard } from "@/components/stores/store-card";
 
 export default async function StoresPage() {
     const supabase = await createClient();
@@ -85,7 +86,6 @@ export default async function StoresPage() {
                 {/* Store Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
                     {allStores.map((store, i) => {
-                        // Generate a consistent gradient based on store position
                         const gradients = [
                             "from-rose-100 to-teal-100",
                             "from-blue-100 to-indigo-100",
@@ -94,50 +94,12 @@ export default async function StoresPage() {
                             "from-violet-100 to-fuchsia-100",
                             "from-cyan-100 to-blue-100"
                         ];
-                        const gradient = gradients[i % gradients.length];
-
                         return (
-                            <a
+                            <StoreCard
                                 key={store.id}
-                                href={`/api/select-store?store=${store.id}`}
-                                className="group relative bg-white rounded-2xl sm:rounded-3xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 active:scale-[0.97] border border-zinc-100 animate-in fade-in slide-in-from-bottom-2 cursor-pointer"
-                                style={{
-                                    animationDelay: `${i * 80}ms`,
-                                    animationDuration: '400ms',
-                                    animationFillMode: 'backwards'
-                                }}
-                            >
-                                {/* Abstract Cover */}
-                                <div className={`h-20 sm:h-36 w-full bg-gradient-to-br ${gradient} opacity-60 group-hover:opacity-90 transition-opacity duration-500`} />
-
-                                {/* Arrow indicator on hover */}
-                                <div className="absolute top-5 right-5">
-                                    <div className="w-9 h-9 rounded-full bg-white/70 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 shadow-sm">
-                                        <ArrowRight className="h-4 w-4 text-zinc-900" />
-                                    </div>
-                                </div>
-
-                                {/* Store Initial Badge - overlapping the cover */}
-                                <div className="absolute top-14 sm:top-28 left-4 sm:left-7 w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-white p-0.5 sm:p-1 shadow-lg shadow-zinc-200/50 border border-zinc-100">
-                                    <div className="w-full h-full rounded-lg sm:rounded-xl bg-zinc-900 flex items-center justify-center text-white font-serif text-base sm:text-xl italic">
-                                        {store.name.charAt(0)}
-                                    </div>
-                                </div>
-
-                                <div className="pt-6 sm:pt-10 p-4 sm:p-7 pb-4 sm:pb-8">
-                                    <h3 className="font-bold text-lg text-zinc-900 mb-1 tracking-tight">{store.name}</h3>
-                                    <p className="text-zinc-400 text-xs font-bold tracking-widest uppercase">/{store.slug}</p>
-
-                                    <div className="mt-5 flex items-center gap-4 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
-                                        <div className="flex items-center gap-1.5">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                                            En ligne
-                                        </div>
-                                        <span className="text-zinc-200">•</span>
-                                        <span>{store.role === 'owner' ? 'Propriétaire' : 'Membre'}</span>
-                                    </div>
-                                </div>
-                            </a>
+                                store={store}
+                                gradient={gradients[i % gradients.length]}
+                            />
                         );
                     })}
 
