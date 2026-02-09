@@ -94,13 +94,26 @@ export function MobileNav({ storeName, storeSlug }: MobileNavProps) {
     return (
         <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-slate-200">
             <div className="flex items-center justify-between px-4 h-14">
-                {/* Logo / Store Name */}
-                <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center text-white font-bold text-sm">
-                        {storeName.charAt(0).toUpperCase()}
+                {/* Store Name + Switch Button */}
+                <button
+                    onClick={handleSwitchStore}
+                    disabled={isSwitching}
+                    className="flex items-center gap-2.5 -ml-1 px-2 py-1.5 rounded-xl hover:bg-slate-50 active:bg-slate-100 transition-colors disabled:opacity-50"
+                >
+                    <div className="w-8 h-8 rounded-lg bg-zinc-900 flex items-center justify-center text-white font-serif font-bold text-sm italic shrink-0">
+                        {isSwitching ? (
+                            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                        ) : (
+                            storeName.charAt(0).toUpperCase()
+                        )}
                     </div>
-                    <span className="font-semibold text-slate-900">{storeName}</span>
-                </div>
+                    <div className="flex flex-col items-start">
+                        <span className="font-bold text-slate-900 text-sm leading-tight truncate max-w-[120px]">{storeName}</span>
+                        <span className="text-[9px] text-slate-400 font-medium uppercase tracking-tight">
+                            {isSwitching ? "Chargement..." : "Changer"}
+                        </span>
+                    </div>
+                </button>
 
                 {/* Burger Menu */}
                 <Sheet open={isOpen} onOpenChange={setIsOpen}>

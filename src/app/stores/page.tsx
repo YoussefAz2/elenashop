@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import type { Store, StoreWithRole } from "@/types";
 import Link from "next/link";
-import { Plus, ArrowRight } from "lucide-react";
+import { Plus, ArrowRight, Loader2 } from "lucide-react";
 
 export default async function StoresPage() {
     const supabase = await createClient();
@@ -100,10 +100,10 @@ export default async function StoresPage() {
                             <a
                                 key={store.id}
                                 href={`/api/select-store?store=${store.id}`}
-                                className="group relative bg-white rounded-2xl sm:rounded-3xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-zinc-200/50 hover:-translate-y-2 active:scale-[0.98] border border-zinc-100 animate-in fade-in slide-in-from-bottom-4 will-change-transform touch-none sm:touch-auto"
+                                className="group relative bg-white rounded-2xl sm:rounded-3xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 active:scale-[0.97] border border-zinc-100 animate-in fade-in slide-in-from-bottom-2 cursor-pointer"
                                 style={{
-                                    animationDelay: `${i * 100}ms`,
-                                    animationDuration: '500ms',
+                                    animationDelay: `${i * 80}ms`,
+                                    animationDuration: '400ms',
                                     animationFillMode: 'backwards'
                                 }}
                             >
