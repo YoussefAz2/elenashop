@@ -3,6 +3,7 @@ import { getCurrentStore } from "@/utils/get-current-store";
 import type { Product, Category } from "@/types";
 import Link from "next/link";
 import { Plus, Package, FolderOpen } from "lucide-react";
+import Image from "next/image";
 
 export const dynamic = "force-dynamic";
 
@@ -21,14 +22,14 @@ export default async function CataloguePage() {
     return (
         <div className="max-w-6xl mx-auto space-y-8">
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-zinc-100 pb-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-100 pb-6 sm:pb-8">
                 <div>
-                    <h1 className="text-4xl font-serif font-bold italic tracking-tight text-zinc-900 leading-tight">Catalogue</h1>
-                    <p className="text-zinc-500 mt-2 text-lg font-medium">Gérez vos produits et catégories.</p>
+                    <h1 className="text-2xl sm:text-4xl font-serif font-bold italic tracking-tight text-zinc-900 leading-tight">Catalogue</h1>
+                    <p className="text-zinc-500 mt-1 sm:mt-2 text-sm sm:text-lg font-medium">Gérez vos produits et catégories.</p>
                 </div>
                 <Link
                     href="/dashboard/products"
-                    className="inline-flex items-center gap-2 px-5 py-3 bg-zinc-900 text-white font-bold rounded-xl hover:bg-zinc-800 transition-colors"
+                    className="inline-flex items-center justify-center gap-2 px-5 py-3 bg-zinc-900 text-white font-bold rounded-xl hover:bg-zinc-800 transition-colors self-start sm:self-auto"
                 >
                     <Plus className="h-4 w-4" />
                     Nouveau produit
@@ -36,7 +37,7 @@ export default async function CataloguePage() {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                 <Link href="/dashboard/products" className="bg-white rounded-2xl border border-zinc-100 p-6 hover:shadow-lg hover:shadow-zinc-100 transition-all group">
                     <div className="flex items-center gap-4">
                         <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center group-hover:bg-indigo-100 transition-colors">
@@ -78,9 +79,9 @@ export default async function CataloguePage() {
                     <div className="divide-y divide-zinc-50">
                         {products.slice(0, 5).map((product) => (
                             <div key={product.id} className="p-4 flex items-center gap-4 hover:bg-zinc-50/50">
-                                <div className="w-16 h-16 bg-zinc-100 rounded-xl overflow-hidden">
+                                <div className="w-16 h-16 bg-zinc-100 rounded-xl overflow-hidden relative shrink-0">
                                     {product.images && product.images[0] ? (
-                                        <img src={product.images[0]} alt={product.title} className="w-full h-full object-cover" />
+                                        <Image src={product.images[0]} alt={product.title} fill className="object-cover" sizes="64px" />
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center">
                                             <Package className="h-6 w-6 text-zinc-300" />

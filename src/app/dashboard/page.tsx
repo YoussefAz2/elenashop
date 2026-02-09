@@ -101,14 +101,14 @@ export default async function DashboardPage() {
     });
 
     return (
-        <div className="max-w-[1600px] mx-auto space-y-10 p-4 lg:p-10">
+        <div className="max-w-[1600px] mx-auto space-y-6 sm:space-y-10 p-4 lg:p-10">
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
-                    <h1 className="text-4xl font-black tracking-tight text-slate-900 leading-tight">
+                    <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-slate-900 leading-tight">
                         Vue d&apos;ensemble
                     </h1>
-                    <p className="text-slate-500 mt-2 text-lg font-medium">
+                    <p className="text-slate-500 mt-1 sm:mt-2 text-sm sm:text-lg font-medium">
                         Voici ce qui se passe sur <span className="text-indigo-600 font-bold">{store.name}</span> aujourd&apos;hui.
                     </p>
                 </div>
@@ -121,18 +121,18 @@ export default async function DashboardPage() {
             </div>
 
             {/* Metric Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="group bg-white rounded-[2rem] p-8 border border-white/40 shadow-xl shadow-slate-200/40 hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+                <div className="group bg-white rounded-2xl sm:rounded-[2rem] p-5 sm:p-8 border border-white/40 shadow-xl shadow-slate-200/40 hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
                     <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
                         <DollarSign className="w-32 h-32 text-indigo-600 transform rotate-12 translate-x-8 -translate-y-8" />
                     </div>
                     <div className="relative z-10">
                         <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-2">Revenus (Mensuel)</p>
                         <div className="flex items-baseline gap-2 mb-4">
-                            <span className="text-5xl font-black text-slate-900 tracking-tight">
+                            <span className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
                                 {thisMonthRevenue.toFixed(0)}
                             </span>
-                            <span className="text-2xl font-bold text-slate-300">TND</span>
+                            <span className="text-lg sm:text-2xl font-bold text-slate-300">TND</span>
                         </div>
                         {revenueChange !== null ? (
                             <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-lg text-xs font-bold border ${revenueChange >= 0
@@ -150,14 +150,14 @@ export default async function DashboardPage() {
                     </div>
                 </div>
 
-                <div className="group bg-white rounded-[2rem] p-8 border border-white/40 shadow-xl shadow-slate-200/40 hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
+                <div className="group bg-white rounded-2xl sm:rounded-[2rem] p-5 sm:p-8 border border-white/40 shadow-xl shadow-slate-200/40 hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
                     <div className="relative z-10">
                         <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-2">Commandes</p>
                         <div className="flex items-baseline gap-2 mb-4">
-                            <span className="text-5xl font-black text-slate-900 tracking-tight">
+                            <span className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
                                 {thisMonthOrders.length}
                             </span>
-                            <span className="text-lg font-bold text-slate-300">commandes</span>
+                            <span className="text-sm sm:text-lg font-bold text-slate-300">commandes</span>
                         </div>
                         {orderCountChange !== null ? (
                             <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-lg text-xs font-bold border ${orderCountChange >= 0
@@ -175,14 +175,14 @@ export default async function DashboardPage() {
                     </div>
                 </div>
 
-                <div className="group bg-white rounded-[2rem] p-8 border border-white/40 shadow-xl shadow-slate-200/40 hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
+                <div className="group bg-white rounded-2xl sm:rounded-[2rem] p-5 sm:p-8 border border-white/40 shadow-xl shadow-slate-200/40 hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
                     <div className="relative z-10">
                         <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-2">Produits Actifs</p>
                         <div className="flex items-baseline gap-2 mb-4">
-                            <span className="text-5xl font-black text-slate-900 tracking-tight">
+                            <span className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
                                 {productCount}
                             </span>
-                            <span className="text-lg font-bold text-slate-300">produits</span>
+                            <span className="text-sm sm:text-lg font-bold text-slate-300">produits</span>
                         </div>
                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-slate-50 text-slate-600 text-xs font-bold border border-slate-100">
                             <Package className="h-3 w-3" />
@@ -193,7 +193,7 @@ export default async function DashboardPage() {
             </div>
 
             {/* Quick Actions & Recent Orders */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
                 <div className="lg:col-span-1 space-y-6">
                     <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-6">
                         <h2 className="font-bold text-slate-900 mb-6 text-lg tracking-tight">
@@ -254,10 +254,10 @@ export default async function DashboardPage() {
                     </div>
                 </div>
 
-                <div className="lg:col-span-2 bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden flex flex-col">
-                    <div className="p-8 border-b border-slate-50 flex items-center justify-between bg-white/50 backdrop-blur-sm sticky top-0 z-10">
+                <div className="lg:col-span-2 bg-white rounded-2xl sm:rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden flex flex-col">
+                    <div className="p-4 sm:p-8 border-b border-slate-50 flex items-center justify-between bg-white/50 backdrop-blur-sm sticky top-0 z-10">
                         <div>
-                            <h2 className="font-bold text-slate-900 text-xl tracking-tight">
+                            <h2 className="font-bold text-slate-900 text-base sm:text-xl tracking-tight">
                                 Dernières commandes
                             </h2>
                             <p className="text-slate-400 text-sm font-medium mt-1">Vos ventes récentes</p>
@@ -279,23 +279,23 @@ export default async function DashboardPage() {
                         ) : (
                             <div className="divide-y divide-slate-100">
                                 {recentOrders.map((order) => (
-                                    <div key={order.id} className="p-5 hover:bg-white transition-all hover:shadow-sm group border-l-4 border-transparent hover:border-indigo-500">
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex items-center gap-5">
-                                                <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center border border-slate-100 font-bold text-lg text-slate-600 shadow-sm">
+                                    <div key={order.id} className="p-4 sm:p-5 hover:bg-white transition-all hover:shadow-sm group border-l-4 border-transparent hover:border-indigo-500">
+                                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                                            <div className="flex items-center gap-3 sm:gap-5">
+                                                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-xl sm:rounded-2xl flex items-center justify-center border border-slate-100 font-bold text-base sm:text-lg text-slate-600 shadow-sm shrink-0">
                                                     {order.customer_name.charAt(0).toUpperCase()}
                                                 </div>
-                                                <div>
-                                                    <p className="font-bold text-slate-900 text-lg">{order.customer_name}</p>
-                                                    <div className="flex items-center gap-3 text-xs text-slate-400 font-medium mt-1">
+                                                <div className="min-w-0">
+                                                    <p className="font-bold text-slate-900 text-base sm:text-lg truncate">{order.customer_name}</p>
+                                                    <div className="flex items-center gap-2 sm:gap-3 text-xs text-slate-400 font-medium mt-0.5">
                                                         <span className="font-mono bg-slate-100 px-1.5 py-0.5 rounded text-slate-500">#{order.id.slice(0, 5)}</span>
                                                         <span>• {new Date(order.created_at).toLocaleDateString()}</span>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className="text-right">
-                                                <p className="font-black text-slate-900 text-lg">{Number(order.total_price).toFixed(0)} <span className="text-sm text-slate-400 font-bold">TND</span></p>
-                                                <span className={`inline-flex items-center gap-1.5 px-3 py-1 mt-1 rounded-full text-xs font-bold ${getStatusColor(order.status)} border`}>
+                                            <div className="flex items-center justify-between sm:justify-end sm:text-right gap-3 pl-13 sm:pl-0">
+                                                <p className="font-black text-slate-900 text-base sm:text-lg">{Number(order.total_price).toFixed(0)} <span className="text-xs sm:text-sm text-slate-400 font-bold">TND</span></p>
+                                                <span className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full text-xs font-bold ${getStatusColor(order.status)} border shrink-0`}>
                                                     {getStatusLabel(order.status)}
                                                 </span>
                                             </div>

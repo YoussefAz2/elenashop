@@ -62,8 +62,8 @@ export default async function OrdersPage() {
         <div className="max-w-6xl mx-auto space-y-8">
             {/* Header */}
             <div className="border-b border-zinc-100 pb-8">
-                <h1 className="text-4xl font-serif font-bold italic tracking-tight text-zinc-900 leading-tight">Commandes</h1>
-                <p className="text-zinc-500 mt-2 text-lg font-medium">Suivez et gérez l&apos;activité de votre boutique.</p>
+                <h1 className="text-2xl sm:text-4xl font-serif font-bold italic tracking-tight text-zinc-900 leading-tight">Commandes</h1>
+                <p className="text-zinc-500 mt-1 sm:mt-2 text-sm sm:text-lg font-medium">Suivez et gérez l&apos;activité de votre boutique.</p>
             </div>
 
             {/* Orders List */}
@@ -91,16 +91,16 @@ export default async function OrdersPage() {
                     {orders.map((order) => {
                         const StatusIcon = getStatusIcon(order.status);
                         return (
-                            <div key={order.id} className="p-6 hover:bg-zinc-50/50 transition-colors">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-5">
-                                        <div className="w-14 h-14 bg-zinc-100 rounded-2xl flex items-center justify-center font-bold text-xl text-zinc-600">
+                            <div key={order.id} className="p-4 sm:p-6 hover:bg-zinc-50/50 transition-colors">
+                                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                                    <div className="flex items-center gap-3 sm:gap-5">
+                                        <div className="w-10 h-10 sm:w-14 sm:h-14 bg-zinc-100 rounded-xl sm:rounded-2xl flex items-center justify-center font-bold text-base sm:text-xl text-zinc-600 shrink-0">
                                             {order.customer_name.charAt(0).toUpperCase()}
                                         </div>
-                                        <div>
-                                            <p className="font-bold text-zinc-900 text-lg">{order.customer_name}</p>
-                                            <div className="flex items-center gap-3 text-sm text-zinc-400 mt-1">
-                                                <span className="font-mono bg-zinc-100 px-2 py-0.5 rounded text-zinc-500 text-xs">
+                                        <div className="min-w-0">
+                                            <p className="font-bold text-zinc-900 text-base sm:text-lg truncate">{order.customer_name}</p>
+                                            <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-zinc-400 mt-0.5 sm:mt-1">
+                                                <span className="font-mono bg-zinc-100 px-1.5 sm:px-2 py-0.5 rounded text-zinc-500 text-xs">
                                                     #{order.id.slice(0, 8)}
                                                 </span>
                                                 <span>•</span>
@@ -114,14 +114,14 @@ export default async function OrdersPage() {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="text-right flex items-center gap-6">
+                                    <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-6 pl-13 sm:pl-0">
                                         <div>
-                                            <p className="font-black text-zinc-900 text-xl">
-                                                {Number(order.total_price).toFixed(0)} <span className="text-sm text-zinc-400 font-bold">TND</span>
+                                            <p className="font-black text-zinc-900 text-base sm:text-xl">
+                                                {Number(order.total_price).toFixed(0)} <span className="text-xs sm:text-sm text-zinc-400 font-bold">TND</span>
                                             </p>
                                         </div>
-                                        <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold ${getStatusColor(order.status)} border`}>
-                                            <StatusIcon className="h-4 w-4" />
+                                        <span className={`inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-xs sm:text-sm font-bold ${getStatusColor(order.status)} border shrink-0`}>
+                                            <StatusIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                                             {getStatusLabel(order.status)}
                                         </span>
                                     </div>

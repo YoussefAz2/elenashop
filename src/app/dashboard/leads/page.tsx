@@ -21,8 +21,8 @@ export default async function LeadsPage() {
         <div className="max-w-6xl mx-auto space-y-8">
             {/* Header */}
             <div className="border-b border-zinc-100 pb-8">
-                <h1 className="text-4xl font-serif font-bold italic tracking-tight text-zinc-900 leading-tight">Paniers abandonnés</h1>
-                <p className="text-zinc-500 mt-2 text-lg font-medium">Clients potentiels qui n&apos;ont pas finalisé leur achat.</p>
+                <h1 className="text-2xl sm:text-4xl font-serif font-bold italic tracking-tight text-zinc-900 leading-tight">Paniers abandonnés</h1>
+                <p className="text-zinc-500 mt-1 sm:mt-2 text-sm sm:text-lg font-medium">Clients potentiels qui n&apos;ont pas finalisé leur achat.</p>
             </div>
 
             {/* Leads List */}
@@ -39,15 +39,15 @@ export default async function LeadsPage() {
             ) : (
                 <div className="bg-white rounded-3xl border border-zinc-100 overflow-hidden divide-y divide-zinc-50">
                     {leads.map((lead) => (
-                        <div key={lead.id} className="p-6 hover:bg-zinc-50/50 transition-colors">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center">
-                                        <Users className="h-6 w-6 text-amber-600" />
+                        <div key={lead.id} className="p-4 sm:p-6 hover:bg-zinc-50/50 transition-colors">
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                                <div className="flex items-center gap-3 sm:gap-4">
+                                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-amber-50 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0">
+                                        <Users className="h-5 w-5 sm:h-6 sm:w-6 text-amber-600" />
                                     </div>
-                                    <div>
-                                        <p className="font-bold text-zinc-900">{lead.customer_name || "Anonyme"}</p>
-                                        <div className="flex items-center gap-4 text-sm text-zinc-500 mt-1">
+                                    <div className="min-w-0">
+                                        <p className="font-bold text-zinc-900 truncate">{lead.customer_name || "Anonyme"}</p>
+                                        <div className="flex items-center gap-4 text-sm text-zinc-500 mt-0.5 sm:mt-1">
                                             {lead.customer_phone && (
                                                 <span className="flex items-center gap-1">
                                                     <Phone className="h-3 w-3" />
@@ -57,8 +57,8 @@ export default async function LeadsPage() {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="text-right">
-                                    <div className="flex items-center gap-1 text-sm text-zinc-400">
+                                <div className="pl-13 sm:pl-0 sm:text-right">
+                                    <div className="flex items-center gap-1 text-xs sm:text-sm text-zinc-400">
                                         <Calendar className="h-3 w-3" />
                                         {new Date(lead.created_at).toLocaleDateString("fr-FR")}
                                     </div>

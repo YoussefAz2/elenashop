@@ -84,8 +84,8 @@ export default async function SettingsPage() {
         <div className="max-w-4xl mx-auto space-y-12">
             {/* Header */}
             <div className="border-b border-zinc-100 pb-8">
-                <h1 className="text-4xl font-serif font-bold italic tracking-tight text-zinc-900 leading-tight">Réglages</h1>
-                <p className="text-zinc-500 mt-2 text-lg font-medium">Configurez votre boutique et vos préférences.</p>
+                <h1 className="text-2xl sm:text-4xl font-serif font-bold italic tracking-tight text-zinc-900 leading-tight">Réglages</h1>
+                <p className="text-zinc-500 mt-1 sm:mt-2 text-sm sm:text-lg font-medium">Configurez votre boutique et vos préférences.</p>
             </div>
 
             {/* Settings Sections */}
@@ -99,20 +99,20 @@ export default async function SettingsPage() {
                             {section.items.map((item) => {
                                 const Icon = item.icon;
                                 const content = (
-                                    <div className="flex items-center gap-6 p-6 hover:bg-zinc-50/80 transition-all group">
-                                        <div className="w-12 h-12 bg-zinc-50 rounded-2xl flex items-center justify-center border border-zinc-100 group-hover:bg-zinc-900 group-hover:border-zinc-900 transition-colors shadow-sm">
+                                    <div className="flex items-center gap-4 sm:gap-6 p-4 sm:p-6 hover:bg-zinc-50/80 transition-all group">
+                                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-zinc-50 rounded-xl sm:rounded-2xl flex items-center justify-center border border-zinc-100 group-hover:bg-zinc-900 group-hover:border-zinc-900 transition-colors shadow-sm shrink-0">
                                             <Icon className="h-6 w-6 text-zinc-500 group-hover:text-white transition-colors" />
                                         </div>
                                         <div className="flex-1">
                                             <div className="flex items-center gap-3">
-                                                <p className="font-bold text-lg text-zinc-900">{item.label}</p>
+                                                <p className="font-bold text-base sm:text-lg text-zinc-900">{item.label}</p>
                                                 {item.comingSoon && (
                                                     <span className="px-2.5 py-0.5 bg-zinc-100 text-zinc-500 text-xs font-bold uppercase tracking-wide rounded-full border border-zinc-200">
                                                         Bientôt
                                                     </span>
                                                 )}
                                             </div>
-                                            <p className="text-base text-zinc-500 font-medium">{item.description}</p>
+                                            <p className="text-sm sm:text-base text-zinc-500 font-medium">{item.description}</p>
                                         </div>
                                         {item.external ? (
                                             <div className="w-10 h-10 rounded-full bg-zinc-50 flex items-center justify-center group-hover:bg-white group-hover:shadow-md transition-all">
@@ -159,7 +159,7 @@ export default async function SettingsPage() {
             </div>
 
             {/* Store Info */}
-            <div className="bg-zinc-900 rounded-3xl p-8 text-center text-zinc-400 shadow-xl shadow-zinc-900/10">
+            <div className="bg-zinc-900 rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-center text-zinc-400 shadow-xl shadow-zinc-900/10">
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-zinc-800 mb-4 border border-zinc-700 shadow-inner">
                     <Settings className="h-8 w-8 text-zinc-100" />
                 </div>

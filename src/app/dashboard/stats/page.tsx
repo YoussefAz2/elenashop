@@ -26,12 +26,12 @@ export default async function StatsPage() {
         <div className="max-w-6xl mx-auto space-y-8">
             {/* Header */}
             <div className="border-b border-zinc-100 pb-8">
-                <h1 className="text-4xl font-serif font-bold italic tracking-tight text-zinc-900 leading-tight">Statistiques</h1>
-                <p className="text-zinc-500 mt-2 text-lg font-medium">Analysez les performances de votre boutique.</p>
+                <h1 className="text-2xl sm:text-4xl font-serif font-bold italic tracking-tight text-zinc-900 leading-tight">Statistiques</h1>
+                <p className="text-zinc-500 mt-1 sm:mt-2 text-sm sm:text-lg font-medium">Analysez les performances de votre boutique.</p>
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
                 <div className="bg-white rounded-2xl border border-zinc-100 p-6">
                     <div className="flex items-center gap-4 mb-4">
                         <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center">

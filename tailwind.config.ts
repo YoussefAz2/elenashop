@@ -60,6 +60,7 @@ const config: Config = {
                 marquee: 'marquee 25s linear infinite',
                 'marquee-vertical': 'marquee-vertical 15s linear infinite',
                 'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                'spin-slow': 'spin 30s linear infinite',
             },
             keyframes: {
                 marquee: {
