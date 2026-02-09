@@ -15,12 +15,15 @@ export const getCurrentStore = cache(async (): Promise<Store> => {
     const supabase = await createClient();
     const cookieStore = await cookies();
 
-    // Check authentication first
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    // Use getSession() instead of getUser() — reads JWT locally (~0ms)
+    // Middleware already called getUser() and validated auth
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
 
-    if (authError || !user) {
+    if (sessionError || !session?.user) {
         redirect("/login");
     }
+
+    const user = session.user;
 
     // Try to get store from cookie
     const currentStoreId = cookieStore.get("current_store_id")?.value;
@@ -58,11 +61,11 @@ export const getCurrentStore = cache(async (): Promise<Store> => {
  */
 export const getAuthenticatedUser = cache(async () => {
     const supabase = await createClient();
-    const { data: { user }, error } = await supabase.auth.getUser();
+    const { data: { session }, error } = await supabase.auth.getSession();
 
-    if (error || !user) {
+    if (error || !session?.user) {
         redirect("/login");
     }
 
-    return user;
+    return session.user;
 });

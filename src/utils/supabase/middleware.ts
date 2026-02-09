@@ -6,7 +6,7 @@ export async function updateSession(request: NextRequest) {
 
     // OPTIMIZATION: Skip auth check entirely for public routes
     // This prevents MIDDLEWARE_INVOCATION_TIMEOUT on Vercel Edge
-    const publicRoutes = ["/", "/login"];
+    const publicRoutes = ["/"];
     const isPublicRoute = publicRoutes.includes(pathname);
     const isLegalRoute = pathname.startsWith("/legal");
 

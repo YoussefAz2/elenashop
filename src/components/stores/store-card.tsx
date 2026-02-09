@@ -12,20 +12,21 @@ interface StoreCardProps {
 export function StoreCard({ store, gradient }: StoreCardProps) {
     const [isSelecting, setIsSelecting] = useState(false);
 
-    const handleClick = (e: React.MouseEvent) => {
-        if (isSelecting) {
-            e.preventDefault();
-            return;
-        }
+    const handleClick = () => {
+        if (isSelecting) return;
         setIsSelecting(true);
-        // Let the <a> tag navigate naturally — we just show the loading state
+        // Set cookie client-side (skip /api/select-store round-trip)
+        document.cookie = `current_store_id=${store.id}; path=/; max-age=31536000; samesite=lax`;
+        // Navigate directly to dashboard
+        window.location.href = "/dashboard";
     };
 
     return (
-        <a
-            href={`/api/select-store?store=${store.id}`}
+        <div
             onClick={handleClick}
-            className={`group relative bg-white rounded-2xl sm:rounded-3xl overflow-hidden transition-all duration-300 border border-zinc-100 cursor-pointer ${isSelecting
+            role="button"
+            tabIndex={0}
+            className={`group relative bg-white rounded-2xl sm:rounded-3xl overflow-hidden transition-all duration-300 border border-zinc-100 cursor-pointer select-none ${isSelecting
                     ? "opacity-70 scale-[0.98] pointer-events-none"
                     : "hover:shadow-xl hover:-translate-y-1 active:scale-[0.97]"
                 }`}
@@ -74,6 +75,6 @@ export function StoreCard({ store, gradient }: StoreCardProps) {
                     <span>{store.role === 'owner' ? 'Propriétaire' : 'Membre'}</span>
                 </div>
             </div>
-        </a>
+        </div>
     );
 }

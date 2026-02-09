@@ -62,8 +62,9 @@ function StoreSwitcher({ storeName }: { storeName: string }) {
 
     const handleSwitch = () => {
         setIsSwitching(true);
-        // Navigate to clear-store API which clears cookie and redirects to /stores
-        window.location.href = "/api/clear-store";
+        // Clear cookie client-side (skip /api/clear-store round-trip)
+        document.cookie = "current_store_id=; path=/; max-age=0";
+        window.location.href = "/stores";
     };
 
     return (

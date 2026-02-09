@@ -8,40 +8,31 @@ import { StoreCard } from "@/components/stores/store-card";
 export default async function StoresPage() {
     const supabase = await createClient();
 
-    // Check authentication
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    // Use getSession() — middleware already validated auth via getUser()
+    const { data: { session } } = await supabase.auth.getSession();
 
-    if (authError || !user) {
+    if (!session?.user) {
         redirect("/login");
     }
 
-    // Note: We don't redirect to dashboard even if a cookie exists
-    // Users who visit /stores explicitly want to switch or manage stores
+    const user = session.user;
 
-    // Fetch all stores the user has access to
+    // Single join query instead of 2 sequential queries
     let allStores: StoreWithRole[] = [];
 
     try {
         const { data: memberships } = await supabase
             .from("store_members")
-            .select("store_id, role")
+            .select("role, stores(*)")
             .eq("user_id", user.id);
 
         if (memberships && memberships.length > 0) {
-            const storeIds = memberships.map(m => m.store_id);
-
-            const { data: stores } = await supabase
-                .from("stores")
-                .select("*")
-                .in("id", storeIds);
-
-            if (stores && stores.length > 0) {
-                allStores = stores.map(store => {
-                    const membership = memberships.find(m => m.store_id === store.id);
-                    const role = (membership?.role || "owner") as "owner" | "admin" | "editor";
-                    return { ...store, role };
-                }) as StoreWithRole[];
-            }
+            allStores = memberships
+                .filter(m => m.stores)
+                .map(m => ({
+                    ...(m.stores as unknown as Store),
+                    role: (m.role || "owner") as "owner" | "admin" | "editor"
+                }));
         }
     } catch (e) {
         console.error("Membership query failed:", e);

@@ -80,8 +80,9 @@ export function MobileNav({ storeName, storeSlug }: MobileNavProps) {
     const handleSwitchStore = () => {
         setIsSwitching(true);
         setIsOpen(false);
-        // Navigate to clear-store API which clears cookie and redirects to /stores
-        window.location.href = "/api/clear-store";
+        // Clear cookie client-side (skip /api/clear-store round-trip)
+        document.cookie = "current_store_id=; path=/; max-age=0";
+        window.location.href = "/stores";
     };
 
     const isActive = (href: string) => {
